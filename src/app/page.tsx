@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center px-80">
+    <main className="flex min-h-screen flex-col items-center px-10 2xl:px-64">
       <header className="mb-1">
         <Image
           className="relative"

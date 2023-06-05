@@ -1,27 +1,36 @@
 import { randInputId } from "@/lib/utils";
-import React from "react";
+import React, { InputHTMLAttributes } from "react";
+import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
 
-type Props = {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  placeholder: string;
-  type?: React.HTMLInputTypeAttribute;
-};
+  name: string;
+  register?: UseFormRegister<FieldValues>;
+  registerRules?: RegisterOptions;
+  error?: string;
+}
 
-function Input({ label, placeholder, type }: Props) {
-  const inputId = randInputId();
+function Input({
+  label,
+  id,
+  name,
+  register,
+  registerRules,
+  error,
+  ...props
+}: Props) {
   return (
     <div className="flex flex-col w-full mb-1">
-      <label htmlFor={inputId} className="text-lg font-semibold mb-1">
+      <label htmlFor={id} className="text-lg font-semibold mb-1">
         {label}
       </label>
       <input
-        type={type}
-        name=""
-        id={inputId}
-        placeholder={placeholder}
+        id={id}
+        {...props}
+        {...(register && register(name, registerRules))}
         className="h-12 rounded-lg bg-[#ECECEC] placeholder-[#979797] px-4 outline-secondary"
       />
-      <div className="h-5 text-red-600 text-sm"></div>
+      <div className="h-5 text-red-600 text-sm">{error && error}</div>
     </div>
   );
 }

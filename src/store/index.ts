@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { IProductSlice, productSlice } from "./productSlice";
+import { ProductSlice, productSlice } from "./productSlice";
 
-export const useStore = create<IProductSlice>()((...args) => ({
+export const useStore = create<ProductSlice>()((...args) => ({
   ...productSlice(...args),
 }));

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Input from "./Input";
+import Input from "../Input";
 import WilayaSelectInput from "./WilayaSelectInput";
 import ShippingTypeSelector from "./ShippingTypeSelector";
 
@@ -17,7 +17,7 @@ export default function OrderForm({}: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = methods;
 
   return (
@@ -31,7 +31,7 @@ export default function OrderForm({}: Props) {
           (invalidData) => {
             console.log("invalid form data");
             console.log(invalidData);
-            // console.log("state", formState);
+            console.log("touched fields => ", touchedFields);
           }
         )}
         id="order-form"
@@ -98,12 +98,23 @@ export default function OrderForm({}: Props) {
             />
           </div>
           <div className="flex space-x-7">
-            <WilayaSelectInput id="wilaya-select" label="Wilaya de Livraison" />
+            <WilayaSelectInput
+              register={register}
+              name="wilaya"
+              registerRules={{
+                required: "Ce champ est obligatoire",
+              }}
+              id="wilaya-select"
+              label="Wilaya de Livraison"
+            />
             <ShippingTypeSelector />
           </div>
         </div>
 
-        <button className="self-end bg-secondary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#4988fd] focus:bg-[#2670fa] transition-colors">
+        <button
+          className="self-end bg-secondary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#4988fd] focus:bg-[#2670fa] transition-colors disabled:bg-stone-200 disabled:text-stone-400"
+          disabled={false}
+        >
           <MdOutlineShoppingCart className="w-6 h-6" /> Commander
         </button>
       </form>

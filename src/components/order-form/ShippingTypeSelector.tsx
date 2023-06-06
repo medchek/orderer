@@ -1,17 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TypeSelectorButton from "./TypeSelectorButton";
-import Input from "./Input";
+import Input from "../Input";
 import { orderFormValidators } from "@/lib/formValidators";
 import { useFormContext } from "react-hook-form";
 
 export default function ShippingTypeSelector() {
   const [isHome, setIsHome] = useState(true);
+  const { setValue, unregister } = useFormContext();
+
+  useEffect(() => {
+    setValue("isHome", true);
+  }, []);
+
   const handleClick = (bool: boolean) => {
     if (isHome === bool) return;
-    if (isHome === false) resetField("address", { keepTouched: false });
+    if (bool === false) {
+      unregister("address");
+    }
 
+    setValue("isHome", bool);
     setIsHome(bool);
   };
 

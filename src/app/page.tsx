@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
-import OrderForm from "@/components/OrderForm";
-import ProductDetail from "@/components/ProductDetails";
+import OrderForm from "@/components/order-form/OrderForm";
+import ProductDetail from "@/components/order-form/ProductDetails";
 import Image from "next/image";
 
 export default function Home() {

@@ -10,13 +10,13 @@ interface OrderFormValidator {
 
 export const orderFormValidators: OrderFormValidator = {
   name: (value) => {
-    if (value.length <= 3 || value.length > 40)
+    if (value.length < 3 || value.length > 40)
       return "Le prénom doit être entre 3 et 40 caractères";
     if (/\d/gi.test(value))
       return "Le prénom ne peut pas contenir des chiffres";
   },
   surname: (value) => {
-    if (value.length <= 3 || value.length > 40)
+    if (value.length < 3 || value.length > 40)
       return "Le nom doit être entre 3 et 40 caractères";
     if (/\d/gi.test(value)) return "Le nom ne peut pas contenir des chiffres";
   },

@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @db.VarChar(200)
+  description String? @db.Text
+  price       Int
+  discount    Int     @default(0) @db.SmallInt
+  stock       Int
+  code        String  @unique @db.VarChar(25)
+
+  orders Order[]
+  images Image[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model Image {
+  int  Int    @id @default(autoincrement())
+  link String
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+}
+
+model Wilaya {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(100)
+  arName      String  @db.VarChar(100)
+  code        Int     @db.SmallInt
+  available   Boolean @default(true)
+  homePrice   Int     @default(400)
+  officePrice Int     @default(200)
+
+  Order Order[]
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  name    String @db.VarChar(100)
+  surname String @db.VarChar(100)
+  email   String @db.VarChar(255)
+
+  address String? @db.VarChar(255)
+  phone   Int
+
+  code   String @unique @db.VarChar(100)
+  status Status @default(UNCONFIRMED)
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  wilaya   Wilaya @relation(fields: [wilayaId], references: [id])
+  wilayaId Int
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+}
+
+enum Status {
+  UNCONFIRMED
+  PROCEEDING // the package is on the way
+  SUCCESS
+  CANCELED
+  RETURNED
+}

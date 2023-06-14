@@ -112,7 +112,7 @@ export default function OrderForm({}: Props) {
         </div>
 
         <button
-          className="self-end bg-secondary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#4988fd] focus:bg-[#2670fa] transition-colors disabled:bg-stone-200 disabled:text-stone-400"
+          className="self-end bg-primary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#fd4949] focus:bg-primary-darker transition-colors disabled:bg-stone-200 disabled:text-stone-400"
           disabled={false}
         >
           <MdOutlineShoppingCart className="w-6 h-6" /> Commander

@@ -1,32 +1,35 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import TypeSelectorButton from "./TypeSelectorButton";
 import Input from "../Input";
 import { orderFormValidators } from "@/lib/formValidators";
 import { useFormContext } from "react-hook-form";
+import { useStore } from "@/store";
+import { SHIPPING_TYPE } from "@/store/orderFormSlice";
 
 export default function ShippingTypeSelector() {
-  const [isHome, setIsHome] = useState(true);
+  const { shippingType, setShippingType } = useStore();
   const { setValue, unregister } = useFormContext();
 
   useEffect(() => {
     setValue("isHome", true);
   }, []);
 
-  const handleClick = (bool: boolean) => {
-    if (isHome === bool) return;
-    if (bool === false) {
+  const handleSelectShippingTye = (type: SHIPPING_TYPE) => {
+    if (type === shippingType) return;
+    // unregister the address field from the form if the isHome != true
+    if (shippingType === SHIPPING_TYPE.OFFICE) {
       unregister("address");
     }
-
-    setValue("isHome", bool);
-    setIsHome(bool);
+    // set the value of the form field
+    setValue("isHome", shippingType === SHIPPING_TYPE.HOME);
+    // update store value as well
+    setShippingType(type);
   };
 
   const {
     register,
-    resetField,
     formState: { errors },
   } = useFormContext();
 
@@ -37,21 +40,24 @@ export default function ShippingTypeSelector() {
         <div className="flex h-12 space-x-4">
           <TypeSelectorButton
             text="À Domicile"
-            isSelected={isHome}
-            onClick={() => handleClick(true)}
+            isSelected={shippingType === SHIPPING_TYPE.HOME}
+            onClick={() => handleSelectShippingTye(SHIPPING_TYPE.HOME)}
           />
           <TypeSelectorButton
             text="Au Bureau de Livraison"
-            isSelected={!isHome}
-            onClick={() => handleClick(false)}
+            isSelected={shippingType === SHIPPING_TYPE.OFFICE}
+            onClick={() => handleSelectShippingTye(SHIPPING_TYPE.OFFICE)}
           />
         </div>
       </span>
-      {isHome && (
+      {shippingType === SHIPPING_TYPE.HOME && (
         <Input
           register={register}
           registerRules={{
-            required: isHome ? "Ce champ est obligatoire" : false,
+            required:
+              shippingType === SHIPPING_TYPE.HOME
+                ? "Ce champ est obligatoire"
+                : false,
             validate: orderFormValidators.address,
           }}
           name="address"

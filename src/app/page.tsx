@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import OrderForm from "@/components/order-form/OrderForm";
-import ProductDetail from "@/components/order-form/ProductDetails";
+import DisplaySelectedProducts from "@/components/order-form/DisplaySelectedProducts";
 import Image from "next/image";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
         />
         <p className="text-primary text-sm font-semibold text-center">E-Shop</p>
       </header>
-      <ProductDetail />
+      <DisplaySelectedProducts />
 
       <OrderForm />
 

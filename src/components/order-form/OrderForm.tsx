@@ -17,7 +17,7 @@ export default function OrderForm({}: Props) {
   const {
     register,
     handleSubmit,
-    formState: { errors, touchedFields },
+    formState: { errors },
   } = methods;
 
   return (
@@ -31,7 +31,6 @@ export default function OrderForm({}: Props) {
           (invalidData) => {
             console.log("invalid form data");
             console.log(invalidData);
-            console.log("touched fields => ", touchedFields);
           }
         )}
         id="order-form"
@@ -42,28 +41,28 @@ export default function OrderForm({}: Props) {
             <Input
               register={register}
               registerRules={{
-                required: "Ce champ est obligatoire",
+                required: false,
                 validate: orderFormValidators.surname,
               }}
               error={errors["lastname"]?.message as string}
               name="lastname"
               id="lastname-input"
               label="Nom"
-              placeholder="Votre Nom"
+              placeholder="Votre Nom (Optionnel)"
               maxLength={40}
               minLength={3}
             />
             <Input
               register={register}
               registerRules={{
-                required: "Ce champ est obligatoire",
+                required: false,
                 validate: orderFormValidators.name,
               }}
               error={errors["name"]?.message as string}
               name="name"
               id="name-input"
               label="Prénom"
-              placeholder="Votre Prénom"
+              placeholder="Votre Prénom (Optionnel)"
               maxLength={40}
               minLength={3}
             />
@@ -86,7 +85,7 @@ export default function OrderForm({}: Props) {
             <Input
               register={register}
               registerRules={{
-                required: "Ce champ est obligatoire",
+                required: false,
                 validate: orderFormValidators.email,
               }}
               error={errors["email"]?.message as string}
@@ -94,7 +93,7 @@ export default function OrderForm({}: Props) {
               id="email-input"
               label="Email"
               type="email"
-              placeholder="Votre Email"
+              placeholder="Votre Email (Optionnel)"
             />
           </div>
           <div className="flex space-x-7">
@@ -102,8 +101,9 @@ export default function OrderForm({}: Props) {
               register={register}
               name="wilaya"
               registerRules={{
-                required: "Ce champ est obligatoire",
+                validate: orderFormValidators.wilaya,
               }}
+              error={errors["wilaya"]?.message as string}
               id="wilaya-select"
               label="Wilaya de Livraison"
             />

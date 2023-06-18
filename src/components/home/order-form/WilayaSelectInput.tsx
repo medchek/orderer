@@ -5,7 +5,7 @@ import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;

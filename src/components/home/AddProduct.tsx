@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { MdChevronRight, MdClear, MdSearch } from "react-icons/md";
 import ProductCard from "./ProductCard";
 import { useStore } from "@/store";
-import Loader from "./Loader";
+import Loader from "../Loader";
 
 interface Props {
   close: () => void;

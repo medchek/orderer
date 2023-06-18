@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import TypeSelectorButton from "./TypeSelectorButton";
-import Input from "../Input";
+import Input from "../../Input";
 import { orderFormValidators } from "@/lib/formValidators";
 import { useFormContext } from "react-hook-form";
 import { useStore } from "@/store";

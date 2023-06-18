@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useStore } from "@/store";
-import ProductDetails from "@/components/order-form/SelectedProductDetails";
+import ProductDetails from "@/components/home/order-form/SelectedProductDetails";
 import { MdAdd } from "react-icons/md";
 import { createPortal } from "react-dom";
 import AddProduct from "../AddProduct";

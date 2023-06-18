@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Input from "../Input";
+import Input from "../../Input";
 import WilayaSelectInput from "./WilayaSelectInput";
 import ShippingTypeSelector from "./ShippingTypeSelector";
 

@@ -19,11 +19,11 @@ export default function ShippingTypeSelector() {
   const handleSelectShippingTye = (type: SHIPPING_TYPE) => {
     if (type === shippingType) return;
     // unregister the address field from the form if the isHome != true
-    if (shippingType === SHIPPING_TYPE.OFFICE) {
+    if (type === SHIPPING_TYPE.OFFICE) {
       unregister("address");
     }
     // set the value of the form field
-    setValue("isHome", shippingType === SHIPPING_TYPE.HOME);
+    setValue("isHome", type === SHIPPING_TYPE.HOME);
     // update store value as well
     setShippingType(type);
   };
@@ -50,7 +50,7 @@ export default function ShippingTypeSelector() {
           />
         </div>
       </span>
-      {shippingType === SHIPPING_TYPE.HOME && (
+      {shippingType === SHIPPING_TYPE.HOME ? (
         <Input
           register={register}
           registerRules={{
@@ -69,6 +69,11 @@ export default function ShippingTypeSelector() {
           maxLength={200}
           minLength={10}
         />
+      ) : (
+        <p className="text-stone-900">
+          En sélectionnant ce type de livraison vous devez vous déplacer au
+          bureau de livraison de votre wilaya pour récupérer votre commande.{" "}
+        </p>
       )}
     </div>
   );

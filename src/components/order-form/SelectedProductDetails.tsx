@@ -7,6 +7,7 @@ interface Props {
   name: string;
   description: string;
   price: number;
+  images: { link: string }[];
   /** Checks if the user has only one product selected for shipping. */
   productCount: number;
   /** Event triggered when user wants to remove the product from the order. */
@@ -18,6 +19,7 @@ export default function SelectedProductDetails({
   description,
   price,
   productCount,
+  images,
   onClear,
 }: Props) {
   return (
@@ -35,12 +37,10 @@ export default function SelectedProductDetails({
 
       <div className="flex relative min-w-[128px] w-32 h-32">
         <Image
-          className="relative rounded-xl"
-          src="/apple-watch.jpg"
-          alt="TRB Eshop Logo"
-          priority
+          className="relative rounded-xl object-cover"
+          src={images[0].link}
+          alt={name}
           fill
-          sizes="128px"
         />
       </div>
       <div className="flex flex-col grow-0 justify-between h-32 max-h-32 w-auto pr-4 overflow-hidden">

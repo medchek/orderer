@@ -1,43 +1,92 @@
 import { StateCreator } from "zustand";
 interface Product {
-  id: number;
   name: string;
   description: string;
   price: number;
+  code: string;
+  discount: number;
+  images: { link: string }[];
 }
 
 export interface ProductSlice {
+  selectedProducts: Product[];
   products: Product[];
-  addProduct: () => void;
-  removeProduct: (productId: number) => void;
+  addSelectedProduct: (product: Product) => void;
+  isFetching: boolean;
+  /** Detects whether fetchProducts action has previously been fired or not
+   */
+  hasFetched: boolean;
+  removeProduct: (productCode: string) => void;
+  fetchProducts: () => Promise<void>;
+  fetchSingleProduct: (code: string) => Promise<void>;
 }
 
 export const productSlice: StateCreator<ProductSlice> = (set) => ({
-  products: [
-    {
-      id: 1,
-      name: "Apple Watch Series 8 Gps + Cellular 45mm",
-      description:
-        "Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, ",
-      price: 5000,
-    },
-    {
-      id: 2,
-      name: "Samsung Galaxy Buds Plus, Bluetooth 5.0",
-      description: "Couleur: Black",
-      price: 12000,
-    },
-    {
-      id: 3,
-      name: "Power Bank SAMSUNG 10 000mAh",
-      description: "Couleur: Silver",
-      price: 21000,
-    },
+  selectedProducts: [
+    // {
+    //   discount: 0,
+    //   name: "Apple Watch Series 8 Gps + Cellular 45mm",
+    //   description:
+    //     "Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, ",
+    //   price: 5000,
+    //   code: "product1",
+    // },
+    // {
+    //   discount: 0,
+    //   name: "Samsung Galaxy Buds Plus, Bluetooth 5.0",
+    //   description: "Couleur: Black",
+    //   price: 12000,
+    //   code: "product2",
+    // },
+    // {
+    //   discount: 0,
+    //   name: "Power Bank SAMSUNG 10 000mAh",
+    //   description: "Couleur: Silver",
+    //   price: 21000,
+    //   code: "product3",
+    // },
   ],
-  addProduct: () => null,
-  removeProduct: (productId: number) => {
+  products: [],
+  hasFetched: false,
+  isFetching: false,
+  addSelectedProduct: (product: Product) => {
     set((state) => ({
-      products: state.products.filter((product) => product.id !== productId),
+      selectedProducts: [...state.selectedProducts, product],
     }));
+  },
+  removeProduct: (productCode: string) => {
+    set((state) => ({
+      selectedProducts: state.selectedProducts.filter(
+        (product) => product.code !== productCode
+      ),
+    }));
+  },
+  fetchProducts: async () => {
+    try {
+      set({ isFetching: true });
+      const data = await fetch("/api/products", {
+        method: "GET",
+      });
+      const products = await (data.json() as Promise<Product[]>);
+
+      set(() => ({ products, isFetching: false, hasFetched: true }));
+    } catch (e) {
+      set(() => ({ hasFetched: true }));
+      console.error("Error fetching products", e);
+    }
+  },
+  fetchSingleProduct: async (code: string) => {
+    try {
+      const data = await fetch(`/api/products/${code}`, {
+        method: "GET",
+      });
+      const product = await (data.json() as Promise<Product>);
+
+      set((state) => ({
+        selectedProducts: [...state.selectedProducts, product],
+      }));
+    } catch (e) {
+      console.error("Error fetching product by code", e);
+    }
   },
 });

@@ -10,13 +10,19 @@ interface Wilaya {
 
 export interface WilayaSlice {
   wilayas: Wilaya[];
+  selectedWilaya: Wilaya | null;
   isFetchingWilayas: boolean;
+  setSelectedWilaya: (selectedWilaya: Wilaya) => void;
   fetchPublicWilayas: () => Promise<void>;
 }
 
 export const uiSlice: StateCreator<WilayaSlice> = (set) => ({
   wilayas: [],
+  selectedWilaya: null,
   isFetchingWilayas: false,
+  setSelectedWilaya: (selectedWilaya: Wilaya) => {
+    set((state) => ({ selectedWilaya }));
+  },
   fetchPublicWilayas: async () => {
     try {
       set(() => ({ isFetchingWilayas: true }));

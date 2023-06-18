@@ -30,13 +30,16 @@ export default function WilayaSelectInput({
     wilayas,
     isFetchingWilayas: isFetching,
     shippingType,
+    setSelectedWilaya,
   } = useStore((state) => state);
 
   const inputRegister = register && register(name, registerRules);
   useEffect(() => {
-    fetchPublicWilayas().catch((err) => {
-      console.log("error fetching wilayas in component", err);
-    });
+    if (wilayas.length === 0) {
+      fetchPublicWilayas().catch((err) => {
+        console.log("error fetching wilayas in component", err);
+      });
+    }
   }, []);
 
   const [shippingPrice, setShippingPrice] = useState<{
@@ -68,6 +71,9 @@ export default function WilayaSelectInput({
     const targetWilaya = wilayas.find((w) => w.code === wilayaCode);
     // set the price accordingly
     if (targetWilaya) {
+      // save the selectedWilya in the store
+      setSelectedWilaya(targetWilaya);
+
       setShippingPrice({
         home: targetWilaya.homePrice,
         office: targetWilaya.officePrice,

@@ -1,12 +1,45 @@
-import React from "react";
-import { MdClear, MdSearch } from "react-icons/md";
+"use client";
+import React, { useEffect, useState } from "react";
+import { MdChevronRight, MdClear, MdSearch } from "react-icons/md";
 import ProductCard from "./ProductCard";
+import { useStore } from "@/store";
+import Loader from "./Loader";
 
 interface Props {
   close: () => void;
 }
 
 export default function AddProduct({ close }: Props) {
+  const { products, fetchProducts } = useStore();
+
+  const [isFetching, setIsFetching] = useState(false);
+
+  useEffect(() => {
+    if (products.length === 0) {
+      setIsFetching(true);
+      fetchProducts()
+        .catch((err) => console.log(err))
+        .finally(() => {
+          setIsFetching(false);
+        });
+    }
+  }, []);
+
+  const productList = products.map(
+    ({ code, description, name, price, discount, images }) => (
+      <ProductCard
+        name={name}
+        key={code}
+        description={description}
+        price={price}
+        discount={discount}
+        images={images}
+        code={code}
+        onAdd={() => close()}
+      />
+    )
+  );
+
   return (
     <div
       id="dialog"
@@ -27,7 +60,7 @@ export default function AddProduct({ close }: Props) {
           id="search-input-container"
           className="relative flex items-center min-h-12 h-12 max-h-12 my-5 grow"
         >
-          <MdSearch className="absolute h-6 w-6 left-4 text-[#979797]" />
+          {/* <MdSearch className="absolute h-6 w-6 left-4 text-[#979797]" />
 
           <input
             type="search"
@@ -36,19 +69,34 @@ export default function AddProduct({ close }: Props) {
             className="w-full h-full pl-12 pr-4 rounded-lg outline-secondary placeholder-[#979797]"
             placeholder="Chercher un Produit"
             autoComplete="off"
-          />
+          /> */}
+          <select
+            name="category"
+            id="category-selector"
+            className="w-full h-full pl-4 pr-4 rounded-lg outline-secondary placeholder-[#979797] appearance-none"
+          >
+            <option value="all" hidden disabled>
+              Selectionner une categorie
+            </option>
+            {/* temp */}
+            <option value="all">Montres</option>
+            <option value="all">Cameras</option>
+          </select>
+          <MdChevronRight className="absolute right-4 rotate-90 w-7 h-7 pointer-events-none text-stone-800" />
         </div>
 
-        <section
-          id="product-search-result"
-          className="grow grid grid-cols-4 gap-8 overflow-y-auto justify-end"
-        >
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          {/* <ProductCard /> */}
-        </section>
+        {isFetching ? (
+          <div className="h-full w-full flex items-center justify-center">
+            <Loader className="w-8 h-8 border-4 border-stone-400" />
+          </div>
+        ) : (
+          <section
+            id="product-search-result"
+            className="grow grid grid-cols-4 gap-8 overflow-y-auto justify-end"
+          >
+            {productList}
+          </section>
+        )}
       </section>
     </div>
   );

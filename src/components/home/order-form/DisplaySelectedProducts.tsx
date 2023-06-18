@@ -42,15 +42,17 @@ export default function DisplaySelectedProducts() {
         price={product.price}
         images={product.images}
         key={product.code}
+        discount={product.discount}
       />
     ))
   );
 
   const productsPrice = () =>
-    selectedProducts.reduce(
-      (prevVal, currentVal) => prevVal + currentVal.price,
-      0
-    );
+    selectedProducts.reduce((prevVal, currentVal) => {
+      const discountedPrice =
+        currentVal.price - (currentVal.price * currentVal.discount) / 100;
+      return prevVal + discountedPrice;
+    }, 0);
 
   const shippingPrice =
     selectedWilaya === null // if no wilaya is selected, set the price to 0

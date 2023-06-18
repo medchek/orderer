@@ -8,6 +8,7 @@ interface Props {
   description: string;
   price: number;
   images: { link: string }[];
+  discount: number;
   /** Checks if the user has only one product selected for shipping. */
   productCount: number;
   /** Event triggered when user wants to remove the product from the order. */
@@ -20,8 +21,11 @@ export default function SelectedProductDetails({
   price,
   productCount,
   images,
+  discount,
   onClear,
 }: Props) {
+  const discountedPrice =
+    discount === 0 ? price : price - (price * discount) / 100;
   return (
     <div className="relative w-full bg-[#F4F4F4] h-[154px] rounded-2xl flex items-center py-2 px-3 space-x-3">
       {productCount > 1 && (
@@ -42,6 +46,12 @@ export default function SelectedProductDetails({
           alt={name}
           fill
         />
+        {/* discount */}
+        {discount > 0 && (
+          <p className="absolute right-2 bottom-2 h-6 w-10 bg-secondary text-white rounded-md flex items-center justify-center text-sm font-semibold">
+            -{discount}%
+          </p>
+        )}
       </div>
       <div className="flex flex-col grow-0 justify-between h-32 max-h-32 w-auto pr-4 overflow-hidden">
         <div className="space-y-0.5">
@@ -52,7 +62,9 @@ export default function SelectedProductDetails({
           {/* <p className="text-secondary text-sm font-semibold">En stock: 3</p> */}
         </div>
 
-        <p className="font-semibold text-[#171717]">Prix: {price} DA</p>
+        <p className="font-semibold text-[#171717]">
+          Prix: {discountedPrice}DA
+        </p>
       </div>
     </div>
   );

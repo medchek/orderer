@@ -5,6 +5,7 @@ import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
+import Loader from "../Loader";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
@@ -21,6 +22,7 @@ export default function WilayaSelectInput({
   register,
   registerRules,
   name,
+  error,
   ...props
 }: Props) {
   const {
@@ -30,6 +32,7 @@ export default function WilayaSelectInput({
     shippingType,
   } = useStore((state) => state);
 
+  const inputRegister = register && register(name, registerRules);
   useEffect(() => {
     fetchPublicWilayas().catch((err) => {
       console.log("error fetching wilayas in component", err);
@@ -50,13 +53,20 @@ export default function WilayaSelectInput({
     if (price === 0) return "Gratuit";
     else return `+${price}DA`;
   };
+  // used to track and set the default input value.
+  // Needed to display the default message (value=0) acting as a placeholder
   const [selectedValue, setSelectedValue] = useState(0);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const wilayaCode = parseInt(e.target.value);
-    setSelectedValue(wilayaCode);
-    const targetWilaya = wilayas.find((w) => w.code === wilayaCode);
+    // update the register value on change
+    if (inputRegister) inputRegister.onChange(e);
 
+    const wilayaCode = parseInt(e.target.value);
+    // set the selected wilaya value
+    setSelectedValue(wilayaCode);
+    // look for the wilaya within the store array
+    const targetWilaya = wilayas.find((w) => w.code === wilayaCode);
+    // set the price accordingly
     if (targetWilaya) {
       setShippingPrice({
         home: targetWilaya.homePrice,
@@ -65,15 +75,17 @@ export default function WilayaSelectInput({
     }
   };
 
-  const selectOptions = wilayas.map((wilaya) => (
-    <option value={wilaya.code} key={wilaya.code} defaultValue={16}>
-      {wilaya.code} - {wilaya.name} (
-      {shippingType === SHIPPING_TYPE.HOME
-        ? wilaya.homePrice
-        : wilaya.officePrice}
-      DA)
-    </option>
-  ));
+  const selectOptions = wilayas.map((wilaya) => {
+    return (
+      <option value={wilaya.code} key={wilaya.code} defaultValue={16}>
+        {wilaya.code} - {wilaya.name} (
+        {shippingType === SHIPPING_TYPE.HOME
+          ? wilaya.homePrice
+          : wilaya.officePrice}
+        DA)
+      </option>
+    );
+  });
 
   return (
     <div className="flex flex-col w-full space-y-1">
@@ -84,7 +96,7 @@ export default function WilayaSelectInput({
         <select
           disabled={isFetching}
           {...props}
-          {...(register && register(name, registerRules))}
+          {...inputRegister}
           id={id}
           className={`w-full h-12 rounded-lg bg-[#ECECEC] placeholder-[#979797] px-4 appearance-none outline-secondary ${
             isFetching && " cursor-not-allowed"
@@ -107,16 +119,15 @@ export default function WilayaSelectInput({
         </select>
 
         {isFetching ? (
-          <span className="absolute right-4 w-6 h-6 border-2 border-r-transparent border-stone-400 rounded-full animate-spin"></span>
+          <Loader className="w-6 h-6 border-stone-400 absolute right-4" />
         ) : (
-          <MdChevronRight
-            className={`absolute right-4 rotate-90 w-8 h-8 pointer-events-none ${
-              isFetching && "text-stone-400"
-            }`}
-          />
+          <MdChevronRight className="absolute right-4 rotate-90 w-7 h-7 pointer-events-none" />
         )}
       </div>
-      <span className="w-full text-right">{displayShippingPrice()}</span>
+      <div className="flex justify-between h-5 ">
+        <p className="text-red-600 text-sm grow">{error && error}</p>
+        <p className="text-right grow-0">{displayShippingPrice()}</p>
+      </div>
     </div>
   );
 }

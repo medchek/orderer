@@ -13,12 +13,18 @@ export default function TypeSelectorButton({
 }: Props) {
   return (
     <button
-      className="flex items-center space-x-4 flex-1 h-full bg-[#E9E9E9] w-full rounded-lg text-base font-semibold focus:ring-2 focus:ring-secondary px-4"
+      className="flex h-full w-full flex-1 items-center space-x-4 rounded-lg bg-[#E9E9E9] px-4 text-base font-semibold focus:ring-2 focus:ring-secondary dark:bg-[#17181D] dark:text-white"
       onClick={onClick}
       type="button"
     >
-      <div className="flex items-center justify-center w-6 h-6 border-2 border-black rounded-full">
-        {isSelected && <span className="w-3 h-3 bg-black rounded-full"></span>}
+      <div
+        className={`flex h-6 w-6 items-center justify-center rounded-full border-2 border-black ${
+          isSelected ? "dark:border-secondary" : "dark:border-white"
+        }`}
+      >
+        {isSelected && (
+          <span className="h-3 w-3 rounded-full bg-black dark:bg-secondary"></span>
+        )}
       </div>
       <p>{text}</p>
     </button>

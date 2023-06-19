@@ -9,39 +9,69 @@ import AddProductButton from "../AddProductButton";
 
 import { useSearchParams } from "next/navigation";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
+import Loader from "@/components/Loader";
 
 export default function DisplaySelectedProducts() {
   const searchParams = useSearchParams();
 
+  const [isFetchingProduct, setIsFetchingProduct] = useState(false);
+
+  useEffect(() => {
+    // Av9UC7xfFIojuM0wSqyn
+    // only search for the product when there none selected and the product code is supplied in the url
+    if (selectedProducts.length === 0) {
+      const productCode = searchParams.get("product");
+      if (productCode) {
+        setIsFetchingProduct(true);
+        fetchSingleProduct(productCode)
+          .catch((e) => {
+            console.error("error searching single product in component", e);
+          })
+          .finally(() => {
+            setIsFetchingProduct(false);
+          });
+      }
+    }
+  }, []);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { selectedProducts, removeProduct, selectedWilaya, shippingType } =
-    useStore((state) => state);
+  const {
+    selectedProducts,
+    removeProduct,
+    selectedWilaya,
+    shippingType,
+    fetchSingleProduct,
+  } = useStore((state) => state);
 
   const productList = !selectedProducts.length ? (
-    <div className="relative w-full bg-[#F4F4F4] h-[154px] rounded-2xl flex flex-col items-center justify-center py-2 px-3 space-y-2 font-semibold overflow-hidden">
-      <button
-        className="relative w-full h-full rounded-2xl flex flex-col items-center justify-center py-2 px-3 space-y-2 font-semibold"
-        onClick={() => setIsModalOpen(true)}
-        type="button"
-      >
-        <p>Aucun produit n'a été selectionné pour livraison</p>
-        <div className="font-semibold flex">
-          <MdAdd className="h-6 w-6" />
-          <p>Ajouter un produit</p>
-        </div>
-      </button>
+    <div className="relative w-full bg-[#F4F4F4] dark:bg-[#08080c] h-[154px] rounded-2xl flex flex-col items-center justify-center py-2 px-3 space-y-2 font-semibold overflow-hidden dark:text-stone-200">
+      {isFetchingProduct ? (
+        <Loader />
+      ) : (
+        <button
+          className="relative w-full h-full rounded-2xl flex flex-col items-center justify-center py-2 px-3 space-y-2 font-semibold"
+          onClick={() => setIsModalOpen(true)}
+          type="button"
+        >
+          <p>Aucun produit n'a été selectionné pour livraison</p>
+          <div className="font-semibold flex">
+            <MdAdd className="h-6 w-6" />
+            <p>Ajouter un produit</p>
+          </div>
+        </button>
+      )}
     </div>
   ) : (
-    selectedProducts.map((product) => (
+    selectedProducts.map((product, idx) => (
       <ProductDetails
         productCount={selectedProducts.length}
-        onClear={() => removeProduct(product.code)}
+        onClear={() => removeProduct(idx)}
         name={product.name}
         description={product.description}
         price={product.price}
         images={product.images}
-        key={product.code}
+        key={idx}
         discount={product.discount}
       />
     ))
@@ -66,7 +96,7 @@ export default function DisplaySelectedProducts() {
   return (
     <section id="products-detail" className="w-full">
       <div className="flex justify-between w-full h-8 mb-2">
-        <h1 className="text-2xl font-bold ">Votre Commande</h1>
+        <h1 className="text-2xl font-bold dark:text-white">Votre Commande</h1>
         {selectedProducts.length < 3 && (
           <AddProductButton onClick={() => setIsModalOpen(true)} />
         )}
@@ -77,7 +107,7 @@ export default function DisplaySelectedProducts() {
           )}
       </div>
       <div className="w-full flex space-x-3">{productList}</div>
-      <div className="flex justify-end items-center h-14">
+      <div className="flex justify-end items-center h-14 text-stone-950 dark:text-white">
         <ul>
           <li className="flex justify-between space-x-7">
             <span>Prix de Livraison:</span>

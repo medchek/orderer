@@ -26,16 +26,17 @@ export default function SelectedProductDetails({
 }: Props) {
   const discountedPrice =
     discount === 0 ? price : price - (price * discount) / 100;
+  // old dark bg #121212
   return (
-    <div className="relative w-full bg-[#F4F4F4] h-[154px] rounded-2xl flex items-center py-2 px-3 space-x-3">
+    <div className="relative w-full bg-[#F4F4F4] dark:bg-[#08080c] h-[154px] rounded-2xl flex items-center py-2 px-3 space-x-3">
       {productCount > 1 && (
         <button
           type="button"
           onClick={onClear}
-          className="absolute flex items-center justify-center w-6 h-6 right-1 top-3 rounded-md transition-colors focus:bg-stone-300"
+          className="absolute flex items-center justify-center w-6 h-6 right-1 top-3 rounded-md transition-colors focus:bg-stone-300 dark:focus:bg-[#2e2e2e]"
           title="Supprimer de la commande"
         >
-          <MdClear className=" w-5 h-5" />
+          <MdClear className=" w-5 h-5 dark:text-stone-100" />
         </button>
       )}
 
@@ -55,14 +56,14 @@ export default function SelectedProductDetails({
       </div>
       <div className="flex flex-col grow-0 justify-between h-32 max-h-32 w-auto pr-4 overflow-hidden">
         <div className="space-y-0.5">
-          <p className="font-semibold ">{name}</p>
+          <p className="font-semibold dark:text-white">{name}</p>
           <p className="text-[#666666] text-sm">
             {trucateString(description, 55)}
           </p>
           {/* <p className="text-secondary text-sm font-semibold">En stock: 3</p> */}
         </div>
 
-        <p className="font-semibold text-[#171717]">
+        <p className="font-semibold text-[#171717] dark:text-white">
           Prix: {discountedPrice}DA
         </p>
       </div>

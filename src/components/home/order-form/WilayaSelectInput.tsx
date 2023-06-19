@@ -95,7 +95,7 @@ export default function WilayaSelectInput({
 
   return (
     <div className="flex flex-col w-full space-y-1">
-      <label htmlFor={id} className="text-lg font-semibold">
+      <label htmlFor={id} className="text-lg font-semibold dark:text-white">
         {label}
       </label>
       <div className="relative flex items-center h-12 w-full">
@@ -104,7 +104,7 @@ export default function WilayaSelectInput({
           {...props}
           {...inputRegister}
           id={id}
-          className={`w-full h-12 rounded-lg bg-[#ECECEC] placeholder-[#979797] px-4 appearance-none outline-secondary ${
+          className={`w-full h-12 rounded-lg bg-[#ECECEC] dark:bg-[#17181D] dark:text-[#979797] px-4 outline-none appearance-none focus:ring-2 ring-secondary ${
             isFetching && " cursor-not-allowed"
           }`}
           onChange={handleOnChange}
@@ -116,7 +116,7 @@ export default function WilayaSelectInput({
             </option>
           ) : (
             [
-              <option value={0} disabled hidden key="0">
+              <option className="text-white" value={0} disabled hidden key="0">
                 Selectionnez la wilaya de livraison
               </option>,
               ...selectOptions,
@@ -127,12 +127,14 @@ export default function WilayaSelectInput({
         {isFetching ? (
           <Loader className="w-6 h-6 border-stone-400 absolute right-4" />
         ) : (
-          <MdChevronRight className="absolute right-4 rotate-90 w-7 h-7 pointer-events-none" />
+          <MdChevronRight className="dark:text-[#979797] absolute right-4 rotate-90 w-7 h-7 pointer-events-none" />
         )}
       </div>
       <div className="flex justify-between h-5 ">
         <p className="text-red-600 text-sm grow">{error && error}</p>
-        <p className="text-right grow-0">{displayShippingPrice()}</p>
+        <p className="text-right grow-0 dark:text-gray-100">
+          {displayShippingPrice()}
+        </p>
       </div>
     </div>
   );

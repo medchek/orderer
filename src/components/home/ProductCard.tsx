@@ -39,8 +39,8 @@ export default function ProductCard({
   };
 
   return (
-    <div className="h-[440px] flex flex-col w-auto bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all shadow-blue-600 border border-stone-100">
-      <div className="relative h-[210px] max-h-[210px] w-full bg-stone-200 pointer-events-none">
+    <div className="h-[440px] flex flex-col w-auto bg-white dark:bg-[#08080c] rounded-lg overflow-hidden hover:shadow-xl transition-all border border-stone-100 dark:border-none">
+      <div className="relative h-[210px] max-h-[210px] w-full bg-stone-200 dark:bg-stone-800 pointer-events-none">
         <Image
           src={images[0].link}
           className="h-full object-cover object-center"
@@ -58,17 +58,18 @@ export default function ProductCard({
       <section className="w-full px-[10px] pb-2 grow flex flex-col justify-between">
         <div className="grow flex flex-col justify-between pt-1 pb-2">
           <div>
-            <p className="font-semibold text-lg">{name}</p>
+            <p className="font-semibold text-lg dark:text-white">{name}</p>
             <p className="text-[#979797] text-sm">
               {trucateString(description, 50)}
             </p>
           </div>
 
-          <p className="font-semibold">Prix: {price}DA</p>
+          <p className="font-semibold dark:text-white">Prix: {price}DA</p>
         </div>
 
         <button
-          className="flex items-center justify-center w-full h-7 bg-[#E9E9E9] focus:bg-secondary focus:text-white hover:bg-gray-300 rounded-md font-semibold transition-colors"
+          className="flex items-center justify-center w-full h-8 bg-[#E9E9E9] dark:bg-[#17181D] dark:text-white focus:bg-secondary focus:text-white hover:bg-gray-300 
+          dark:hover:bg-[#202229] dark:focus:bg-secondary rounded-md font-semibold transition-colors"
           onClick={handleAddProduct}
         >
           Ajouter

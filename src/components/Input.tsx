@@ -20,17 +20,20 @@ function Input({
   ...props
 }: Props) {
   return (
-    <div className="flex flex-col w-full mb-1">
-      <label htmlFor={id} className="text-lg font-semibold mb-1">
+    <div className="mb-1 flex w-full flex-col">
+      <label
+        htmlFor={id}
+        className="mb-1 text-lg font-semibold dark:text-white"
+      >
         {label}
       </label>
       <input
         id={id}
         {...props}
         {...(register && register(name, registerRules))}
-        className="h-12 rounded-lg bg-[#ECECEC] placeholder-[#979797] px-4 outline-secondary"
+        className="h-12 rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-white"
       />
-      <div className="h-5 text-red-600 text-sm">{error && error}</div>
+      <div className="h-5 text-sm text-red-600">{error && error}</div>
     </div>
   );
 }

@@ -36,7 +36,9 @@ export default function ShippingTypeSelector() {
   return (
     <div className="w-full space-y-4">
       <span className="flex flex-col space-y-1 w-full">
-        <p className="text-lg font-semibold">Type de Livraison</p>
+        <p className="text-lg font-semibold dark:text-white">
+          Type de Livraison
+        </p>
         <div className="flex h-12 space-x-4">
           <TypeSelectorButton
             text="À Domicile"
@@ -70,7 +72,7 @@ export default function ShippingTypeSelector() {
           minLength={10}
         />
       ) : (
-        <p className="text-stone-900">
+        <p className="text-stone-900 dark:text-gray-500">
           En sélectionnant ce type de livraison vous devez vous déplacer au
           bureau de livraison de votre wilaya pour récupérer votre commande.{" "}
         </p>

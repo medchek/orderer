@@ -16,7 +16,7 @@ export interface ProductSlice {
   /** Detects whether fetchProducts action has previously been fired or not
    */
   hasFetched: boolean;
-  removeProduct: (productCode: string) => void;
+  removeProduct: (index: number) => void;
   fetchProducts: () => Promise<void>;
   fetchSingleProduct: (code: string) => Promise<void>;
 }
@@ -54,11 +54,9 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
       selectedProducts: [...state.selectedProducts, product],
     }));
   },
-  removeProduct: (productCode: string) => {
+  removeProduct: (index: number) => {
     set((state) => ({
-      selectedProducts: state.selectedProducts.filter(
-        (product) => product.code !== productCode
-      ),
+      selectedProducts: state.selectedProducts.filter((_, i) => i !== index),
     }));
   },
   fetchProducts: async () => {

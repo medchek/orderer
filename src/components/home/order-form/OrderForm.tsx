@@ -8,6 +8,7 @@ import ShippingTypeSelector from "./ShippingTypeSelector";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { useForm, FormProvider } from "react-hook-form";
 import { orderFormValidators } from "@/lib/formValidators";
+import { useStore } from "@/store";
 
 type Props = {};
 
@@ -19,6 +20,11 @@ export default function OrderForm({}: Props) {
     handleSubmit,
     formState: { errors },
   } = methods;
+
+  const { selectedProducts, selectedWilaya } = useStore();
+
+  const isDisabledSubmit =
+    selectedProducts.length === 0 || selectedWilaya === null;
 
   return (
     <FormProvider {...methods}>
@@ -112,8 +118,10 @@ export default function OrderForm({}: Props) {
         </div>
 
         <button
-          className="self-end bg-primary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#fd4949] focus:bg-primary-darker transition-colors disabled:bg-stone-200 disabled:text-stone-400"
-          disabled={false}
+          className={`self-end bg-primary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#fd4949] focus:bg-primary-darker transition-colors disabled:bg-stone-200 disabled:text-stone-400 ${
+            isDisabledSubmit && "cursor-not-allowed"
+          }`}
+          disabled={isDisabledSubmit}
         >
           <MdOutlineShoppingCart className="w-6 h-6" /> Commander
         </button>

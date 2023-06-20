@@ -1,17 +1,18 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { MdChevronRight, MdClear, MdSearch } from "react-icons/md";
-import ProductCard from "./ProductCard";
+import ProductCard from "../ProductCard";
 import { useStore } from "@/store";
 import Loader from "../Loader";
 import Modal from "../Modal";
+import { Product } from "@/store/productSlice";
 
 interface Props {
-  close: () => void;
+  closeModal: () => void;
 }
 
-export default function AddProduct({ close }: Props) {
-  const { products, fetchProducts } = useStore();
+export default function AddProduct({ closeModal }: Props) {
+  const { products, fetchProducts, addSelectedProduct } = useStore();
 
   const [isFetching, setIsFetching] = useState(false);
 
@@ -26,8 +27,14 @@ export default function AddProduct({ close }: Props) {
     }
   }, []);
 
-  const productList = products.map(
-    ({ code, description, name, price, discount, images }) => (
+  const handleAddProduct = (product: Product) => {
+    addSelectedProduct(product);
+    closeModal();
+  };
+
+  const productList = products.map((product) => {
+    const { code, description, name, price, discount, images, stock } = product;
+    return (
       <ProductCard
         name={name}
         key={code}
@@ -35,22 +42,29 @@ export default function AddProduct({ close }: Props) {
         price={price}
         discount={discount}
         images={images}
-        code={code}
-        onAdd={() => close()}
-      />
-    )
-  );
+        stock={stock}
+      >
+        <button
+          className="flex h-8 w-full items-center justify-center rounded-md bg-[#E9E9E9] font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary 
+          focus:text-white dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]"
+          onClick={() => handleAddProduct(product)}
+        >
+          Ajouter
+        </button>
+      </ProductCard>
+    );
+  });
   return (
     <Modal
       className="flex h-full flex-col rounded-lg bg-[#F3F3F3]  px-10 py-5 shadow-md dark:bg-[#040404]"
-      closeModal={close}
+      closeModal={closeModal}
     >
       <div id="dialog-header" className="flex grow-0 justify-between">
         <h1 className="text-xl font-semibold dark:text-white">
           Ajouter un Produit
         </h1>
         <button
-          onClick={close}
+          onClick={closeModal}
           className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] dark:focus:bg-white/10"
         >
           <MdClear className="h-6 w-6 dark:text-gray-500" />
@@ -58,8 +72,8 @@ export default function AddProduct({ close }: Props) {
       </div>
 
       <div
-        id="search-input-container"
-        className="min-h-12 relative my-5 flex h-12 max-h-12 grow items-center"
+        id="select-category-container"
+        className="relative my-5 flex h-12 max-h-12 min-h-[3rem] grow items-center"
       >
         {/* <MdSearch className="absolute h-6 w-6 left-4 text-[#979797]" />
 
@@ -75,7 +89,7 @@ export default function AddProduct({ close }: Props) {
           name="category"
           id="category-selector"
           className="h-full w-full appearance-none rounded-lg pl-4 pr-4 outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-[#979797]"
-          value={"prompt"}
+          defaultValue={"prompt"}
         >
           <option value="prompt" hidden disabled>
             Selectionner une categorie
@@ -96,7 +110,7 @@ export default function AddProduct({ close }: Props) {
       ) : (
         <section
           id="product-search-result"
-          className="grid grow grid-cols-4 justify-end gap-8 overflow-y-auto"
+          className="grid grow grid-cols-4 justify-end gap-8 overflow-y-auto dark:[color-scheme:dark]"
         >
           {productList}
         </section>

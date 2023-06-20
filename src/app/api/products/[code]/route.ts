@@ -18,6 +18,7 @@ export async function GET(
         code: true,
         price: true,
         discount: true,
+        stock: true,
         images: {
           select: {
             link: true,

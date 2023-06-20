@@ -10,6 +10,7 @@ export async function GET() {
         description: true,
         discount: true,
         code: true,
+        stock: true,
         images: {
           select: {
             link: true,

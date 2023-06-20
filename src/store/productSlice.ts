@@ -1,10 +1,11 @@
 import { StateCreator } from "zustand";
-interface Product {
+export interface Product {
   name: string;
   description: string;
   price: number;
   code: string;
   discount: number;
+  stock: number;
   images: { link: string }[];
 }
 
@@ -12,43 +13,20 @@ export interface ProductSlice {
   selectedProducts: Product[];
   products: Product[];
   addSelectedProduct: (product: Product) => void;
-  isFetching: boolean;
+  isFetchingProducts: boolean;
   /** Detects whether fetchProducts action has previously been fired or not
    */
-  hasFetched: boolean;
+  hasFetchedAllProducts: boolean;
   removeProduct: (index: number) => void;
   fetchProducts: () => Promise<void>;
   fetchSingleProduct: (code: string) => Promise<void>;
 }
 
 export const productSlice: StateCreator<ProductSlice> = (set) => ({
-  selectedProducts: [
-    // {
-    //   discount: 0,
-    //   name: "Apple Watch Series 8 Gps + Cellular 45mm",
-    //   description:
-    //     "Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, Couleur: Midnight, ",
-    //   price: 5000,
-    //   code: "product1",
-    // },
-    // {
-    //   discount: 0,
-    //   name: "Samsung Galaxy Buds Plus, Bluetooth 5.0",
-    //   description: "Couleur: Black",
-    //   price: 12000,
-    //   code: "product2",
-    // },
-    // {
-    //   discount: 0,
-    //   name: "Power Bank SAMSUNG 10 000mAh",
-    //   description: "Couleur: Silver",
-    //   price: 21000,
-    //   code: "product3",
-    // },
-  ],
+  selectedProducts: [],
   products: [],
-  hasFetched: false,
-  isFetching: false,
+  hasFetchedAllProducts: false,
+  isFetchingProducts: false,
   addSelectedProduct: (product: Product) => {
     set((state) => ({
       selectedProducts: [...state.selectedProducts, product],
@@ -61,16 +39,23 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
   },
   fetchProducts: async () => {
     try {
-      set({ isFetching: true });
+      set({ isFetchingProducts: true });
       const data = await fetch("/api/products", {
         method: "GET",
       });
       const products = await (data.json() as Promise<Product[]>);
 
-      set(() => ({ products, isFetching: false, hasFetched: true }));
+      set(() => ({
+        products,
+        hasFetchedAllProducts: true,
+      }));
     } catch (e) {
-      set(() => ({ hasFetched: true }));
+      set(() => ({ hasFetchedAllProducts: false }));
       console.error("Error fetching products", e);
+    } finally {
+      set(() => ({
+        isFetchingProducts: false,
+      }));
     }
   },
   fetchSingleProduct: async (code: string) => {

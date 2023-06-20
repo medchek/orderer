@@ -94,17 +94,17 @@ export default function WilayaSelectInput({
   });
 
   return (
-    <div className="flex flex-col w-full space-y-1">
+    <div className="flex w-full flex-col space-y-1">
       <label htmlFor={id} className="text-lg font-semibold dark:text-white">
         {label}
       </label>
-      <div className="relative flex items-center h-12 w-full">
+      <div className="relative flex h-12 w-full items-center">
         <select
           disabled={isFetching}
           {...props}
           {...inputRegister}
           id={id}
-          className={`w-full h-12 rounded-lg bg-[#ECECEC] dark:bg-[#17181D] dark:text-[#979797] px-4 outline-none appearance-none focus:ring-2 ring-secondary ${
+          className={`h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-white dark:[color-scheme:dark] ${
             isFetching && " cursor-not-allowed"
           }`}
           onChange={handleOnChange}
@@ -125,14 +125,14 @@ export default function WilayaSelectInput({
         </select>
 
         {isFetching ? (
-          <Loader className="w-6 h-6 border-stone-400 absolute right-4" />
+          <Loader className="absolute right-4 h-6 w-6 border-stone-400" />
         ) : (
-          <MdChevronRight className="dark:text-[#979797] absolute right-4 rotate-90 w-7 h-7 pointer-events-none" />
+          <MdChevronRight className="pointer-events-none absolute right-4 h-7 w-7 rotate-90 dark:text-[#979797]" />
         )}
       </div>
-      <div className="flex justify-between h-5 ">
-        <p className="text-red-600 text-sm grow">{error && error}</p>
-        <p className="text-right grow-0 dark:text-gray-100">
+      <div className="flex h-5 justify-between ">
+        <p className="grow text-sm text-red-600">{error && error}</p>
+        <p className="grow-0 text-right dark:text-gray-100">
           {displayShippingPrice()}
         </p>
       </div>

@@ -45,17 +45,17 @@ export default function DisplaySelectedProducts() {
   } = useStore((state) => state);
 
   const productList = !selectedProducts.length ? (
-    <div className="relative w-full bg-[#F4F4F4] dark:bg-[#08080c] h-[154px] rounded-2xl flex flex-col items-center justify-center py-2 px-3 space-y-2 font-semibold overflow-hidden dark:text-stone-200">
+    <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-[#F4F4F4] px-3 py-2 font-semibold dark:bg-card-dark dark:text-stone-200">
       {isFetchingProduct ? (
         <Loader />
       ) : (
         <button
-          className="relative w-full h-full rounded-2xl flex flex-col items-center justify-center py-2 px-3 space-y-2 font-semibold"
+          className="relative flex h-full w-full flex-col items-center justify-center space-y-2 rounded-2xl px-3 py-2 font-semibold"
           onClick={() => setIsModalOpen(true)}
           type="button"
         >
           <p>Aucun produit n'a été selectionné pour livraison</p>
-          <div className="font-semibold flex">
+          <div className="flex font-semibold">
             <MdAdd className="h-6 w-6" />
             <p>Ajouter un produit</p>
           </div>
@@ -95,19 +95,19 @@ export default function DisplaySelectedProducts() {
 
   return (
     <section id="products-detail" className="w-full">
-      <div className="flex justify-between w-full h-8 mb-2">
+      <div className="mb-2 flex h-8 w-full justify-between">
         <h1 className="text-2xl font-bold dark:text-white">Votre Commande</h1>
         {selectedProducts.length < 3 && (
           <AddProductButton onClick={() => setIsModalOpen(true)} />
         )}
         {isModalOpen &&
           createPortal(
-            <AddProduct close={() => setIsModalOpen(false)} />,
+            <AddProduct closeModal={() => setIsModalOpen(false)} />,
             document.body
           )}
       </div>
-      <div className="w-full flex space-x-3">{productList}</div>
-      <div className="flex justify-end items-center h-14 text-stone-950 dark:text-white">
+      <div className="flex w-full space-x-3">{productList}</div>
+      <div className="flex h-14 items-center justify-end text-stone-950 dark:text-white">
         <ul>
           <li className="flex justify-between space-x-7">
             <span>Prix de Livraison:</span>

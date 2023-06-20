@@ -28,19 +28,19 @@ export default function SelectedProductDetails({
     discount === 0 ? price : price - (price * discount) / 100;
   // old dark bg #121212
   return (
-    <div className="relative w-full bg-[#F4F4F4] dark:bg-[#08080c] h-[154px] rounded-2xl flex items-center py-2 px-3 space-x-3">
+    <div className="relative flex h-[154px] w-full items-center space-x-3 rounded-2xl bg-[#F4F4F4] px-3 py-2 dark:bg-card-dark">
       {productCount > 1 && (
         <button
           type="button"
           onClick={onClear}
-          className="absolute flex items-center justify-center w-6 h-6 right-1 top-3 rounded-md transition-colors focus:bg-stone-300 dark:focus:bg-[#2e2e2e]"
+          className="absolute right-1 top-3 flex h-6 w-6 items-center justify-center rounded-md transition-colors focus:bg-stone-300 dark:focus:bg-[#2e2e2e]"
           title="Supprimer de la commande"
         >
-          <MdClear className=" w-5 h-5 dark:text-stone-100" />
+          <MdClear className=" h-5 w-5 dark:text-stone-100" />
         </button>
       )}
 
-      <div className="flex relative min-w-[128px] w-32 h-32">
+      <div className="relative flex h-32 w-32 min-w-[128px]">
         <Image
           className="relative rounded-xl object-cover"
           src={images[0].link}
@@ -49,15 +49,15 @@ export default function SelectedProductDetails({
         />
         {/* discount */}
         {discount > 0 && (
-          <p className="absolute right-2 bottom-2 h-6 w-10 bg-secondary text-white rounded-md flex items-center justify-center text-sm font-semibold">
+          <p className="absolute bottom-2 right-2 flex h-6 w-10 items-center justify-center rounded-md bg-secondary text-sm font-semibold text-white">
             -{discount}%
           </p>
         )}
       </div>
-      <div className="flex flex-col grow-0 justify-between h-32 max-h-32 w-auto pr-4 overflow-hidden">
+      <div className="flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4">
         <div className="space-y-0.5">
-          <p className="font-semibold dark:text-white">{name}</p>
-          <p className="text-[#666666] text-sm">
+          <p className="line-clamp-2 font-semibold dark:text-white">{name}</p>
+          <p className="line-clamp-2 text-sm text-[#666666]">
             {trucateString(description, 55)}
           </p>
           {/* <p className="text-secondary text-sm font-semibold">En stock: 3</p> */}

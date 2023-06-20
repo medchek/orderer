@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
+import Loader from "./Loader";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -35,11 +36,13 @@ export default function Modal({ children, closeModal, ...props }: Props) {
   return (
     <div
       id="dialog"
-      className="absolute z-10 w-screen h-screen bg-gray-950 dark:bg-stone-950 bg-opacity-50 dark:bg-opacity-70 top-0 left-0 px-10 2xl:px-72 py-10"
+      className="absolute left-0 top-0 z-10 h-screen w-screen bg-gray-950 bg-opacity-50 px-10 py-10 dark:bg-stone-950 dark:bg-opacity-70 2xl:px-72"
     >
-      <div {...props} ref={ref}>
-        {children}
-      </div>
+      <Suspense fallback={<Loader />}>
+        <div {...props} ref={ref}>
+          {children}
+        </div>
+      </Suspense>
     </div>
   );
 }

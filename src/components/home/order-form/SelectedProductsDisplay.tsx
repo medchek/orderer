@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
 import Loader from "@/components/Loader";
 
-export default function DisplaySelectedProducts() {
+export default function SelectedProductsDisplay() {
   const searchParams = useSearchParams();
 
   const [isFetchingProduct, setIsFetchingProduct] = useState(false);
@@ -100,11 +100,7 @@ export default function DisplaySelectedProducts() {
         {selectedProducts.length < 3 && (
           <AddProductButton onClick={() => setIsModalOpen(true)} />
         )}
-        {isModalOpen &&
-          createPortal(
-            <AddProduct closeModal={() => setIsModalOpen(false)} />,
-            document.body
-          )}
+        {isModalOpen && <AddProduct closeModal={() => setIsModalOpen(false)} />}
       </div>
       <div className="flex w-full space-x-3">{productList}</div>
       <div className="flex h-14 items-center justify-end text-stone-950 dark:text-white">

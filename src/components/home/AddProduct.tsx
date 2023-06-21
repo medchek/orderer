@@ -58,8 +58,9 @@ export default function AddProduct({ closeModal }: Props) {
     <Modal
       className="flex h-full flex-col rounded-lg bg-[#F3F3F3]  px-10 py-5 shadow-md dark:bg-[#040404]"
       closeModal={closeModal}
+      label="Ajouter un Produit"
     >
-      <div id="dialog-header" className="flex grow-0 justify-between">
+      {/* <div id="dialog-header" className="flex grow-0 justify-between">
         <h1 className="text-xl font-semibold dark:text-white">
           Ajouter un Produit
         </h1>
@@ -69,22 +70,12 @@ export default function AddProduct({ closeModal }: Props) {
         >
           <MdClear className="h-6 w-6 dark:text-gray-500" />
         </button>
-      </div>
+      </div> */}
 
       <div
         id="select-category-container"
         className="relative my-5 flex h-12 max-h-12 min-h-[3rem] grow items-center"
       >
-        {/* <MdSearch className="absolute h-6 w-6 left-4 text-[#979797]" />
-
-          <input
-            type="search"
-            name="search"
-            id="search-input"
-            className="w-full h-full pl-12 pr-4 rounded-lg outline-secondary placeholder-[#979797]"
-            placeholder="Chercher un Produit"
-            autoComplete="off"
-          /> */}
         <select
           name="category"
           id="category-selector"

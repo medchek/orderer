@@ -59,6 +59,7 @@ export default function AddProduct({ closeModal }: Props) {
       className="flex h-full flex-col rounded-lg bg-[#F3F3F3]  px-10 py-5 shadow-md dark:bg-[#040404]"
       closeModal={closeModal}
       label="Ajouter un Produit"
+      closeOnClickOutside
     >
       {/* <div id="dialog-header" className="flex grow-0 justify-between">
         <h1 className="text-xl font-semibold dark:text-white">

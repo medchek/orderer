@@ -8,33 +8,39 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   label: string;
   children: React.ReactNode;
   closeModal: () => void;
+  closeOnClickOutside?: boolean;
 }
 
 export default function Modal({
   children,
   closeModal,
   label,
+  closeOnClickOutside,
   ...props
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
+    const handleEscPress = (e: KeyboardEvent) => {
+      if (e.code === "Escape") closeModal();
+    };
     const handleClickOutside = (e: MouseEvent) => {
       if (ref.current !== null && !ref.current.contains(e.target as Node)) {
         closeModal();
       }
     };
-    const handleEscPress = (e: KeyboardEvent) => {
-      if (e.code === "Escape") closeModal();
-    };
-    document.addEventListener("click", handleClickOutside, {
-      capture: true,
-    });
+    if (closeOnClickOutside) {
+      document.addEventListener("click", handleClickOutside, {
+        capture: true,
+      });
+    }
     document.addEventListener("keydown", handleEscPress, { capture: true });
     // clean up
     return () => {
-      document.body.removeEventListener("click", handleClickOutside, {
-        capture: true,
-      });
+      if (closeOnClickOutside) {
+        document.body.removeEventListener("click", handleClickOutside, {
+          capture: true,
+        });
+      }
       document.removeEventListener("keydown", handleEscPress, {
         capture: true,
       });

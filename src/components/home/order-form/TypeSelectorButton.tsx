@@ -13,7 +13,7 @@ export default function TypeSelectorButton({
 }: Props) {
   return (
     <button
-      className="flex h-full w-full flex-1 items-center space-x-4 rounded-lg bg-[#E9E9E9] px-4 text-base font-semibold focus:ring-2 focus:ring-secondary dark:bg-[#17181D] dark:text-white"
+      className="flex h-full w-full flex-1 items-center justify-start space-x-4 rounded-lg bg-[#E9E9E9] px-4 text-base font-semibold focus:ring-2 focus:ring-secondary dark:bg-[#17181D] dark:text-white"
       onClick={onClick}
       type="button"
     >

@@ -35,7 +35,7 @@ export default function ShippingTypeSelector() {
 
   return (
     <div className="w-full space-y-4">
-      <span className="flex flex-col space-y-1 w-full">
+      <span className="flex w-full flex-col space-y-1">
         <p className="text-lg font-semibold dark:text-white">
           Type de Livraison
         </p>

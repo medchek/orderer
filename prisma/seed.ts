@@ -1,5 +1,5 @@
 import { dummyProductData, wilayaData } from "./seedData";
-import prisma from "./db";
+import { prisma } from "./db";
 import { uniqueId } from "../src/lib/utils";
 
 interface FakeProductData {

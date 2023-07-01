@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../prisma/db";
+import { prisma } from "../../../../prisma/db";
 import { cache } from "@/lib/cache";
-
+// TODO: Implement Rate limiting for all API routes
 export async function GET() {
   try {
     // get cached results

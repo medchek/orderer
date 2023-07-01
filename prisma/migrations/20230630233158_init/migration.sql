@@ -72,7 +72,9 @@ CREATE TABLE "users" (
     "surname" VARCHAR(100),
     "email" VARCHAR(255),
     "address" VARCHAR(255),
-    "phone" INTEGER NOT NULL,
+    "phone" INTEGER,
+    "emailVerified" TIMESTAMP(3),
+    "image" TEXT,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -130,7 +132,13 @@ CREATE UNIQUE INDEX "wilayas_code_key" ON "wilayas"("code");
 CREATE UNIQUE INDEX "orders_code_key" ON "orders"("code");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_phone_key" ON "users"("email", "phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "accounts_provider_provider_account_id_key" ON "accounts"("provider", "provider_account_id");

@@ -94,12 +94,14 @@ model Order {
 model User {
   id String @id @default(cuid())
 
-  name    String? @db.VarChar(100)
-  surname String? @db.VarChar(100)
-  email   String? @db.VarChar(255)
-
-  address String? @db.VarChar(255)
-  phone   Int     @unique @db.Integer
+  name          String?   @db.VarChar(100)
+  surname       String?   @db.VarChar(100)
+  email         String?   @unique @db.VarChar(255)
+  address       String?   @db.VarChar(255)
+  // TODO: REQUIRE THIS ON NEXTAUTH SIGNIN  CALLBACK
+  phone         Int?      @unique @db.Integer // the ? is only used for oauth convinience. This field should always be added when creating a user other than the admin
+  emailVerified DateTime?
+  image         String?
 
   orders Order[]
 
@@ -109,6 +111,7 @@ model User {
   Account Account[]
   Session Session[]
 
+  @@unique([email, phone])
   @@map("users")
 }
 

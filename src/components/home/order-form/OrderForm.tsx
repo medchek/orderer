@@ -40,9 +40,9 @@ export default function OrderForm({}: Props) {
           }
         )}
         id="order-form"
-        className="mt-2 flex flex-col w-full grow "
+        className="mt-2 flex w-full grow flex-col "
       >
-        <div className="grow flex flex-col w-full space-y-">
+        <div className="flex w-full grow flex-col">
           <div className="flex space-x-7">
             <Input
               register={register}
@@ -118,12 +118,12 @@ export default function OrderForm({}: Props) {
         </div>
 
         <button
-          className={`self-end bg-primary font-semibold flex items-center justify-center space-x-4 text h-12 w-44 text-white rounded-lg hover:bg-[#fd4949] focus:bg-primary-darker transition-colors disabled:bg-stone-200 disabled:text-stone-400 ${
+          className={`text flex h-12 w-44 items-center justify-center space-x-4 self-end rounded-lg bg-primary font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:bg-stone-200  disabled:text-stone-400 disabled:dark:bg-stone-700 disabled:dark:text-stone-800 ${
             isDisabledSubmit && "cursor-not-allowed"
           }`}
           disabled={isDisabledSubmit}
         >
-          <MdOutlineShoppingCart className="w-6 h-6" /> Commander
+          <MdOutlineShoppingCart className="h-6 w-6" /> Commander
         </button>
       </form>
     </FormProvider>

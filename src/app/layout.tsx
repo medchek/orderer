@@ -1,3 +1,5 @@
+"use client";
+import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -18,7 +20,7 @@ export default function RootLayout({
       <body
         className={`relative ${inter.className} bg-white dark:bg-[#040404]`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

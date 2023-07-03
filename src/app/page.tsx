@@ -1,22 +1,12 @@
 import Footer from "@/components/Footer";
+import HomeHeader from "@/components/home/HomeHeader";
 import OrderForm from "@/components/home/order-form/OrderForm";
-import DisplaySelectedProducts from "@/components/home/order-form/DisplaySelectedProducts";
-import Image from "next/image";
+import DisplaySelectedProducts from "@/components/home/order-form/SelectedProductsDisplay";
 
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center px-10 2xl:px-64">
-      <header className="mb-1">
-        <Image
-          className="relative"
-          src="/trb-logo.png"
-          alt="TRB Eshop Logo"
-          width={80}
-          height={80}
-          priority
-        />
-        <p className="text-primary text-sm font-semibold text-center">E-Shop</p>
-      </header>
+      <HomeHeader />
       <DisplaySelectedProducts />
 
       <OrderForm />

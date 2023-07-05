@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -38,6 +38,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "prisma": "^4.16.2",
     "ts-node": "^10.9.1"

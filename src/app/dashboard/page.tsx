@@ -1,31 +1,38 @@
-"use client";
+// import AuthProvider from "@/components/AuthProvider";
 import DashboardNav from "@/components/dashboard/DashboardNav";
 import DashboardProductDisplay from "@/components/dashboard/DashboardProductsDisplay";
 import { DashboardProductsToolbar } from "@/components/dashboard/DashboardProductsToolbar";
-import Image from "next/image";
-import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import React from "react";
-import { MdAdd } from "react-icons/md";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import AuthProvider from "@/components/AuthProvider";
 
 type Props = {};
 
-export default function Dashboard({}: Props) {
-  return (
-    <main id="dashboard" className="flex h-screen w-screen">
-      <DashboardNav />
-      <div
-        id="dashboard-content"
-        className="flex h-full grow flex-col bg-[#F3F3F3] py-2 pl-6 dark:bg-transparent"
-      >
-        <div id="dashboard-title" className="h-14 min-h-[3.5rem]">
-          <h1 className="text-2xl font-bold dark:text-white">Products</h1>
+export default async function Dashboard({}: Props) {
+  const session = await getServerSession(authOptions);
+
+  return session ? (
+    session.user?.email === process.env.GOOGLE_ADMIN_EMAIL ? (
+      <main id="dashboard" className="flex h-screen w-screen">
+        <DashboardNav />
+        <div
+          id="dashboard-content"
+          className="flex h-full grow flex-col bg-[#F3F3F3] py-2 pl-6 dark:bg-transparent"
+        >
+          {/* TOOLS */}
+          <AuthProvider>
+            <DashboardProductsToolbar />
+
+            <DashboardProductDisplay />
+          </AuthProvider>
         </div>
-
-        {/* TOOLS */}
-        <DashboardProductsToolbar />
-
-        <DashboardProductDisplay />
-      </div>
-    </main>
+      </main>
+    ) : (
+      redirect("/")
+    )
+  ) : (
+    redirect("/login")
   );
 }

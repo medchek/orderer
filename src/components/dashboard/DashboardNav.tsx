@@ -42,7 +42,7 @@ export default function DashboardNav({}: Props) {
         id="nav-legal"
         className="w-full text-center text-[#ffc0c0] dark:text-[#646479]"
       >
-        Copyright © 2023 TRB Eshop
+        Copyright © {new Date().getFullYear()} TRB Eshop
       </p>
     </div>
   );

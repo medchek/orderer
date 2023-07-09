@@ -13,8 +13,8 @@ interface Props
 export default function Loader({ className }: Props) {
   return (
     <div
-      className={`border-2 border-r-transparent rounded-full animate-spin ${
-        className ? className : "w-6 h-6 border-stone-400"
+      className={`animate-spin rounded-full border-2 border-r-transparent dark:border-r-transparent ${
+        className ? className : "h-6 w-6 border-stone-400"
       }`}
     ></div>
   );

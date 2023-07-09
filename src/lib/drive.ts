@@ -35,11 +35,16 @@ const getUploadFolder = async (file: Blob, fileName: string) => {
 
 /**
  * Uploads the file to Google Drive and makes it publicly viewable.
- * @param file the file to upload
- * @param fileName the name that the uploaded file will have
- * @returns the file id
+ * @param file The file to upload
+ * @param fileName The name that the uploaded file will have
+ * @param mimeType The mime type of the uploaded file - default image/jpeg
+ * @returns The file id
  */
-export const uploadFile = async (file: Buffer, fileName: string) => {
+export const uploadFile = async (
+  file: Buffer,
+  fileName: string,
+  mimeType = "image/jpeg"
+) => {
   try {
     const drive = getDriveAuth();
 
@@ -47,13 +52,13 @@ export const uploadFile = async (file: Buffer, fileName: string) => {
 
     const fileResponse = await drive.files.create({
       requestBody: {
-        mimeType: "image/jpg",
+        mimeType: mimeType,
         name: fileName,
         // permissions: [{ role: "reader", type: "anyone" }],
       },
       media: {
         body: readableFileStream,
-        mimeType: "image/jpg",
+        mimeType: mimeType,
       },
       fields: "id",
     });
@@ -88,14 +93,43 @@ const getImageFile = async (fileId: string) => {
   }
 };
 
-const deleteFile = async (fileId: string) => {
+export const getAllFiles = async () => {
+  const drive = getDriveAuth();
+  try {
+    const response = await drive.files.list();
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteFile = async (fileId: string) => {
   const drive = getDriveAuth();
 
   try {
     const response = await drive.files.delete({
-      fileId: "id",
+      fileId,
     });
     return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const deleteAllFiles = async () => {
+  try {
+    const response = await getAllFiles();
+    const files = response.data.files;
+    if (!files) return;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const id = file.id;
+      console.log("deleting file with id", id);
+      if (id) await deleteFile(id);
+    }
+
+    return true;
   } catch (err) {
     throw err;
   }

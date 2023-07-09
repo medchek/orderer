@@ -8,7 +8,7 @@ CREATE TABLE "products" (
     "description" TEXT,
     "price" INTEGER NOT NULL,
     "discount" SMALLINT NOT NULL DEFAULT 0,
-    "stock" INTEGER NOT NULL,
+    "stock" INTEGER,
     "code" VARCHAR(25) NOT NULL,
     "category_id" INTEGER,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -27,12 +27,9 @@ CREATE TABLE "categories" (
 
 -- CreateTable
 CREATE TABLE "images" (
-    "int" SERIAL NOT NULL,
-    "link" TEXT NOT NULL,
-    "product_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "images_pkey" PRIMARY KEY ("int")
+    "id" TEXT NOT NULL,
+    "product_id" INTEGER,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable
@@ -124,6 +121,9 @@ CREATE UNIQUE INDEX "products_code_key" ON "products"("code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "images_id_key" ON "images"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "wilayas_code_key" ON "wilayas"("code");

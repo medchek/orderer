@@ -30,13 +30,10 @@ async function main() {
         },
       });
     }
-
     // grab more data from a testing api and inject them inside the db as well,
     // this will allow testing for pagination
-
     const data = await fetch("https://fakestoreapi.com/products");
     const fakeProducts = await (data.json() as Promise<FakeProductData[]>);
-
     fakeProducts.forEach(async ({ title, description, image, price }) => {
       await prisma.product.create({
         data: {
@@ -45,9 +42,8 @@ async function main() {
           price: Math.floor(price * 100),
           description,
           stock: 3,
-
           images: {
-            create: [{ link: image }],
+            create: [{ id: image }],
           },
         },
         include: {

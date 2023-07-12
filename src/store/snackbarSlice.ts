@@ -5,27 +5,34 @@ export type SnackType = "default" | "error" | "success" | "warning";
 export interface SnackbarSlice {
   snackText: string;
   isSnackShown: boolean;
-  stanckType: SnackType;
-  showSnackbar: (text: string) => void;
+  snackType: SnackType;
+  snackTimeout: number;
+  showSnackbar: (text: string, type?: SnackType, time?: number) => void;
   hideSnackbar: () => void;
   setSnackType: (type: SnackType) => void;
+  setSnackTimeout: (time: number) => void;
 }
 
 export const snackbarSlice: StateCreator<SnackbarSlice> = (set) => ({
   snackText: "",
   isSnackShown: false,
-  stanckType: "default",
-  showSnackbar: (text: string, type?: SnackType) => {
+  snackType: "default",
+  snackTimeout: 5000,
+  showSnackbar: (text: string, type?: SnackType, time?: number) => {
     set(() => ({
       isSnackShown: true,
       snackText: text,
-      stanckType: type ?? "default",
+      snackType: type ?? "default",
+      snackTimeout: time ?? 5000,
     }));
   },
   hideSnackbar: () => {
     set(() => ({ isSnackShown: false, snackText: "" }));
   },
   setSnackType: (type: SnackType) => {
-    set(() => ({ stanckType: type }));
+    set(() => ({ snackType: type }));
+  },
+  setSnackTimeout: (time: number) => {
+    set(() => ({ snackTimeout: time }));
   },
 });

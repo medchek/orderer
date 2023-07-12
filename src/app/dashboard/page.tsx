@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import AuthProvider from "@/components/AuthProvider";
+import DashboardContent from "@/components/dashboard/DashboardContent";
 
 type Props = {};
 
@@ -17,17 +18,14 @@ export default async function Dashboard({}: Props) {
     session.user?.email === process.env.GOOGLE_ADMIN_EMAIL ? (
       <main id="dashboard" className="flex h-screen w-screen">
         <DashboardNav />
-        <div
-          id="dashboard-content"
-          className="flex h-full grow flex-col bg-[#F3F3F3] py-2 pl-6 dark:bg-transparent"
-        >
+        <DashboardContent>
           {/* TOOLS */}
           <AuthProvider>
             <DashboardProductsToolbar />
 
             <DashboardProductDisplay />
           </AuthProvider>
-        </div>
+        </DashboardContent>
       </main>
     ) : (
       redirect("/")

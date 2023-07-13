@@ -9,6 +9,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   closeModal: () => void;
   closeOnClickOutside?: boolean;
   centerModalContent?: boolean;
+  hideHeader?: boolean;
 }
 
 export default function Modal({
@@ -17,6 +18,7 @@ export default function Modal({
   label,
   closeOnClickOutside,
   centerModalContent,
+  hideHeader,
   ...props
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -56,15 +58,17 @@ export default function Modal({
       }`}
     >
       <div {...props} ref={ref}>
-        <div id="dialog-header" className="flex grow-0 justify-between px-2">
-          <h1 className="text-xl font-semibold dark:text-white">{label}</h1>
-          <button
-            onClick={closeModal}
-            className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] dark:focus:bg-white/10"
-          >
-            <MdClear className="h-6 w-6 dark:text-gray-500" />
-          </button>
-        </div>
+        {!hideHeader && (
+          <div id="dialog-header" className="flex grow-0 justify-between px-2">
+            <h1 className="text-xl font-semibold dark:text-white">{label}</h1>
+            <button
+              onClick={closeModal}
+              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] dark:focus:bg-white/10"
+            >
+              <MdClear className="h-6 w-6 dark:text-gray-500" />
+            </button>
+          </div>
+        )}
 
         {children}
       </div>

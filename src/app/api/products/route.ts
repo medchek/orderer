@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/db";
 import { getServerSession } from "next-auth";
-import { isAdmin, uniqueId } from "@/lib/utils";
+import { apiErrorResponse, uniqueId } from "@/lib/utils";
 import Joi from "joi";
 import {
   PostProductBodyPayload,
   PostProductSuccessResponsePayload,
 } from "@/types/api";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions, isAdmin } from "../auth/[...nextauth]/route";
 import {
   PRODUCT_CODE_LENGTH,
+  STATUS_BAD_REQUEST,
   STATUS_CONFLICT,
   STATUS_CREATED,
   STATUS_NOT_FOUND,
@@ -41,14 +42,12 @@ export async function GET() {
     return NextResponse.json(products);
   } catch (e) {
     console.error(e);
-    throw new Error("Error fetching all products");
+    return apiErrorResponse("Error fetching all products");
   }
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!isAdmin(session)) {
+  if (await isAdmin()) {
     return NextResponse.json("unauthorized", { status: STATUS_UNAUTHORIZED });
   }
   try {
@@ -69,42 +68,47 @@ export async function POST(req: NextRequest) {
         .items(Joi.string().pattern(/^[a-zA-Z0-9_-]+$/)),
     });
 
-    const values = await schema.validateAsync(body);
+    // validate the request json object
+    const validation = schema.validate(body);
+    if (validation.error || !validation.value) {
+      return apiErrorResponse("Invalid request", STATUS_BAD_REQUEST)
+    }
+    // validated data
+    const data = validation.value
 
     // check if the name already exists,
-
     const doesNameExist = await prisma.product.count({
-      where: { name: values.name },
+      where: { name: data.name },
     });
 
     if (doesNameExist !== 0) {
-      return NextResponse.json("product name already exists", {
-        status: STATUS_CONFLICT,
-      });
+      return apiErrorResponse("product name already exists",
+        STATUS_CONFLICT,
+      );
     }
 
+    // check if the posted image ids exist in the db
     const dbImagesIds = await prisma.image.count({
       where: {
-        id: { in: values.images },
+        id: { in: data.images },
       },
     });
 
     // if the user sent images id that are not present in the db
-    console.log(dbImagesIds, values.images);
-    if (dbImagesIds !== values.images.length) {
-      return NextResponse.json("wrong image ids", { status: STATUS_NOT_FOUND });
+    if (dbImagesIds !== data.images.length) {
+      return apiErrorResponse("Wrong image ids", STATUS_NOT_FOUND);
     }
     // prepare the image ids to be connected to the created entry
-    const imageIds = values.images.map((id) => ({ id }));
+    const imageIds = data.images.map((id) => ({ id }));
     const code = uniqueId(PRODUCT_CODE_LENGTH);
     const product = await prisma.product.create({
       data: {
         code,
-        name: values.name,
-        price: values.price,
-        categoryId: values.categoryId,
-        description: values.description,
-        stock: values.stock,
+        name: data.name,
+        price: data.price,
+        categoryId: data.categoryId,
+        description: data.description,
+        stock: data.stock,
         images: {
           connect: imageIds,
         },
@@ -126,7 +130,6 @@ export async function POST(req: NextRequest) {
       stock: product.stock,
     };
 
-    console.log("success!", product);
     return NextResponse.json<PostProductSuccessResponsePayload>(
       responsePayload,
       {
@@ -135,6 +138,6 @@ export async function POST(req: NextRequest) {
     );
   } catch (e) {
     console.error("Erros posting a product:", e);
-    return NextResponse.json("Error posting product");
+    return apiErrorResponse("Error posting product");
   }
 }

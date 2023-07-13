@@ -1,5 +1,8 @@
+import { NextApiResponse } from 'next';
 import { customAlphabet } from "nanoid";
-import { Session } from "next-auth";
+import { Session, getServerSession } from "next-auth";
+import { NextResponse } from 'next/server';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 // import { prisma } from "../../prisma/db";
 
 const randId = (max: number = 1000) => Math.ceil(Math.random() * max);
@@ -29,14 +32,6 @@ export const uniqueId = (len = 20): string => {
   return id();
 };
 
-/**
- * Return whether the session belongs to the admin
- * @param session
- * @returns
- */
-export const isAdmin = (session: Session | null) => {
-  return session && session.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
-};
 
 /**
  * Used to simulate network latency
@@ -68,3 +63,41 @@ export const toNumberOrNull = (n: string): number | null => {
     ? converted
     : null;
 };
+
+export const getImageDirectUrl = (imageId: string) =>
+  `https://lh5.googleusercontent.com/d/${imageId}`;
+
+/**
+ * converts an empty string to null value otherwise returns the string
+ * @param string the string to be checked
+ * @param includeZeroString convert string containing zero "0" to null as well
+ * @returns null if empty string, otherwise the string itself
+ */
+export const toNullIfEmptyString = (
+  string: string | null,
+  includeZeroString = false
+) => {
+  if (string === null) return null;
+  const str = string.trim();
+  if (str === "" || !str) return null;
+  if (includeZeroString && str === "0") return null;
+  return str;
+};
+
+
+/**
+ * Sends a structured json response to the client
+ * @param message the error message
+ * @param status the error http status code
+ * @returns NextResponse json response
+ */
+export const apiErrorResponse = (message?: string, status?: number) => {
+  return NextResponse.json({
+    error: {
+      message: message ?? "Internal server error",
+      status: status ?? 500
+    }
+  }, {
+    status: status ?? 500
+  })
+}

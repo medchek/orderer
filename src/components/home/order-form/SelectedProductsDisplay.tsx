@@ -38,7 +38,7 @@ export default function SelectedProductsDisplay() {
 
   const {
     selectedProducts,
-    removeProduct,
+    removeSelectedProduct,
     selectedWilaya,
     shippingType,
     fetchSingleProduct,
@@ -66,7 +66,7 @@ export default function SelectedProductsDisplay() {
     selectedProducts.map((product, idx) => (
       <ProductDetails
         productCount={selectedProducts.length}
-        onClear={() => removeProduct(idx)}
+        onClear={() => removeSelectedProduct(idx)}
         name={product.name}
         description={product.description}
         price={product.price}

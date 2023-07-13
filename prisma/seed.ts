@@ -32,6 +32,7 @@ async function main() {
     }
     // grab more data from a testing api and inject them inside the db as well,
     // this will allow testing for pagination
+    /*
     const data = await fetch("https://fakestoreapi.com/products");
     const fakeProducts = await (data.json() as Promise<FakeProductData[]>);
     fakeProducts.forEach(async ({ title, description, image, price }) => {
@@ -51,6 +52,7 @@ async function main() {
         },
       });
     });
+    */
   }
 }
 

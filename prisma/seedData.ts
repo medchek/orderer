@@ -358,6 +358,8 @@ export const wilayaData: Prisma.WilayaUncheckedCreateInput[] = [
 
   - https://scontent.falg6-1.fna.fbcdn.net/v/t39.30808-6/351112380_767698598402514_7849551208357581038_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=c1enuaklEs0AX8QX57p&_nc_ht=scontent.falg6-1.fna&oh=00_AfBdtjFEwDND4bsFA25PnuMpqBcAtP11dSvL34uBpTxWSQ&oe=64900683
  */
+// 1aF8dEnx-7d3oAuJ5j1SNhe4xwnl2b5D2 : air max 95
+// 1DsWxW2uZcK5shlI_QI7fL5HI0q_pJaTJ : power bank
 export const dummyProductData: Prisma.ProductUncheckedCreateInput[] = [
   {
     code: uniqueId(20),
@@ -369,14 +371,33 @@ export const dummyProductData: Prisma.ProductUncheckedCreateInput[] = [
     images: {
       create: [
         {
-          id: "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MPLN3ref_VW_34FR+watch-41-alum-midnight-nc-8s_VW_34FR_WF_CO?wid=750&hei=712&trim=1%2C0&fmt=p-jpg&qlt=95&.v=1683226539556",
+          id: "1WhKFUcpnBl8MqaSpcw70NSoZeSBtz5ef",
         },
+
       ],
     },
   },
   {
     code: uniqueId(20),
-    name: "Canon eos 90D",
+    name: "Air max 97 Leather",
+    description: "Couleur: Midnight. Cuire",
+    price: 27000,
+    stock: 2,
+    discount: 0,
+    images: {
+      create: [
+        {
+          id: "1JiSH9SjDewPciUQvTOqqD72bRn3qDhNY",
+        },
+        {
+          id: "1_fidORk6K4OW5Swj36HXsZh8Lpsa5YZn"
+        }
+      ],
+    },
+  },
+  {
+    code: uniqueId(20),
+    name: "Samsung Powerbank 10000mah",
     description: "Couleur: Black",
     price: 22000,
     stock: 1,
@@ -384,7 +405,7 @@ export const dummyProductData: Prisma.ProductUncheckedCreateInput[] = [
     images: {
       create: [
         {
-          id: "https://www.dpreview.com/files/p/articles/5517326302/product/CanonEOS90D-beauty-03.jpeg",
+          id: "1DsWxW2uZcK5shlI_QI7fL5HI0q_pJaTJ",
         },
       ],
     },
@@ -392,7 +413,7 @@ export const dummyProductData: Prisma.ProductUncheckedCreateInput[] = [
 
   {
     code: uniqueId(20),
-    name: "Haino teko RW-23",
+    name: "Samsung Ear bud 2 Pro",
     description: "Couleur: Black",
     price: 6000,
     stock: 1,
@@ -400,7 +421,7 @@ export const dummyProductData: Prisma.ProductUncheckedCreateInput[] = [
     images: {
       create: [
         {
-          id: "https://static-01.daraz.pk/p/f94ae23ec424fe20eba1eedff49c4da4.jpg",
+          id: "1wPO_70ZdPA5VPIy2eLl068onrwxvDvZI",
         },
       ],
     },

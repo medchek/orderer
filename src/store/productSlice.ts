@@ -1,13 +1,17 @@
+import { STATUS_OK } from "@/lib/constants";
 import { StateCreator } from "zustand";
 export interface Product {
   name: string;
-  description: string;
+  description: string | null;
   price: number;
   code: string;
   discount: number;
-  stock: number;
-  images: { link: string }[];
+  stock: number | null;
+  categoryId: number | null;
+  images: { id: string }[];
 }
+
+type PromiseStatus = "init" | "fetching" | "success" | "error"
 
 export interface ProductSlice {
   selectedProducts: Product[];
@@ -17,9 +21,13 @@ export interface ProductSlice {
   /** Detects whether fetchProducts action has previously been fired or not
    */
   hasFetchedAllProducts: boolean;
-  removeProduct: (index: number) => void;
+  productsFetchStatus: PromiseStatus,
+  removeSelectedProduct: (index: number) => void;
+  deleteProduct: (code: string) => void;
   fetchProducts: () => Promise<void>;
   fetchSingleProduct: (code: string) => Promise<void>;
+  addProduct: (product: Product) => void;
+  updateProduct: (updatedProduct: Product, productIndex: number) => void;
 }
 
 export const productSlice: StateCreator<ProductSlice> = (set) => ({
@@ -27,35 +35,46 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
   products: [],
   hasFetchedAllProducts: false,
   isFetchingProducts: false,
+  productsFetchStatus: "init",
   addSelectedProduct: (product: Product) => {
     set((state) => ({
       selectedProducts: [...state.selectedProducts, product],
     }));
   },
-  removeProduct: (index: number) => {
+  removeSelectedProduct: (index: number) => {
     set((state) => ({
       selectedProducts: state.selectedProducts.filter((_, i) => i !== index),
     }));
   },
+  deleteProduct: (code: string) => {
+    set((state) => ({
+      products: state.products.filter((product) => product.code !== code),
+    }));
+  },
   fetchProducts: async () => {
+
     try {
-      set({ isFetchingProducts: true });
-      const data = await fetch("/api/products", {
+      set(() => ({
+        productsFetchStatus: "fetching"
+      }))
+      const response = await fetch("/api/products", {
         method: "GET",
       });
-      const products = await (data.json() as Promise<Product[]>);
+      const products: Product[] = await response.json();
 
-      set(() => ({
-        products,
-        hasFetchedAllProducts: true,
-      }));
+      if (response.status === STATUS_OK) {
+        set(() => ({
+          products,
+          productsFetchStatus: "success"
+        }));
+      } else {
+        set(() => ({
+          productsFetchStatus: "error"
+        }))
+      }
     } catch (e) {
-      set(() => ({ hasFetchedAllProducts: false }));
+      set(() => ({ productsFetchStatus: "error" }));
       console.error("Error fetching products", e);
-    } finally {
-      set(() => ({
-        isFetchingProducts: false,
-      }));
     }
   },
   fetchSingleProduct: async (code: string) => {
@@ -71,5 +90,21 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
     } catch (e) {
       console.error("Error fetching product by code", e);
     }
+  },
+  addProduct: (product: Product) => {
+    set((state) => ({
+      products: [product, ...state.products],
+    }));
+  },
+  updateProduct: (updatedProduct: Product, productIndex: number) => {
+    set((state) => ({
+      products: state.products.map((product, i) => {
+        if (i === productIndex) {
+          return updatedProduct
+        } else {
+          return product
+        }
+      }),
+    }));
   },
 });

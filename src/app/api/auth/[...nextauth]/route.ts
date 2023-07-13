@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth, { AuthOptions, Session } from "next-auth";
+import NextAuth, { AuthOptions, Session, getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "../../../../../prisma/db";
 import { type Adapter } from "next-auth/adapters";
@@ -39,6 +39,20 @@ export const authOptions: AuthOptions = {
     signOut: "logout",
   },
   // debug: true,
+};
+
+
+/**
+ * Return whether the session belongs to the admin
+ * @param session
+ * @returns
+ */
+export const isAdmin = async () => {
+  const session = await getServerSession(authOptions);
+  const isAdmin =
+    session && session.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
+
+  return isAdmin;
 };
 
 const handler = NextAuth(authOptions);

@@ -16,3 +16,29 @@ export interface PostProductBodyPayload {
   discount: number;
   images: string[];
 }
+
+
+export interface PostProductSuccessResponsePayload {
+  code: string;
+  name: string;
+  price: number;
+  description: string | null;
+  stock: number | null;
+  categoryId: number | null;
+  discount: number;
+  images: { id: string }[];
+}
+
+export interface PatchProductBodyPayload {
+  name?: string;
+  price?: number;
+  description?: string;
+  stock?: number | null;
+  categoryId?: number | null;
+  discount?: number;
+  images?: {
+    added: string[];
+    removed: string[];
+  };
+}
+export interface PatchProductSuccessResponsePayload extends PostProductSuccessResponsePayload { }

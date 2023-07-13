@@ -43,7 +43,7 @@ model Category {
 model Image {
   id String @unique
 
-  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
   productId Int?     @map("product_id")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)

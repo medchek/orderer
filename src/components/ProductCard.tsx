@@ -1,15 +1,13 @@
-import { trucateString } from "@/lib/utils";
-import { useStore } from "@/store";
-import Image from "next/image";
-import React, { ReactNode } from "react";
+import { getImageDirectUrl } from "@/lib/utils";
+import React, { Fragment, ReactNode, useState } from "react";
 
 interface Props {
   name: string;
   price: number;
-  description: string;
+  description: string | null;
   discount: number;
-  images: { link: string }[];
-  stock: number;
+  images: { id: string }[];
+  stock: number | null;
 
   children: ReactNode;
 }
@@ -25,15 +23,19 @@ export default function ProductCard({
 }: Props) {
   const priceWidthDiscount =
     discount === 0 ? price : price - (price * discount) / 100;
+
+  const displayImage = images.map((img) => {
+    return getImageDirectUrl(img.id);
+  });
+
   return (
-    <div className="flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-card-dark">
+    <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-card-dark">
       <div className="pointer-events-none relative h-[210px] max-h-[210px] w-full bg-stone-200 dark:bg-stone-800">
-        <Image
-          src={images[0].link}
-          className="h-full object-cover object-center"
+        <img
+          src={displayImage[0]}
+          className="h-full w-full object-cover object-center"
           alt="Product image"
-          fill
-          quality={50}
+          loading="lazy"
         />
         {/* discount */}
         {discount > 0 && (
@@ -52,16 +54,18 @@ export default function ProductCard({
             >
               {name}
             </p>
-            <p
+            <div
               className="line-clamp-3 text-sm text-[#979797]"
-              title={description}
+              title={description ?? ""}
             >
               {description}
-            </p>
+            </div>
           </section>
 
-          <section>
-            <p className="text-sm text-secondary">Stock: {stock}</p>
+          <section className="space-y-0.5">
+            {stock && stock > 0 && (
+              <p className="text-sm text-secondary">Stock: {stock}</p>
+            )}
             <p className="font-semibold dark:text-white">
               Prix: {priceWidthDiscount}DA
             </p>

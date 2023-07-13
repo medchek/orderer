@@ -1,13 +1,13 @@
-import { trucateString } from "@/lib/utils";
+import { getImageDirectUrl, trucateString } from "@/lib/utils";
 import Image from "next/image";
 import React from "react";
 import { MdClear } from "react-icons/md";
 
 interface Props {
   name: string;
-  description: string;
+  description: string | null;
   price: number;
-  images: { link: string }[];
+  images: { id: string }[];
   discount: number;
   /** Checks if the user has only one product selected for shipping. */
   productCount: number;
@@ -26,6 +26,8 @@ export default function SelectedProductDetails({
 }: Props) {
   const discountedPrice =
     discount === 0 ? price : price - (price * discount) / 100;
+
+  const productImageUrl = getImageDirectUrl(images[0].id);
   // old dark bg #121212
   return (
     <div className="relative flex h-[154px] w-full items-center space-x-3 rounded-2xl bg-[#F4F4F4] px-3 py-2 dark:bg-card-dark">
@@ -41,11 +43,11 @@ export default function SelectedProductDetails({
       )}
 
       <div className="relative flex h-32 w-32 min-w-[128px]">
-        <Image
+        <img
           className="relative rounded-xl object-cover"
-          src={images[0].link}
+          src={productImageUrl}
           alt={name}
-          fill
+          loading="lazy"
         />
         {/* discount */}
         {discount > 0 && (
@@ -57,9 +59,7 @@ export default function SelectedProductDetails({
       <div className="flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4">
         <div className="space-y-0.5">
           <p className="line-clamp-2 font-semibold dark:text-white">{name}</p>
-          <p className="line-clamp-2 text-sm text-[#666666]">
-            {trucateString(description, 55)}
-          </p>
+          <p className="line-clamp-2 text-sm text-[#666666]">{description}</p>
           {/* <p className="text-secondary text-sm font-semibold">En stock: 3</p> */}
         </div>
 

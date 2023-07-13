@@ -276,6 +276,7 @@ export default function DashboardAddProduct({ closeModal }: Props) {
       }
     } catch (error) {
       console.error("Error submitting product form:", error);
+      showSnackbar("Une erreur est survenu, veuillez réessayer", "error");
     } finally {
       setIsFormSubmitting(false);
     }

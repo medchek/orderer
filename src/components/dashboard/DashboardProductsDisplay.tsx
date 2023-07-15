@@ -53,7 +53,7 @@ export default function DashboardProductsDisplay() {
     ) : (
       <section
         id="product-display"
-        className="grid w-full grow gap-5 overflow-y-auto pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
+        className="mr-6 grid w-full grow gap-5 overflow-y-auto pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
       >
         {products.map(
           ({ name, code, description, discount, images, price, stock }, i) => (

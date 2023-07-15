@@ -30,12 +30,13 @@ export default function ProductCard({
 
   return (
     <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-card-dark">
-      <div className="pointer-events-none relative h-[210px] max-h-[210px] w-full bg-stone-200 dark:bg-stone-800">
+      <div className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800">
         <img
           src={displayImage[0]}
           className="h-full w-full object-cover object-center"
           alt="Product image"
           loading="lazy"
+          referrerPolicy="no-referrer"
         />
         {/* discount */}
         {discount > 0 && (

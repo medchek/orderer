@@ -44,10 +44,11 @@ export default function SelectedProductDetails({
 
       <div className="relative flex h-32 w-32 min-w-[128px]">
         <img
-          className="relative rounded-xl object-cover"
+          className="relative w-full rounded-xl object-cover"
           src={productImageUrl}
           alt={name}
           loading="lazy"
+          referrerPolicy="no-referrer"
         />
         {/* discount */}
         {discount > 0 && (

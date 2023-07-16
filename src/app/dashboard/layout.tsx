@@ -16,7 +16,7 @@ export default async function Dashboard({ children }: Props) {
   const isAdmin = session?.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
 
   return isAdmin ? (
-    <main id="dashboard" className="flex h-screen w-screen">
+    <main id="dashboard" className="flex h-screen w-screen overflow-x-hidden">
       <DashboardNav />
       <DashboardContent>
         {/* TOOLS */}

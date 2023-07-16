@@ -1,4 +1,5 @@
 import { STATUS_OK } from "@/lib/constants";
+import { PromiseStatus } from "@/types/api";
 import { StateCreator } from "zustand";
 export interface Product {
   name: string;
@@ -11,7 +12,6 @@ export interface Product {
   images: { id: string }[];
 }
 
-type PromiseStatus = "init" | "fetching" | "success" | "error"
 
 export interface ProductSlice {
   selectedProducts: Product[];

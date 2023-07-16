@@ -39,7 +39,7 @@ export default function DashboardProductsDisplay() {
       </p>
       <button
         type="button"
-        className="h-10 w-28 rounded-lg  font-semibold text-red-500 transition-colors hover:bg-red-500 hover:text-red-50 focus:bg-red-800"
+        className="h-10 w-28 rounded-lg  font-semibold text-red-500 transition-colors hover:bg-red-800 hover:text-red-50 focus:bg-red-950 focus:text-white"
         onClick={fetchProducts}
       >
         Réessayer

@@ -15,10 +15,10 @@ export default function DashboardDeleteConfirm({
   productCode,
 }: Props) {
   const { showSnackbar, deleteProduct: removeProductByCode } = useStore();
-  const [isSubbmitting, setIsSubbmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleDeleteProduct = async () => {
     if (!productCode) return;
-    setIsSubbmitting(true);
+    setIsSubmitting(true);
     try {
       const response = await fetch(`/api/products/${productCode}`, {
         method: "DELETE",
@@ -39,7 +39,7 @@ export default function DashboardDeleteConfirm({
         "error"
       );
     } finally {
-      setIsSubbmitting(false);
+      setIsSubmitting(false);
     }
   };
   return (
@@ -69,9 +69,9 @@ export default function DashboardDeleteConfirm({
           className="h-10 w-36 rounded-md bg-red-600 font-bold text-white transition-colors hover:bg-red-500 focus:bg-red-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
           onClick={handleDeleteProduct}
           // disabled
-          disabled={isSubbmitting}
+          disabled={isSubmitting}
         >
-          {isSubbmitting ? (
+          {isSubmitting ? (
             <Loader className="h-6 w-6" />
           ) : (
             <span>Supprimer</span>

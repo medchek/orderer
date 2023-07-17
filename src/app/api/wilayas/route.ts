@@ -1,14 +1,41 @@
-import { NextResponse } from "next/server";
+import { apiErrorResponse } from './../../../lib/utils';
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/db";
 import { cache } from "@/lib/cache";
+import { isAdmin as isAdministrator } from "../auth/[...nextauth]/route";
+import { STATUS_BAD_REQUEST, STATUS_OK, STATUS_UNAUTHORIZED } from "@/lib/constants";
+import { PatchShippingPricesRequestPayload } from '@/types/api';
+import Joi from 'joi';
 // TODO: Implement Rate limiting for all API routes
+
 export async function GET() {
+
+  const isAdmin = await isAdministrator()
+
   try {
     // get cached results
     const cachedWilayas = cache.get("wilayas");
     const ttl =
       process.env.NODE_ENV === "production" ? 120 * (60 * 1000) : 1000 * 60;
-
+    // include the availability status when sending it to the admin
+    if (isAdmin) {
+      const wilayasForAdmin = await prisma.wilaya.findMany({
+        select: {
+          name: true,
+          code: true,
+          homePrice: true,
+          officePrice: true,
+          arName: true,
+          available: true,
+        },
+        orderBy: {
+          code: "asc"
+        }
+      });
+      return NextResponse.json(wilayasForAdmin, { status: STATUS_OK });
+    }
+    // For regular users
+    // TODO: RATE LIMIT
     if (cachedWilayas === undefined) {
       // if there are no cached resuts, search the db
       const wilayas = await prisma.wilaya.findMany({
@@ -20,22 +47,80 @@ export async function GET() {
           arName: true,
         },
         where: { available: true },
+        orderBy: {
+          code: "asc"
+        }
       });
       // then save the data in the cache
       cache.set("wilayas", wilayas, { ttl });
       await prisma.$disconnect();
-      return NextResponse.json(wilayas);
+      return NextResponse.json(wilayas, { status: STATUS_OK });
     } else {
       // else return cached data
-      return NextResponse.json(cachedWilayas);
+      return NextResponse.json(cachedWilayas, { status: STATUS_OK });
     }
   } catch (e) {
-    console.error(e);
-    return NextResponse.json("Error getting wilayas", { status: 500 });
+    console.error("Error fetching wilayas:", e);
+    return apiErrorResponse("Error getting wilayas");
   }
 }
 
-async function PATCH() {
+export async function PATCH(req: NextRequest) {
   // TODO: Delete cache when updated
-  cache.delete("wilayas");
+
+  const isAdmin = await isAdministrator()
+  if (!isAdmin) {
+    return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED)
+  }
+  try {
+    const body: PatchShippingPricesRequestPayload = await req.json();
+
+    const schema = Joi.object<PatchShippingPricesRequestPayload>({
+      wilayas: Joi.array().min(1).max(58).items(Joi.number().required().min(1).max(58)).required(),
+      homePrice: Joi.number().min(0).positive().precision(2),
+      officePrice: Joi.number().min(0).positive().precision(2),
+      available: Joi.boolean()
+    })
+
+    const data = schema.validate(body);
+
+    if (!data.value || data.error) {
+      console.error("Error validating patch wilaya data", data.error)
+      return apiErrorResponse("Invalid request", STATUS_BAD_REQUEST);
+    }
+
+    const { wilayas, available, homePrice, officePrice } = data.value
+    console.log("updating wilya with values", data.value)
+    /**
+     * todo: before updateing, and if the user wants to make a wilaya unavailable, 
+     * todo: check if at least one wilaya wil still be available for shipping
+     */
+    // if the user requests to make a wilaya unavailable
+    // if (available === false) {
+
+    // }
+
+    await prisma.wilaya.updateMany({
+      where: {
+        code: {
+          in: wilayas
+        },
+      },
+      data: {
+        available,
+        homePrice,
+        officePrice,
+      }
+    })
+
+
+    console.log("successfully updated wilaya")
+    // delete cache when request is valid
+    cache.delete("wilayas");
+    return NextResponse.json("ok", { status: STATUS_OK })
+  } catch (error) {
+    return apiErrorResponse("Error updating wilaya shipping prices")
+
+  }
+
 }

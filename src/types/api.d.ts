@@ -1,3 +1,6 @@
+export type PromiseStatus = "init" | "fetching" | "success" | "error"
+
+
 /**
  * Successful response payload for api/images/ POST request
  */
@@ -42,3 +45,10 @@ export interface PatchProductBodyPayload {
   };
 }
 export interface PatchProductSuccessResponsePayload extends PostProductSuccessResponsePayload { }
+
+export interface PatchShippingPricesRequestPayload {
+  homePrice?: number;
+  officePrice?: number;
+  available?: boolean;
+  wilayas: number[];
+}

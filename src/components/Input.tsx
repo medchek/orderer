@@ -5,8 +5,8 @@ import { AddProductFormValues } from "./dashboard/DashboardAddProduct";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  name: keyof AddProductFormValues;
-  register?: UseFormRegister<AddProductFormValues>;
+  name: string;
+  register?: UseFormRegister<any>;
   registerRules?: RegisterOptions;
   error?: string;
   id?: string;

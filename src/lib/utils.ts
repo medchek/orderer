@@ -1,8 +1,6 @@
-import { NextApiResponse } from 'next';
 import { customAlphabet } from "nanoid";
-import { Session, getServerSession } from "next-auth";
 import { NextResponse } from 'next/server';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import type { JSX } from 'react';
 // import { prisma } from "../../prisma/db";
 
 const randId = (max: number = 1000) => Math.ceil(Math.random() * max);
@@ -18,6 +16,10 @@ export const randInputId = (prefix: string = "input") =>
 export const trucateString = (str: string, max: number): string => {
   return str.length <= max ? str : str.slice(0, max) + "...";
 };
+
+export const randomNumber = (max: number, min: number) => {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 /**
  * Generates a unique random Id based on the the given length
@@ -55,7 +57,7 @@ export const toNumber = (n: string) => {
 /**
  * Converts a number string to a number
  * @param n The string number
- * @returns returns the converted number, if a wrrong number is supplied or "0" returns null
+ * @returns returns the converted number, if a wrong number is supplied or "0" returns null
  */
 export const toNumberOrNull = (n: string): number | null => {
   const converted = parseInt(n.trim());
@@ -86,9 +88,9 @@ export const toNullIfEmptyString = (
 
 
 /**
- * Sends a structured json response to the client
- * @param message the error message
- * @param status the error http status code
+ * Sends a structured json response to the client.
+ * @param message the error message - default: Internal server error
+ * @param status the error http status code- default: 500
  * @returns NextResponse json response
  */
 export const apiErrorResponse = (message?: string, status?: number) => {

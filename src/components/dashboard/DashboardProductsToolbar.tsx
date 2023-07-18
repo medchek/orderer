@@ -13,9 +13,10 @@ export const DashboardProductsToolbar = () => {
 
   return (
     <div id="dashboard-tools" className="h-14 min-h-[3.5rem]">
+      {/* old btn colors dark:bg-card-dark dark:hover:bg-[#242436] dark:focus:bg-[#0c0c13] */}
       <button
         type="button"
-        className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors dark:bg-card-dark dark:hover:bg-[#242436] dark:focus:bg-[#0c0c13]"
+        className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700"
         onClick={() => setIsAddProductOpen(true)}
       >
         <MdAdd className="h-6 w-6" /> Ajouter un Produit

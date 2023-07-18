@@ -1,14 +1,14 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
 import { useStore } from "@/store";
-import Loader from "../Loader";
-import ProductCard from "../ProductCard";
+import Loader from "@/components/Loader";
+import ProductCard from "../../ProductCard";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import DashboardUpdateProduct from "./DashboardUpdateProduct";
-import ModalLoader from "../ModalLoader";
-import ProductCardLoader from "../ProductCardLoader";
+import ModalLoader from "@/components/ModalLoader";
+import ProductCardLoader from "@/components/ProductCardLoader";
 const DashboardDeleteConfirm = React.lazy(
-  () => import("./DashboardDeleteConfirm")
+  () => import("../DashboardDeleteConfirm")
 );
 
 export default function DashboardProductsDisplay() {

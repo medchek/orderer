@@ -1,7 +1,7 @@
 // import AuthProvider from "@/components/AuthProvider";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import DashboardProductDisplay from "@/components/dashboard/DashboardProductsDisplay";
-import { DashboardProductsToolbar } from "@/components/dashboard/DashboardProductsToolbar";
+import DashboardProductDisplay from "@/components/dashboard/products/DashboardProductsDisplay";
+import { DashboardProductsToolbar } from "@/components/dashboard/products/DashboardProductsToolbar";
 import React from "react";
 
 type Props = {};

@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useRef, useState } from "react";
-import Modal from "../Modal";
-import Input from "../Input";
+import Modal from "../../Modal";
+import Input from "../../Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TbPhotoPlus } from "react-icons/tb";
-import Textarea from "../Textarea";
+import Textarea from "../../Textarea";
 import { addProductValidators } from "@/lib/formValidators";
 import DashboardPreviewUploadedProduct from "./DashboardPreviewUploadedProduct";
 import { FileMetaData, UploadStatus } from "@/types/components";
@@ -18,7 +18,7 @@ import {
   PostProductSuccessResponsePayload,
 } from "@/types/api";
 import { toNumber, toNumberOrNull } from "@/lib/utils";
-import Loader from "../Loader";
+import Loader from "../../Loader";
 import { useStore } from "@/store";
 
 interface Props {

@@ -1,7 +1,7 @@
 import { randInputId } from "@/lib/utils";
 import React, { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
-import { AddProductFormValues } from "./dashboard/DashboardAddProduct";
+import { AddProductFormValues } from "./dashboard/products/DashboardAddProduct";
 
 interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;

@@ -4,7 +4,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardUpdateShippingPrices, {
   MultipleWilayaSelection,
   SelectedWilaya,
-} from "@/components/dashboard/DashboardUpdateShippingPrices";
+} from "@/components/dashboard/wilayas/DashboardUpdateShippingPrices";
 import { useStore } from "@/store";
 import { WilayaWithAvailability } from "@/store/wilayaSlice";
 import React, { ChangeEventHandler, useEffect, useState } from "react";
@@ -230,6 +230,7 @@ export default function ShippingPrices({}: Props) {
           <p className="w-auto ">Actions</p>
         </div>
         <div
+          id="table-body"
           className={`flex w-full grow flex-col gap-2   dark:[color-scheme:dark] ${
             wilayaFetchStatus === "success"
               ? "overflow-y-auto pr-2"

@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Modal from "../Modal";
-import Input from "../Input";
+import Modal from "../../Modal";
+import Input from "../../Input";
 import { WilayaWithAvailability } from "@/store/wilayaSlice";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toNumber } from "@/lib/utils";
 import { useStore } from "@/store";
 import { PatchShippingPricesRequestPayload } from "@/types/api";
 
-import Loader from "../Loader";
+import Loader from "../../Loader";
 import { STATUS_OK } from "@/lib/constants";
 
 export type MultipleWilayaSelection = {

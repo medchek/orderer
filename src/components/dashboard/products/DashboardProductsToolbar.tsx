@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { MdAdd } from "react-icons/md";
 import dynamic from "next/dynamic";
-import ModalLoader from "../ModalLoader";
+import ModalLoader from "../../ModalLoader";
 
 const DashboardAddProduct = dynamic(() => import("./DashboardAddProduct"), {
   loading: () => <ModalLoader />,

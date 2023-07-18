@@ -1,9 +1,9 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import Modal from "../Modal";
-import Input from "../Input";
+import Modal from "@/components/Modal";
+import Input from "@/components/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { TbPhotoPlus } from "react-icons/tb";
-import Textarea from "../Textarea";
+import Textarea from "@/components/Textarea";
 import { addProductValidators } from "@/lib/formValidators";
 import DashboardPreviewUploadedProduct from "./DashboardPreviewUploadedProduct";
 import { FileMetaData, UploadStatus } from "@/types/components";
@@ -20,7 +20,7 @@ import {
   PatchProductSuccessResponsePayload,
 } from "@/types/api";
 import { getImageDirectUrl, toNumber, toNumberOrNull } from "@/lib/utils";
-import Loader from "../Loader";
+import Loader from "@/components/Loader";
 import { useStore } from "@/store";
 
 import { diff } from "fast-array-diff";
@@ -320,8 +320,6 @@ export default function DashboardUpdateProduct({
     } finally {
       setIsFormSubmitting(false);
     }
-
-    console.log("submitting");
   };
 
   return (

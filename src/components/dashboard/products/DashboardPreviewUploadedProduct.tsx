@@ -1,6 +1,6 @@
 import React from "react";
 import { MdClear } from "react-icons/md";
-import Loader from "../Loader";
+import Loader from "@/components/Loader";
 import { TbRefresh } from "react-icons/tb";
 import { UploadStatus } from "@/types/components";
 

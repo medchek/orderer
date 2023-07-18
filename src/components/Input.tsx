@@ -1,7 +1,6 @@
 import { randInputId } from "@/lib/utils";
 import React, { InputHTMLAttributes, forwardRef } from "react";
 import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
-import { AddProductFormValues } from "./dashboard/DashboardAddProduct";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;

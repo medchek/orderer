@@ -6,6 +6,7 @@ import ProductCard from "../ProductCard";
 import { MdDeleteOutline, MdEdit } from "react-icons/md";
 import DashboardUpdateProduct from "./DashboardUpdateProduct";
 import ModalLoader from "../ModalLoader";
+import ProductCardLoader from "../ProductCardLoader";
 const DashboardDeleteConfirm = React.lazy(
   () => import("./DashboardDeleteConfirm")
 );
@@ -28,10 +29,19 @@ export default function DashboardProductsDisplay() {
     }
   }, []);
 
-  return productsFetchStatus === "fetching" ? (
-    <div className="flex w-full grow items-center justify-center">
-      <Loader className="h-8 w-8" />
-    </div>
+  return productsFetchStatus === "fetching" ||
+    productsFetchStatus === "init" ? (
+    // <div className="flex w-full grow items-center justify-center">
+    //   <Loader className="h-8 w-8" />
+    // </div>
+    <section
+      id="product-display"
+      className="mr-6 grid w-full grow gap-5 overflow-hidden pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
+    >
+      {Array.from({ length: 8 }, (_, i) => (
+        <ProductCardLoader key={i} />
+      ))}
+    </section>
   ) : productsFetchStatus === "error" ? (
     <div className="flex w-full grow flex-col items-center gap-2">
       <p className="mt-2 text-red-500">

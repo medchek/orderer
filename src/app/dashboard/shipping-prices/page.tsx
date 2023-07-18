@@ -7,17 +7,20 @@ import DashboardUpdateShippingPrices, {
 } from "@/components/dashboard/DashboardUpdateShippingPrices";
 import { useStore } from "@/store";
 import { WilayaWithAvailability } from "@/store/wilayaSlice";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEventHandler, useEffect, useState } from "react";
 import { MdEdit, MdSearch } from "react-icons/md";
+import { useDebounce } from "usehooks-ts";
 
 type Props = {};
 
 export default function ShippingPrices({}: Props) {
   const {
-    wilayas,
+    wilayas: storeWilayas,
     wilayaFetchStatus,
     fetchPublicWilayas: fetchWilayas,
+    getFilteredWilayas,
   } = useStore();
+  const [wilayas, setWilayas] = useState<WilayaWithAvailability[]>([]);
 
   const [selectedWilayasList, setSelectedWilayasList] =
     useState<MultipleWilayaSelection>([]);
@@ -53,10 +56,14 @@ export default function ShippingPrices({}: Props) {
     setIsModalOpen(true);
   };
 
+  /**
+   * Creates the logic to be able to select wilayas
+   */
   useEffect(() => {
     if (wilayaFetchStatus !== "success") {
       fetchWilayas().then(({ status, wilayas }) => {
         if (status === "success") {
+          setWilayas(wilayas as WilayaWithAvailability[]);
           setSelectedWilayasList(
             wilayas.map(({ code, available }, index) => ({
               code,
@@ -70,7 +77,7 @@ export default function ShippingPrices({}: Props) {
     } else {
       // if the wilayas are already present, just populate the selected state
       setSelectedWilayasList(
-        wilayas.map(({ code, available }, index) => ({
+        storeWilayas.map(({ code, available }, index) => ({
           code,
           selected: false,
           available: !!available,
@@ -97,44 +104,70 @@ export default function ShippingPrices({}: Props) {
     setSelectedWilayasList(selectedWilayaCopy);
   };
 
-  const wilayaList = (wilayas as WilayaWithAvailability[]).map(
-    ({ name, code, available, homePrice, officePrice }, idx) => (
-      <div
-        key={code}
-        className="flex h-12 min-h-[3rem] w-full items-center rounded-lg text-sm text-white transition-colors hover:bg-stone-600/10 [&>td]:pr-20 [&>td]:text-left"
-      >
-        <div className="flex w-20 items-center pl-4">
-          <input
-            type="checkbox"
-            className="h-4 w-4"
-            checked={!!selectedWilayasList[idx]?.selected}
-            onChange={() => handleSelectWilaya(idx)}
-          />
-        </div>
-        <p className="w-[150px]">{code}</p>
-        <p className="w-[200px]">{name}</p>
-        <p className="w-[270px]">{homePrice}DA</p>
-        <p className="w-[270px]">{officePrice}DA</p>
-        <p
-          className={`w-[170px] ${
-            available ? "text-secondary" : "text-stone-400"
-          }`}
-        >
-          {available ? "Disponible" : "Non disponible"}
+  const [filterTerm, setFilterTerm] = useState("");
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value.trim().toLowerCase();
+    setFilterTerm(searchTerm);
+  };
+
+  useEffect(() => {
+    if (storeWilayas.length) {
+      console.log("changed!");
+      const filteredWilayas = getFilteredWilayas(
+        filterTerm
+      ) as WilayaWithAvailability[];
+      setWilayas(filteredWilayas);
+    }
+  }, [filterTerm, storeWilayas]);
+
+  const wilayaList = () => {
+    if (!wilayas.length) {
+      return (
+        <p className="flex h-12 w-full items-center justify-center text-stone-400">
+          Aucune wilaya ne corresponds à votre recherche
         </p>
-        <div className="w-auto grow">
-          <button
-            type="button"
-            title="Modifier les prix de livraisons"
-            className="h-8 w-8 rounded-lg transition-colors dark:hover:bg-stone-800 dark:focus:bg-stone-900/50"
-            onClick={() => openModal(idx)}
+      );
+    } else
+      return wilayas.map(
+        ({ name, code, available, homePrice, officePrice }, idx) => (
+          <div
+            key={code}
+            className="flex h-12 min-h-[3rem] w-full items-center gap-1 rounded-lg text-sm text-white transition-colors hover:bg-stone-600/10 [&>td]:pr-20 [&>td]:text-left"
           >
-            <MdEdit className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-    )
-  );
+            <div className="flex w-14 items-center pl-4 2xl:w-20">
+              <input
+                type="checkbox"
+                className="h-4 w-4"
+                checked={!!selectedWilayasList[idx]?.selected}
+                onChange={() => handleSelectWilaya(idx)}
+              />
+            </div>
+            <p className="w-20 2xl:w-32">{code}</p>
+            <p className="w-44 2xl:w-44">{name}</p>
+            <p className="w-48 xl:w-64">{homePrice}DA</p>
+            <p className="w-48 xl:w-64">{officePrice}DA</p>
+            <p
+              className={`w-28 2xl:w-36 ${
+                available ? "text-secondary" : "text-red-500"
+              }`}
+            >
+              {available ? "Disponible" : "Non disponible"}
+            </p>
+            <div className="w-auto grow">
+              <button
+                type="button"
+                title="Modifier les prix de livraisons"
+                className="h-8 w-8 rounded-lg transition-colors dark:hover:bg-stone-800 dark:focus:bg-stone-900/50"
+                onClick={() => openModal(idx)}
+              >
+                <MdEdit className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        )
+      );
+  };
 
   return (
     <div
@@ -166,6 +199,7 @@ export default function ShippingPrices({}: Props) {
             type="search"
             className="h-full w-full rounded-lg bg-[#ECECEC] px-4  pl-10 pr-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-white dark:[color-scheme:dark]"
             placeholder="Chercher une wilaya"
+            onChange={handleSearchInputChange}
           />
         </div>
       </section>
@@ -177,9 +211,9 @@ export default function ShippingPrices({}: Props) {
       >
         <div
           id="table-header"
-          className="flex h-14 min-h-[3.5rem] w-full items-center font-semibold text-stone-500 dark:[color-scheme:dark] [&>p]:text-left "
+          className="flex h-14 min-h-[3.5rem] w-full items-center gap-1 text-sm font-semibold text-stone-500 dark:[color-scheme:dark] 2xl:text-base  [&>p]:text-left"
         >
-          <div className="flex w-20 items-center pl-4">
+          <div className="flex w-14 items-center pl-4 2xl:w-20">
             <input
               id="select-all-checkbox"
               type="checkbox"
@@ -188,11 +222,11 @@ export default function ShippingPrices({}: Props) {
               disabled={wilayaFetchStatus !== "success"}
             />
           </div>
-          <p className="w-[150px]">N° Wilaya</p>
-          <p className="w-[200px]">Nom</p>
-          <p className="w-[270px]">Prix livraison à domicile</p>
-          <p className="w-[270px]">Prix livraison au bureau</p>
-          <p className="w-[170px]">Disponibilité</p>
+          <p className="w-20 2xl:w-32">N° Wilaya</p>
+          <p className="w-44 2xl:w-44">Nom</p>
+          <p className="w-48 xl:w-64">Prix livraison à domicile</p>
+          <p className="w-48 xl:w-64">Prix livraison au bureau</p>
+          <p className="w-28 2xl:w-36">Disponibilité</p>
           <p className="w-auto ">Actions</p>
         </div>
         <div
@@ -224,7 +258,7 @@ export default function ShippingPrices({}: Props) {
               </button>
             </div>
           )}
-          {wilayaFetchStatus === "success" && wilayaList}
+          {wilayaFetchStatus === "success" && wilayaList()}
         </div>
       </section>
       {isModalOpen && (

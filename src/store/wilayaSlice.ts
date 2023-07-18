@@ -30,9 +30,10 @@ export interface WilayaSlice {
   setSelectedWilaya: (selectedWilaya: Wilaya) => void;
   fetchPublicWilayas: () => Promise<{ status: PromiseStatus, wilayas: Wilaya[] }>;
   updateWilaya: (data: { homePrice?: number, officePrice?: number, available?: boolean, index: number }) => void;
+  getFilteredWilayas: (searchTerm: string) => Wilaya[]
 }
 
-export const uiSlice: StateCreator<WilayaSlice> = (set) => ({
+export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
   wilayas: [],
   selectedWilaya: null,
   isFetchingWilayas: false,
@@ -66,5 +67,26 @@ export const uiSlice: StateCreator<WilayaSlice> = (set) => ({
       wilayasCopy[index] = Object.assign(wilayasCopy[index], data);
       return { wilayas: wilayasCopy }
     })
+  },
+  getFilteredWilayas: (term: string) => {
+    console.log("running get filter")
+    const searchTerm = term.trim().toLowerCase();
+    const wilayas = [...get().wilayas]
+
+    if (!searchTerm.length) {
+      // only if no filter was applied before
+      return wilayas;
+    } else {
+      const isWilayaCode = /^[1-9][0-9]?$/g.test(searchTerm);
+
+      return wilayas.filter(({ code, name }) => {
+        if (isWilayaCode) {
+          return code === parseInt(searchTerm);
+        } else {
+          return name.toLocaleLowerCase().includes(searchTerm);
+        }
+      })
+
+    }
   }
 });

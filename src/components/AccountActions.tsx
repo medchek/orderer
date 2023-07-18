@@ -14,11 +14,17 @@ export default function AccountActions({ className }: Props) {
   const { data, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
-  const ref = useRef(null);
-  const handleClickOutside = () => {
-    setIsOpen(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      buttonRef.current !== null &&
+      !buttonRef.current.contains(e.target as Node)
+    ) {
+      setIsOpen(false);
+    }
   };
-  useOnClickOutside(ref, handleClickOutside);
+  useOnClickOutside(menuRef, handleClickOutside);
 
   const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -51,6 +57,7 @@ export default function AccountActions({ className }: Props) {
           className="h-11 w-11 overflow-hidden rounded-full dark:bg-card-dark dark:hover:bg-[#262638]"
           onClick={handleOpenMenu}
           disabled={status !== "authenticated"}
+          ref={buttonRef}
         >
           <img
             src={data?.user?.image!}
@@ -74,7 +81,7 @@ export default function AccountActions({ className }: Props) {
       {isOpen && (
         <div
           className="absolute right-0 mt-2 w-48 rounded-lg bg-card-dark p-2 text-white shadow-lg"
-          ref={ref}
+          ref={menuRef}
         >
           <button
             type="button"

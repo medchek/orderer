@@ -11,7 +11,7 @@ export default function DashboardHeader({ label }: Props) {
       id="dashboard-title"
       className="flex h-14 min-h-[3.5rem] w-full justify-between pr-6"
     >
-      <h1 className="text-2xl font-bold dark:text-white">{label}</h1>
+      <h1 className="text-xl font-bold dark:text-white">{label}</h1>
       <AccountActions />
     </div>
   );

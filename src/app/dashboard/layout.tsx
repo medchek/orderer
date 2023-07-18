@@ -11,7 +11,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-export default async function Dashboard({ children }: Props) {
+export default async function DashboardLayout({ children }: Props) {
   const session = await getServerSession(authOptions);
   const isAdmin = session?.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
 

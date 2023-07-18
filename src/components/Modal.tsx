@@ -10,18 +10,25 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   closeOnClickOutside?: boolean;
   centerModalContent?: boolean;
   hideHeader?: boolean;
+  preventClose?: boolean;
 }
 
 export default function Modal({
   children,
-  closeModal,
+  closeModal: closeModalPropFn,
   label,
   closeOnClickOutside,
   centerModalContent,
   hideHeader,
+  preventClose,
   ...props
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
+
+  const closeModal = () => {
+    if (!preventClose) closeModalPropFn();
+  };
+
   useEffect(() => {
     const handleEscPress = (e: KeyboardEvent) => {
       if (e.code === "Escape") closeModal();
@@ -63,7 +70,8 @@ export default function Modal({
             <h1 className="text-xl font-semibold dark:text-white">{label}</h1>
             <button
               onClick={closeModal}
-              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] dark:focus:bg-white/10"
+              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] disabled:cursor-not-allowed dark:focus:bg-white/10"
+              disabled={preventClose}
             >
               <MdClear className="h-6 w-6 dark:text-gray-500" />
             </button>

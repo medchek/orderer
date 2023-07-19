@@ -68,11 +68,11 @@ export async function PATCH(
 
     const schema = Joi.object<PatchProductBodyPayload>({
       name: Joi.string().min(2).max(150),
-      price: Joi.number().positive().min(1).precision(2).max(1000000000000),
+      price: Joi.number().strict().positive().min(1).precision(2).max(1000000000000),
       description: Joi.string().allow(""),
-      stock: Joi.number().positive().precision(0).min(1).allow(null),
-      categoryId: Joi.number().positive().precision(0).allow(null),
-      discount: Joi.number().positive().precision(0).allow(0).min(0).max(100),
+      stock: Joi.number().strict().positive().precision(0).min(1).allow(null),
+      categoryId: Joi.number().strict().positive().precision(0).allow(null),
+      discount: Joi.number().strict().positive().precision(0).allow(0).min(0).max(100),
       images: Joi.object({
         added: Joi.array()
           .min(0)

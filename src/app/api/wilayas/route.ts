@@ -76,9 +76,9 @@ export async function PATCH(req: NextRequest) {
     const body: PatchShippingPricesRequestPayload = await req.json();
 
     const schema = Joi.object<PatchShippingPricesRequestPayload>({
-      wilayas: Joi.array().min(1).max(58).items(Joi.number().required().min(1).max(58)).required(),
-      homePrice: Joi.number().min(0).positive().precision(2),
-      officePrice: Joi.number().min(0).positive().precision(2),
+      wilayas: Joi.array().min(1).max(58).items(Joi.number().strict().required().min(1).max(58)).required(),
+      homePrice: Joi.number().strict().min(0).positive().precision(2),
+      officePrice: Joi.number().strict().min(0).positive().precision(2),
       available: Joi.boolean().strict()
     })
 

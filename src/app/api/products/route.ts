@@ -56,11 +56,11 @@ export async function POST(req: NextRequest) {
 
     const schema = Joi.object<PostProductBodyPayload>({
       name: Joi.string().min(2).max(150).required(),
-      price: Joi.number().positive().precision(2).min(1).max(1000000000000).required(),
+      price: Joi.number().strict().strict().positive().precision(2).min(1).max(1000000000000).required(),
       description: Joi.string().allow(""),
-      stock: Joi.number().positive().min(1).precision(0).allow(null),
-      categoryId: Joi.number().positive().precision(0).allow(null),
-      discount: Joi.number().positive().allow(0).min(0).max(100).precision(0),
+      stock: Joi.number().strict().positive().min(1).precision(0).allow(null),
+      categoryId: Joi.number().strict().positive().precision(0).allow(null),
+      discount: Joi.number().strict().positive().allow(0).min(0).max(100).precision(0),
       images: Joi.array()
         .min(1)
         .max(5)

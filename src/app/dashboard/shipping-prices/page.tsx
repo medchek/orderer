@@ -1,15 +1,15 @@
 "use client";
 import Modal from "@/components/Modal";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardUpdateShippingPrices, {
   MultipleWilayaSelection,
   SelectedWilaya,
 } from "@/components/dashboard/wilayas/DashboardUpdateShippingPrices";
 import { useStore } from "@/store";
 import { WilayaWithAvailability } from "@/store/wilayaSlice";
-import React, { ChangeEventHandler, useEffect, useState } from "react";
-import { MdEdit, MdSearch } from "react-icons/md";
-import { useDebounce } from "usehooks-ts";
+import React, { useEffect, useState } from "react";
+import { MdEdit } from "react-icons/md";
 
 type Props = {};
 
@@ -178,7 +178,7 @@ export default function ShippingPrices({}: Props) {
       {/* ----------------------------------------------------------- */}
       <section
         id="shipping-prices-toolbar"
-        className="mb-3 mr-6 flex items-center justify-between"
+        className="mr-6 flex h-16 min-h-[4rem] items-center justify-between"
       >
         <button
           type="button"
@@ -193,15 +193,10 @@ export default function ShippingPrices({}: Props) {
           <MdEdit className="h-6 w-6" /> Modifier la sélection
         </button>
 
-        <div className="relative flex h-10 w-72 items-center">
-          <MdSearch className="absolute left-2 h-7 w-7 text-stone-400" />
-          <input
-            type="search"
-            className="h-full w-full rounded-lg bg-[#ECECEC] px-4  pl-10 pr-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-white dark:[color-scheme:dark]"
-            placeholder="Chercher une wilaya"
-            onChange={handleSearchInputChange}
-          />
-        </div>
+        <DashboardSearchInput
+          placeholder="Chercher une wilaya"
+          onChange={handleSearchInputChange}
+        />
       </section>
       {/* ----------------------------------------------------------- */}
 

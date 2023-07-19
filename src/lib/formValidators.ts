@@ -1,5 +1,7 @@
 type validationFunction = (value: string) => string | undefined;
 
+export const phoneRegex = /^0[756]{1}[0-9]{8}$/i;
+
 interface OrderFormValidator {
   name: validationFunction;
   surname: validationFunction;
@@ -38,7 +40,7 @@ export const orderFormValidators: OrderFormValidator = {
   phone: (val) => {
     const value = val.trim();
 
-    if (!/^0[756]{1}[0-9]{8}$/.test(value))
+    if (!phoneRegex.test(value))
       return "Le numero de téléphone n'est pas valide";
   },
   email: (val) => {

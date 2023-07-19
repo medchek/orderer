@@ -79,7 +79,7 @@ export async function PATCH(req: NextRequest) {
       wilayas: Joi.array().min(1).max(58).items(Joi.number().required().min(1).max(58)).required(),
       homePrice: Joi.number().min(0).positive().precision(2),
       officePrice: Joi.number().min(0).positive().precision(2),
-      available: Joi.boolean()
+      available: Joi.boolean().strict()
     })
 
     const data = schema.validate(body);

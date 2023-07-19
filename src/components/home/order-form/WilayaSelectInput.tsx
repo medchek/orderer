@@ -11,7 +11,7 @@ interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   id: string;
   name: string;
-  register?: UseFormRegister<FieldValues>;
+  register?: UseFormRegister<any>;
   registerRules?: RegisterOptions;
   error?: string;
 }

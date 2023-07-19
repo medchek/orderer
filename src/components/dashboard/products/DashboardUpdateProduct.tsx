@@ -441,14 +441,13 @@ export default function DashboardUpdateProduct({
 
                 {uploadState.length < 5 && (
                   <label
-                    className="flex aspect-square w-56 cursor-pointer flex-col items-center justify-center rounded-xl transition-all  dark:bg-[#17181D] dark:hover:bg-slate-200/20 dark:focus:bg-white/5"
+                    className="flex aspect-square w-56 cursor-pointer flex-col items-center justify-center rounded-xl text-sm  text-stone-400 transition-all dark:bg-[#17181D] dark:hover:bg-slate-200/20 dark:focus:bg-white/5"
                     title="Ajouter une image"
                     htmlFor="image-upload-input"
                   >
                     <TbPhotoPlus className="h-12 w-12 text-stone-400" />
-                    <p className="text-sm text-stone-400">
-                      {uploadState.length}/5
-                    </p>
+                    <p>Ajouter une image</p>
+                    <p>{uploadState.length}/5</p>
                   </label>
                 )}
                 {/* IMAGE INPUIT */}

@@ -24,11 +24,15 @@ export const randomNumber = (max: number, min: number) => {
 /**
  * Generates a unique random Id based on the the given length
  * @param len the id length (default 20)
+ * @param uppercaseOnly generate a unique id with uppercase and numbers only (default false)
  * @returns unique string id
  */
-export const uniqueId = (len = 20): string => {
-  const alphabet =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+export const uniqueId = (len = 20, uppercaseOnly = false): string => {
+  const initAlphabet =
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+  const alphabet = initAlphabet.concat(!uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : "")
+
   const id = customAlphabet(alphabet, len);
 
   return id();

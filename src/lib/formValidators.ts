@@ -1,6 +1,7 @@
 type validationFunction = (value: string) => string | undefined;
 
 export const phoneRegex = /^0[756]{1}[0-9]{8}$/i;
+export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/gi;
 
 interface OrderFormValidator {
   name: validationFunction;
@@ -47,11 +48,7 @@ export const orderFormValidators: OrderFormValidator = {
     const value = val.trim();
 
     if (value) {
-      if (
-        !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/gi.test(
-          value
-        )
-      ) {
+      if (!emailRegex.test(value)) {
         return "Veuillez entrer un email valide";
       }
     }

@@ -12,8 +12,8 @@ interface FakeProductData {
 }
 
 async function main() {
-  const firstWilaya = await prisma.wilaya.findFirst({ where: { id: 1 } });
-  if (firstWilaya === null) {
+  const firstWilaya = await prisma.wilaya.count({ where: { id: 1 } });
+  if (firstWilaya === 0) {
     await prisma.wilaya.createMany({
       data: wilayaData,
     });

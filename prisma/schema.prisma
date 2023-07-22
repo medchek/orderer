@@ -22,11 +22,12 @@ model Product {
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId Int?      @map("category_id")
 
-  orders Order[]
   images Image[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  OrderProducts OrdersProducts[]
 
   @@map("products")
 }
@@ -52,18 +53,20 @@ model Image {
 }
 
 model Wilaya {
-  id          Int     @id @default(autoincrement())
-  name        String  @db.VarChar(100)
-  arName      String  @map("ar_name") @db.VarChar(100)
-  code        Int     @unique @db.SmallInt
-  available   Boolean @default(true)
-  homePrice   Int     @default(400) @map("home_price")
-  officePrice Int     @default(200) @map("office_price")
+  id              Int     @id @default(autoincrement())
+  name            String  @db.VarChar(100)
+  arName          String  @map("ar_name") @db.VarChar(100)
+  code            Int     @unique @db.SmallInt
+  availableHome   Boolean @default(true)
+  availableOffice Boolean @default(true)
+  homePrice       Int     @default(400) @map("home_price")
+  officePrice     Int     @default(200) @map("office_price")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   orders Order[]
+  User   User[]
 
   @@map("wilayas")
 }
@@ -72,35 +75,52 @@ model Order {
   id Int @id @default(autoincrement())
 
   code   String  @unique @db.VarChar(100)
-  status Status  @default(UNCONFIRMED)
+  status Status? @default(UNCONFIRMED)
   isHome Boolean @default(true) @map("is_home")
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @map("user_id")
 
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int     @map("product_id")
-
   wilaya   Wilaya @relation(fields: [wilayaId], references: [id])
   wilayaId Int    @map("wilaya_id")
+
+  address String? @db.VarChar(255)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
+  orderProducts OrdersProducts[]
+
   @@map("orders")
+}
+
+model OrdersProducts {
+  product     Product @relation(fields: [productCode], references: [code])
+  productCode String  @db.VarChar(25)
+
+  order   Order @relation(fields: [orderId], references: [id])
+  orderId Int
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@id([productCode, orderId])
+  @@map("orders_products")
 }
 
 model User {
   id String @id @default(cuid())
 
   name          String?   @db.VarChar(100)
-  surname       String?   @db.VarChar(100)
+  lastName      String?   @map("last_name") @db.VarChar(100)
   email         String?   @unique @db.VarChar(255)
   address       String?   @db.VarChar(255)
   // TODO: REQUIRE THIS ON NEXTAUTH SIGNIN  CALLBACK
-  phone         Int?      @unique @db.Integer // the ? is only used for oauth convinience. This field should always be added when creating a user other than the admin
+  phone         String?   @unique @db.VarChar(15) // the ? is only used for oauth convinience. This field should always be added when creating a user other than the admin
   emailVerified DateTime?
   image         String?
+
+  wilaya   Wilaya? @relation(references: [id], fields: [wilayaId], onDelete: SetNull)
+  wilayaId Int?    @map("wilaya_id")
 
   orders Order[]
 

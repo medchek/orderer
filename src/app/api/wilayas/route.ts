@@ -26,7 +26,8 @@ export async function GET() {
           homePrice: true,
           officePrice: true,
           arName: true,
-          available: true,
+          availableHome: true,
+          availableOffice: true,
         },
         orderBy: {
           code: "asc"
@@ -45,8 +46,9 @@ export async function GET() {
           homePrice: true,
           officePrice: true,
           arName: true,
+          availableOffice: true,
+          availableHome: true,
         },
-        where: { available: true },
         orderBy: {
           code: "asc"
         }
@@ -79,7 +81,8 @@ export async function PATCH(req: NextRequest) {
       wilayas: Joi.array().min(1).max(58).items(Joi.number().strict().required().min(1).max(58)).required(),
       homePrice: Joi.number().strict().min(0).positive().precision(2),
       officePrice: Joi.number().strict().min(0).positive().precision(2),
-      available: Joi.boolean().strict()
+      availableHome: Joi.boolean().strict(),
+      availableOffice: Joi.boolean().strict()
     })
 
     const data = schema.validate(body);
@@ -89,7 +92,7 @@ export async function PATCH(req: NextRequest) {
       return apiErrorResponse("Invalid request", STATUS_BAD_REQUEST);
     }
 
-    const { wilayas, available, homePrice, officePrice } = data.value
+    const { wilayas, availableHome, availableOffice, homePrice, officePrice } = data.value
     console.log("updating wilya with values", data.value)
     /**
      * todo: before updateing, and if the user wants to make a wilaya unavailable, 
@@ -107,7 +110,8 @@ export async function PATCH(req: NextRequest) {
         },
       },
       data: {
-        available,
+        availableHome,
+        availableOffice,
         homePrice,
         officePrice,
       }

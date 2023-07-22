@@ -49,6 +49,20 @@ export interface PatchProductSuccessResponsePayload extends PostProductSuccessRe
 export interface PatchShippingPricesRequestPayload {
   homePrice?: number;
   officePrice?: number;
-  available?: boolean;
+  availableHome?: boolean;
+  availableOffice?: boolean;
   wilayas: number[];
+}
+
+
+
+export interface PostOrderRequestPayload {
+  phone: string;
+  name?: string;
+  lastName?: string;
+  email?: string;
+  address?: string;
+  isHome: boolean;
+  wilayaId: number;
+  productsCode: string[];
 }

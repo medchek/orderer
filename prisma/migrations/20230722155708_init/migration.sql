@@ -38,7 +38,8 @@ CREATE TABLE "wilayas" (
     "name" VARCHAR(100) NOT NULL,
     "ar_name" VARCHAR(100) NOT NULL,
     "code" SMALLINT NOT NULL,
-    "available" BOOLEAN NOT NULL DEFAULT true,
+    "availableHome" BOOLEAN NOT NULL DEFAULT true,
+    "availableOffice" BOOLEAN NOT NULL DEFAULT true,
     "home_price" INTEGER NOT NULL DEFAULT 400,
     "office_price" INTEGER NOT NULL DEFAULT 200,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -51,11 +52,11 @@ CREATE TABLE "wilayas" (
 CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
     "code" VARCHAR(100) NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'UNCONFIRMED',
+    "status" "Status" DEFAULT 'UNCONFIRMED',
     "is_home" BOOLEAN NOT NULL DEFAULT true,
     "user_id" TEXT NOT NULL,
-    "product_id" INTEGER NOT NULL,
     "wilaya_id" INTEGER NOT NULL,
+    "address" VARCHAR(255),
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -63,15 +64,25 @@ CREATE TABLE "orders" (
 );
 
 -- CreateTable
+CREATE TABLE "orders_products" (
+    "productCode" VARCHAR(25) NOT NULL,
+    "orderId" INTEGER NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "orders_products_pkey" PRIMARY KEY ("productCode","orderId")
+);
+
+-- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" VARCHAR(100),
-    "surname" VARCHAR(100),
+    "last_name" VARCHAR(100),
     "email" VARCHAR(255),
     "address" VARCHAR(255),
-    "phone" INTEGER,
+    "phone" VARCHAR(15),
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
+    "wilaya_id" INTEGER,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -162,10 +173,16 @@ ALTER TABLE "images" ADD CONSTRAINT "images_product_id_fkey" FOREIGN KEY ("produ
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_id_fkey" FOREIGN KEY ("wilaya_id") REFERENCES "wilayas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_id_fkey" FOREIGN KEY ("wilaya_id") REFERENCES "wilayas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_productCode_fkey" FOREIGN KEY ("productCode") REFERENCES "products"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_wilaya_id_fkey" FOREIGN KEY ("wilaya_id") REFERENCES "wilayas"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

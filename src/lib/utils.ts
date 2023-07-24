@@ -107,3 +107,19 @@ export const apiErrorResponse = (message?: string, status?: number) => {
     status: status ?? 500
   })
 }
+
+/**
+ * Adds the French partitive de or d' based on the name
+ * @param name wilaya name
+ * @returns name preceeded by the proper partitive
+ */
+export const addPartitive = (name: string) => {
+  if (name) {
+    const startsWithVowel =
+      /^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ]/.test(name[0]);
+    if (startsWithVowel) {
+      return `d'${name}`;
+    } else
+      return `de ${name}`;
+  };
+}

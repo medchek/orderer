@@ -17,6 +17,8 @@ module.exports = {
         "primary-darker": "#C91414",
         secondary: "#397DFF",
         "card-dark": "#14141e", // "#08080C"
+        dark: "#040404",
+        "input-dark": "#17181D",
       },
     },
   },

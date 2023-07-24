@@ -33,7 +33,7 @@ export default function Input({
         id={inputId}
         {...props}
         {...(register && register(name, registerRules))}
-        className="h-12 rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-white dark:[color-scheme:dark]"
+        className="h-12 rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:text-stone-400 dark:bg-input-dark dark:text-white dark:[color-scheme:dark]"
       />
       <div className="h-5 text-sm text-red-600 dark:text-red-500">
         {error && error}

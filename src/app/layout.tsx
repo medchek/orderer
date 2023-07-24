@@ -17,9 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={`relative ${inter.className} bg-white dark:bg-[#040404]`}
-      >
+      <body className={`relative ${inter.className} dark:bg-dark bg-white`}>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

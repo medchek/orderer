@@ -2,23 +2,25 @@
 import React, { useEffect, useState } from "react";
 import Modal from "../../Modal";
 import Input from "../../Input";
-import { WilayaWithAvailability } from "@/store/wilayaSlice";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { toNumber } from "@/lib/utils";
+import { addPartitive, toNumber } from "@/lib/utils";
 import { useStore } from "@/store";
 import { PatchShippingPricesRequestPayload } from "@/types/api";
 
 import Loader from "../../Loader";
 import { STATUS_OK } from "@/lib/constants";
+import SwitchButton from "@/components/SwitchButton";
+import { Wilaya } from "@/store/wilayaSlice";
 
 export type MultipleWilayaSelection = {
   code: number;
   selected: boolean;
-  available: boolean;
+  availableHome: boolean;
+  availableOffice: boolean;
   index: number;
 }[];
 
-export interface SelectedWilaya extends WilayaWithAvailability {
+export interface SelectedWilaya extends Wilaya {
   index: number;
 }
 
@@ -54,38 +56,36 @@ Props) {
     handleSubmit,
     formState: { errors },
   } = methods;
-  const [isAvailable, setIsAvailable] = useState<boolean>(
-    selectedWilaya === null ? true : selectedWilaya.available
+  const [isAvailableHome, setIsAvailableHome] = useState<boolean>(
+    selectedWilaya === null ? true : selectedWilaya.availableHome
+  );
+  const [isAvailableOffice, setIsAvailableOffice] = useState<boolean>(
+    selectedWilaya === null ? true : selectedWilaya.availableOffice
   );
 
   useEffect(() => {
     if (selectedWilaya) {
-      setIsAvailable(selectedWilaya.available);
+      setIsAvailableHome(selectedWilaya.availableHome);
+      setIsAvailableOffice(selectedWilaya.availableOffice);
     } else {
-      const allAvailable = selectedMultiple.every((w) => w.available === true);
-      const allNotAvailable = selectedMultiple.every(
-        (w) => w.available === false
-      );
-
-      if (allAvailable) {
-        setIsAvailable(true);
-      } else if (allNotAvailable) {
-        setIsAvailable(false);
-      } else {
-        setIsAvailable(true);
-      }
+      // const allAvailable = selectedMultiple.every((w) => w.available === true);
+      // const allNotAvailable = selectedMultiple.every(
+      //   (w) => w.available === false
+      // );
+      // if (allAvailable) {
+      //   setIsAvailable(true);
+      // } else if (allNotAvailable) {
+      //   setIsAvailable(false);
+      // } else {
+      //   setIsAvailable(true);
+      // }
     }
   }, []);
   const displayWilayaName = () => {
     const name = selectedWilaya?.name;
+    // if it's null, then, only a single wilaya is requested to be modified
     if (name) {
-      let wilayaNameDisplay = `de ${name}`;
-      const startsWithVowel =
-        /^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ]/.test(name[0]);
-      if (startsWithVowel) {
-        wilayaNameDisplay = `d'${name}`;
-      }
-      return `de la wilaya ${wilayaNameDisplay}`;
+      return `de la wilaya ${addPartitive(name)}`;
     } else {
       return "des wilayas séléctionnées";
     }
@@ -120,8 +120,11 @@ Props) {
           toNumber(data.officePrice) !== selectedWilaya.officePrice && {
             officePrice: toNumber(data.officePrice),
           }),
-        ...(isAvailable !== selectedWilaya.available && {
-          available: isAvailable,
+        ...(isAvailableHome !== selectedWilaya.availableHome && {
+          availableHome: isAvailableHome,
+        }),
+        ...(isAvailableOffice !== selectedWilaya.availableOffice && {
+          availableOffice: isAvailableOffice,
         }),
       };
 
@@ -139,16 +142,26 @@ Props) {
       const homePrice = rawHomePrice.trim();
       const officePrice = rawOfficePrice.trim();
       // if all the available state isn't the same as when the component got created
-      const isAvailableChanged = selectedMultiple.every(
-        (w) => w.available !== isAvailable
+      const isAvailableHomeChanged = selectedMultiple.every(
+        (w) => w.availableHome !== isAvailableHome
       );
-      if (!homePrice && !officePrice && !isAvailableChanged) {
+      const isAvailableOfficeChanged = selectedMultiple.every(
+        (w) => w.availableOffice !== isAvailableOffice
+      );
+      if (
+        !homePrice &&
+        !officePrice &&
+        !isAvailableHomeChanged &&
+        isAvailableOfficeChanged
+      ) {
         return showSnackbar("Aucune modification n'a été apportée", "default");
       }
       requestBody.wilayas = selectedMultiple.map(({ code }) => code);
       if (homePrice.length) requestBody.homePrice = toNumber(homePrice);
       if (officePrice.length) requestBody.officePrice = toNumber(officePrice);
-      if (isAvailableChanged) requestBody.available = isAvailable;
+      if (isAvailableHomeChanged) requestBody.availableHome = isAvailableHome;
+      if (isAvailableOfficeChanged)
+        requestBody.availableOffice = isAvailableOffice;
 
       console.log("Multiple request body", requestBody);
     }
@@ -188,7 +201,7 @@ Props) {
   return (
     <Modal
       closeModal={closeModal}
-      label="Modifier prix de livraison"
+      label="Prix de livraisons"
       className="flex w-full flex-col rounded-lg  bg-[#F3F3F3] px-6 py-3 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       closeOnClickOutside
       centerModalContent
@@ -201,7 +214,8 @@ Props) {
         })}
       >
         <p className="mb-3 text-sm text-stone-400">
-          Modifier les prix de livraison {displayWilayaName()}.
+          Modifier les prix de livraison et la disponibilité{" "}
+          {displayWilayaName()}.
         </p>
 
         <section className="flex w-full gap-4">
@@ -234,32 +248,37 @@ Props) {
             error={errors["officePrice"]?.message}
           />
         </section>
-        <section className="w-1/2">
-          <div className="mb-1 flex w-full flex-col text-white">
-            <p className="mb-1 text-lg font-semibold dark:text-stone-100">
+        <section className="flex w-full gap-4">
+          <div className="flex w-full flex-col text-white">
+            <p className="text-lg font-semibold dark:text-stone-100">
               Disponibilité
             </p>
-            <div className="flex h-10 items-center justify-between pr-2">
-              <p className="text-sm text-stone-200">
-                Rendre la wilaya disponible ou non disponible pour livraison
+            <div className="flex h-12 items-center justify-between pr-2">
+              <p className="text-sm text-stone-400">
+                Render la wilaya disponible ou non disponible pour livraison à
+                domicile
               </p>
 
-              <button
-                type="button"
-                id="switch"
-                className={`relative flex h-7 w-14 items-center  rounded-full  px-1 ${
-                  isAvailable
-                    ? "justify-end bg-secondary"
-                    : "justify-start bg-stone-700"
-                }`}
-                onClick={() => setIsAvailable(!isAvailable)}
-              >
-                <span
-                  className={`inline-block h-6 w-6 rounded-full  ${
-                    isAvailable ? "bg-white" : "bg-stone-300"
-                  } `}
-                ></span>
-              </button>
+              <SwitchButton
+                isActive={isAvailableHome}
+                onClick={() => setIsAvailableHome(!isAvailableHome)}
+              />
+            </div>
+          </div>
+
+          <div className="flex w-full flex-col text-white">
+            <p className="text-lg font-semibold dark:text-stone-100">
+              Disponibilité
+            </p>
+            <div className="flex h-12 items-center justify-between pr-2">
+              <p className="text-sm text-stone-400">
+                Render la wilaya disponible ou non disponible pour livraison au
+                bureau de livraison
+              </p>
+              <SwitchButton
+                isActive={isAvailableOffice}
+                onClick={() => setIsAvailableOffice(!isAvailableOffice)}
+              />
             </div>
           </div>
         </section>

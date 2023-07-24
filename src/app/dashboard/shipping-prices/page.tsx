@@ -1,5 +1,4 @@
 "use client";
-import Modal from "@/components/Modal";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardUpdateShippingPrices, {
@@ -7,7 +6,7 @@ import DashboardUpdateShippingPrices, {
   SelectedWilaya,
 } from "@/components/dashboard/wilayas/DashboardUpdateShippingPrices";
 import { useStore } from "@/store";
-import { WilayaWithAvailability } from "@/store/wilayaSlice";
+import { Wilaya } from "@/store/wilayaSlice";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
@@ -17,10 +16,10 @@ export default function ShippingPrices({}: Props) {
   const {
     wilayas: storeWilayas,
     wilayaFetchStatus,
-    fetchPublicWilayas: fetchWilayas,
+    fetchWilayas,
     getFilteredWilayas,
   } = useStore();
-  const [wilayas, setWilayas] = useState<WilayaWithAvailability[]>([]);
+  const [wilayas, setWilayas] = useState<Wilaya[]>([]);
 
   const [selectedWilayasList, setSelectedWilayasList] =
     useState<MultipleWilayaSelection>([]);
@@ -63,12 +62,13 @@ export default function ShippingPrices({}: Props) {
     if (wilayaFetchStatus !== "success") {
       fetchWilayas().then(({ status, wilayas }) => {
         if (status === "success") {
-          setWilayas(wilayas as WilayaWithAvailability[]);
+          setWilayas(wilayas);
           setSelectedWilayasList(
-            wilayas.map(({ code, available }, index) => ({
+            wilayas.map(({ code, availableHome, availableOffice }, index) => ({
               code,
               selected: false,
-              available: !!available,
+              availableHome,
+              availableOffice,
               index,
             }))
           );
@@ -77,10 +77,11 @@ export default function ShippingPrices({}: Props) {
     } else {
       // if the wilayas are already present, just populate the selected state
       setSelectedWilayasList(
-        storeWilayas.map(({ code, available }, index) => ({
+        storeWilayas.map(({ code, availableHome, availableOffice }, index) => ({
           code,
           selected: false,
-          available: !!available,
+          availableHome,
+          availableOffice,
           index,
         }))
       );
@@ -89,12 +90,15 @@ export default function ShippingPrices({}: Props) {
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedWilayasList(
-      selectedWilayasList.map(({ code, available }, index) => ({
-        code,
-        selected: e.target.checked,
-        available,
-        index,
-      }))
+      selectedWilayasList.map(
+        ({ code, availableHome, availableOffice }, index) => ({
+          code,
+          selected: e.target.checked,
+          availableHome,
+          availableOffice,
+          index,
+        })
+      )
     );
   };
 
@@ -114,9 +118,7 @@ export default function ShippingPrices({}: Props) {
   useEffect(() => {
     if (storeWilayas.length) {
       console.log("changed!");
-      const filteredWilayas = getFilteredWilayas(
-        filterTerm
-      ) as WilayaWithAvailability[];
+      const filteredWilayas = getFilteredWilayas(filterTerm);
       setWilayas(filteredWilayas);
     }
   }, [filterTerm, storeWilayas]);
@@ -124,37 +126,54 @@ export default function ShippingPrices({}: Props) {
   const wilayaList = () => {
     if (!wilayas.length) {
       return (
-        <p className="flex h-12 w-full items-center justify-center text-stone-400">
-          Aucune wilaya ne corresponds à votre recherche
-        </p>
+        <tr className="absolute flex h-14 w-full  items-center justify-center">
+          <td className="absolute w-full text-center align-middle text-stone-400">
+            <p>Aucune wilaya ne corresponds à votre recherche</p>
+          </td>
+        </tr>
       );
     } else
       return wilayas.map(
-        ({ name, code, available, homePrice, officePrice }, idx) => (
-          <div
+        (
+          {
+            name,
+            code,
+            availableHome,
+            availableOffice,
+            homePrice,
+            officePrice,
+          },
+          idx
+        ) => (
+          <tr
             key={code}
-            className="flex h-12 min-h-[3rem] w-full items-center gap-1 rounded-lg text-sm text-white transition-colors hover:bg-stone-600/10 [&>td]:pr-20 [&>td]:text-left"
+            className="h-12 min-h-[3rem] w-full overflow-hidden rounded-lg text-sm text-white transition-colors hover:bg-stone-600/10 [&>td]:pr-6 [&>td]:text-left [&>td]:align-middle"
           >
-            <div className="flex w-14 items-center pl-4 2xl:w-20">
+            <td className="rounded-bl-lg rounded-tl-lg pl-4">
               <input
                 type="checkbox"
                 className="h-4 w-4"
                 checked={!!selectedWilayasList[idx]?.selected}
                 onChange={() => handleSelectWilaya(idx)}
               />
-            </div>
-            <p className="w-20 2xl:w-32">{code}</p>
-            <p className="w-44 2xl:w-44">{name}</p>
-            <p className="w-48 xl:w-64">{homePrice}DA</p>
-            <p className="w-48 xl:w-64">{officePrice}DA</p>
-            <p
-              className={`w-28 2xl:w-36 ${
-                available ? "text-secondary" : "text-red-500"
+            </td>
+            <td>{code}</td>
+            <td>{name}</td>
+            <td>{homePrice}DA</td>
+            <td>{officePrice}DA</td>
+            <td
+              className={`${availableHome ? "text-secondary" : "text-red-500"}`}
+            >
+              {availableHome ? "Disponible" : "Non disponible"}
+            </td>
+            <td
+              className={`${
+                availableOffice ? "text-secondary" : "text-red-500"
               }`}
             >
-              {available ? "Disponible" : "Non disponible"}
-            </p>
-            <div className="w-auto grow">
+              {availableOffice ? "Disponible" : "Non disponible"}
+            </td>
+            <td className="rounded-br-lg rounded-tr-lg">
               <button
                 type="button"
                 title="Modifier les prix de livraisons"
@@ -163,11 +182,43 @@ export default function ShippingPrices({}: Props) {
               >
                 <MdEdit className="h-5 w-5" />
               </button>
-            </div>
-          </div>
+            </td>
+          </tr>
         )
       );
   };
+
+  const loadingSkeleton = Array.from({ length: 14 }, (_, i) => (
+    <tr
+      key={i}
+      className="h-12 min-h-[3rem] w-full animate-pulse [&>td>div]:h-4 [&>td>div]:rounded-md [&>td>div]:bg-stone-800 [&>td]:text-left [&>td]:align-middle"
+    >
+      <td className="rounded-bl-lg rounded-tl-lg pl-4">
+        <div className="h-4 w-4"></div>
+      </td>
+      <td>
+        <div className="h-4 w-10/12"></div>
+      </td>
+      <td>
+        <div className="h-4 w-10/12"></div>
+      </td>
+      <td>
+        <div className="h-4 w-10/12"></div>
+      </td>
+      <td>
+        <div className="h-4 w-10/12"></div>
+      </td>
+      <td>
+        <div className="h-4 w-10/12"></div>
+      </td>
+      <td>
+        <div className="h-4 w-10/12"></div>
+      </td>
+      <td className="rounded-br-lg rounded-tr-lg">
+        <div className="h-4 w-8"></div>
+      </td>
+    </tr>
+  ));
 
   return (
     <div
@@ -188,7 +239,7 @@ export default function ShippingPrices({}: Props) {
             setSelectedWilaya(null);
             setIsModalOpen(true);
           }}
-          disabled={multipleSelected.length < 2}
+          disabled={multipleSelected.length < 1}
         >
           <MdEdit className="h-6 w-6" /> Modifier la sélection
         </button>
@@ -200,62 +251,65 @@ export default function ShippingPrices({}: Props) {
       </section>
       {/* ----------------------------------------------------------- */}
 
-      <section
-        className="flex w-full grow flex-col gap-2 overflow-auto"
-        id="wilaya-display"
-      >
-        <div
-          id="table-header"
-          className="flex h-14 min-h-[3.5rem] w-full items-center gap-1 text-sm font-semibold text-stone-500 dark:[color-scheme:dark] 2xl:text-base  [&>p]:text-left"
-        >
-          <div className="flex w-14 items-center pl-4 2xl:w-20">
-            <input
-              id="select-all-checkbox"
-              type="checkbox"
-              onChange={handleSelectAll}
-              className="h-4 w-4"
-              disabled={wilayaFetchStatus !== "success"}
-            />
-          </div>
-          <p className="w-20 2xl:w-32">N° Wilaya</p>
-          <p className="w-44 2xl:w-44">Nom</p>
-          <p className="w-48 xl:w-64">Prix livraison à domicile</p>
-          <p className="w-48 xl:w-64">Prix livraison au bureau</p>
-          <p className="w-28 2xl:w-36">Disponibilité</p>
-          <p className="w-auto ">Actions</p>
-        </div>
-        <div
-          id="table-body"
-          className={`flex w-full grow flex-col gap-2   dark:[color-scheme:dark] ${
-            wilayaFetchStatus === "success"
-              ? "overflow-y-auto pr-2"
-              : "overflow-hidden pr-6"
-          }`}
-        >
-          {(wilayaFetchStatus === "init" || wilayaFetchStatus === "fetching") &&
-            Array.from({ length: 19 }, (_, i) => (
-              <div
-                key={i}
-                className="h-12 min-h-[3rem] w-full animate-pulse rounded-lg bg-[#19191b] duration-75"
-              ></div>
-            ))}
+      {/* new Body  */}
 
-          {wilayaFetchStatus === "error" && (
-            <div className="flex w-full grow flex-col items-center gap-2">
-              <p className="mt-2 text-red-500">
-                Une érreur est survenu lors de la recherche des wilayas
-              </p>
-              <button
-                type="button"
-                className="h-10 w-28 rounded-lg  font-semibold text-red-500 transition-colors hover:bg-red-800 hover:text-red-50 focus:bg-red-950 focus:text-white"
-                onClick={fetchWilayas}
-              >
-                Réessayer
-              </button>
-            </div>
-          )}
-          {wilayaFetchStatus === "success" && wilayaList()}
-        </div>
+      <section
+        className={`relative h-full w-full overflow-x-hidden pr-2 dark:[color-scheme:dark] ${
+          wilayaFetchStatus === "init" || wilayaFetchStatus === "fetching"
+            ? "overflow-y-hidden"
+            : "overflow-y-auto"
+        }`}
+      >
+        <table className="w-full table-fixed">
+          <thead>
+            <tr className="sticky top-0 z-10 h-20 min-h-[5rem] w-full border-0 border-hidden bg-white align-middle text-sm text-stone-500 dark:bg-dark-background [&>th]:text-left">
+              <th className="w-14 items-center pl-4 2xl:w-20">
+                <input
+                  id="select-all-checkbox"
+                  type="checkbox"
+                  onChange={handleSelectAll}
+                  className="h-4 w-4"
+                  disabled={wilayaFetchStatus !== "success"}
+                />
+              </th>
+              <th className="w-20">#</th>
+              <th className="w-44 2xl:w-44">Nom</th>
+              <th className="w-40" title="Prix de livraison à domicile">
+                Prix à domicile
+              </th>
+              <th className="w-40" title="Prix de livraison au bureau">
+                Prix au bureau
+              </th>
+              <th className="w-48">Disponibilité à domicile</th>
+              <th className="w-48">Disponibilité au bureau</th>
+              <th className="">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="h-full text-sm text-white">
+            {(wilayaFetchStatus === "init" ||
+              wilayaFetchStatus === "fetching") &&
+              loadingSkeleton}
+
+            {wilayaFetchStatus === "success" && wilayaList()}
+
+            {wilayaFetchStatus === "error" && (
+              <tr className="absolute flex w-full flex-col items-center ">
+                <td className="flex flex-col items-center justify-center gap-2">
+                  <p className="mt-2 text-red-500">
+                    Une érreur est survenu lors de la recherche des wilayas
+                  </p>
+                  <button
+                    type="button"
+                    className="h-10 w-28 rounded-lg  font-semibold text-white transition-colors hover:bg-stone-800  focus:bg-stone-900/70 "
+                    onClick={fetchWilayas}
+                  >
+                    Réessayer
+                  </button>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </section>
       {isModalOpen && (
         <DashboardUpdateShippingPrices

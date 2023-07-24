@@ -7,14 +7,39 @@ import { orderFormValidators } from "@/lib/formValidators";
 import { useFormContext } from "react-hook-form";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
+import { addPartitive } from "@/lib/utils";
+import { OrderFormValues } from "./OrderForm";
 
 export default function ShippingTypeSelector() {
-  const { shippingType, setShippingType } = useStore();
-  const { setValue, unregister } = useFormContext();
+  const { shippingType, setShippingType, selectedWilaya } = useStore();
+
+  const {
+    setValue,
+    unregister,
+    register,
+    resetField,
+    setFocus,
+
+    formState: { errors },
+  } = useFormContext<OrderFormValues>();
 
   useEffect(() => {
     setValue("isHome", true);
   }, []);
+
+  useEffect(() => {
+    if (shippingType === SHIPPING_TYPE.OFFICE) {
+      resetField("address");
+      setValue(
+        "address",
+        `Bureau de livraison de la wilaya ${
+          !selectedWilaya ? "sélectionnée" : addPartitive(selectedWilaya.name)
+        }`
+      );
+    } else {
+      resetField("address");
+    }
+  }, [shippingType, selectedWilaya]);
 
   const handleSelectShippingTye = (type: SHIPPING_TYPE) => {
     if (type === shippingType) return;
@@ -28,14 +53,9 @@ export default function ShippingTypeSelector() {
     setShippingType(type);
   };
 
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
-
   return (
-    <div className="w-full space-y-4">
-      <span className="flex w-full flex-col space-y-1">
+    <div className="flex w-full space-x-7">
+      <div className="flex w-1/2 flex-col space-y-1">
         <p className="text-lg font-semibold dark:text-white">
           Type de Livraison
         </p>
@@ -51,8 +71,8 @@ export default function ShippingTypeSelector() {
             onClick={() => handleSelectShippingTye(SHIPPING_TYPE.OFFICE)}
           />
         </div>
-      </span>
-      {shippingType === SHIPPING_TYPE.HOME ? (
+      </div>
+      <div className="w-1/2">
         <Input
           register={register}
           registerRules={{
@@ -70,13 +90,19 @@ export default function ShippingTypeSelector() {
           id="address"
           maxLength={200}
           minLength={10}
+          defaultValue={
+            shippingType === SHIPPING_TYPE.OFFICE
+              ? `Bureau de livraison de la wilaya ${
+                  !selectedWilaya
+                    ? "sélectionnée"
+                    : addPartitive(selectedWilaya.name)
+                }`
+              : undefined
+          }
+          disabled={shippingType === SHIPPING_TYPE.OFFICE}
+          autoComplete={shippingType === SHIPPING_TYPE.OFFICE ? "off" : "on"}
         />
-      ) : (
-        <p className="text-stone-900 dark:text-gray-500">
-          En sélectionnant ce type de livraison vous devez vous déplacer au
-          bureau de livraison de votre wilaya pour récupérer votre commande.{" "}
-        </p>
-      )}
+      </div>
     </div>
   );
 }

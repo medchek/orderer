@@ -26,7 +26,7 @@ export default function WilayaSelectInput({
   ...props
 }: Props) {
   const {
-    fetchPublicWilayas,
+    fetchWilayas,
     wilayas,
     isFetchingWilayas: isFetching,
     shippingType,
@@ -36,7 +36,7 @@ export default function WilayaSelectInput({
   const inputRegister = register && register(name, registerRules);
   useEffect(() => {
     if (wilayas.length === 0) {
-      fetchPublicWilayas().catch((err) => {
+      fetchWilayas().catch((err) => {
         console.log("error fetching wilayas in component", err);
       });
     }
@@ -104,7 +104,7 @@ export default function WilayaSelectInput({
           {...props}
           {...inputRegister}
           id={id}
-          className={`h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-white dark:[color-scheme:dark] ${
+          className={`h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-input-dark dark:text-white dark:[color-scheme:dark] ${
             isFetching && " cursor-not-allowed"
           }`}
           onChange={handleOnChange}

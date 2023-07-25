@@ -7,7 +7,7 @@ type Props = {};
 
 export default function HomeHeader({}: Props) {
   return (
-    <header className="relative mx-10 mb-4 flex h-20 w-full items-center justify-end 2xl:mx-64">
+    <header className="relative mx-10 flex h-20 w-full items-start justify-end pt-2 2xl:mx-64">
       {/* absolute content */}
       <div
         id="header-logo"

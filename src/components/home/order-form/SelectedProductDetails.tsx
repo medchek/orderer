@@ -13,6 +13,8 @@ interface Props {
   productCount: number;
   /** Event triggered when user wants to remove the product from the order. */
   onClear: () => void;
+
+  disabledRemove: boolean;
 }
 
 export default function SelectedProductDetails({
@@ -22,6 +24,7 @@ export default function SelectedProductDetails({
   productCount,
   images,
   discount,
+  disabledRemove,
   onClear,
 }: Props) {
   const discountedPrice =
@@ -30,8 +33,8 @@ export default function SelectedProductDetails({
   const productImageUrl = getImageDirectUrl(images[0].id);
   // old dark bg #121212
   return (
-    <div className="relative flex h-[154px] w-full items-center space-x-3 rounded-2xl bg-[#F4F4F4] px-3 py-2 dark:bg-card-dark">
-      {productCount > 1 && (
+    <div className="relative flex h-[154px] w-full items-center gap-3 rounded-2xl bg-[#F4F4F4] px-3 py-2 dark:bg-input-dark">
+      {productCount > 1 && !disabledRemove && (
         <button
           type="button"
           onClick={onClear}

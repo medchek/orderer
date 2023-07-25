@@ -5,10 +5,21 @@ import Input from "../../Input";
 import WilayaSelectInput from "./WilayaSelectInput";
 import ShippingTypeSelector from "./ShippingTypeSelector";
 
-import { MdChevronRight, MdOutlineShoppingCart } from "react-icons/md";
+import {
+  MdArrowBack,
+  MdChevronRight,
+  MdOutlineShoppingCart,
+} from "react-icons/md";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { orderFormValidators } from "@/lib/formValidators";
 import { useStore } from "@/store";
+import Prices from "./Prices";
+import OrderConfirm from "../OrderConfirm";
+import { useMutation } from "react-query";
+import { postOrder } from "@/lib/clientApiHelpers";
+import { PostOrderRequestPayload } from "@/types/api";
+import { toNumber } from "@/lib/utils";
+import Loader from "@/components/Loader";
 
 export interface OrderFormValues {
   lastname: string;
@@ -22,11 +33,6 @@ export interface OrderFormValues {
 
 type Props = {};
 
-const onFormSubmit: SubmitHandler<OrderFormValues> = async (data, e) => {
-  e?.preventDefault();
-  console.log("submitting");
-  console.log(data);
-};
 export default function OrderForm({}: Props) {
   const methods = useForm<OrderFormValues>();
 
@@ -36,12 +42,55 @@ export default function OrderForm({}: Props) {
     formState: { errors },
   } = methods;
 
-  const { selectedProducts, selectedWilaya } = useStore();
+  const { selectedProducts, selectedWilaya, setIsConfirming, isConfirming } =
+    useStore();
 
   const isDisabledSubmit =
     selectedProducts.length === 0 || selectedWilaya === null;
 
+  const [confirmData, setConfirmData] = useState<OrderFormValues | null>(null);
+
   const [showOptionalFields, setShowOptionalFields] = useState(false);
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (data: PostOrderRequestPayload) => {
+      return postOrder(data);
+    },
+  });
+
+  const onFormSubmit: SubmitHandler<OrderFormValues> = async (data, e) => {
+    e?.preventDefault();
+    console.log("submitting");
+    if (!isConfirming) {
+      // confirmation step
+      setIsConfirming(true);
+      setConfirmData(data);
+    } else {
+      // if the user confirms the data
+      const { address, email, isHome, lastname, name, phone, wilaya } = data;
+      if (!selectedProducts.length) return;
+
+      const requestData: PostOrderRequestPayload = {
+        isHome,
+        phone,
+        productsCode: selectedProducts.map((p) => p.code),
+        wilayaId: toNumber(wilaya),
+        ...(email && { email }),
+        ...(name && { name }),
+        ...(lastname && { lastName: lastname }),
+        ...(!isHome && { address }),
+      };
+      mutate(requestData);
+    }
+
+    // console.log(data);
+    console.log(data);
+  };
+
+  const cancelConfirm = () => {
+    setIsConfirming(false);
+    setConfirmData(null);
+  };
   return (
     <FormProvider {...methods}>
       <form
@@ -50,9 +99,12 @@ export default function OrderForm({}: Props) {
           console.log(invalidData);
         })}
         id="order-form"
-        className="mt-2 flex w-full grow flex-col "
+        className="mt-2 flex  w-full grow flex-col"
       >
-        <div className="flex w-full grow flex-col">
+        <section
+          className={`w-full grow flex-col ${isConfirming ? "hidden" : "flex"}`}
+          id="from-input-group"
+        >
           <div className="flex space-x-7">
             <Input
               register={register}
@@ -60,7 +112,7 @@ export default function OrderForm({}: Props) {
                 required: "Ce champ est obligatoire",
                 validate: orderFormValidators.phone,
               }}
-              error={errors["phone"]?.message as string}
+              error={errors.phone?.message}
               name="phone"
               id="phone-input"
               label="Telephone"
@@ -74,7 +126,7 @@ export default function OrderForm({}: Props) {
               registerRules={{
                 validate: orderFormValidators.wilaya,
               }}
-              error={errors["wilaya"]?.message as string}
+              error={errors.wilaya?.message}
               id="wilaya-select"
               label="Wilaya de Livraison"
             />
@@ -103,7 +155,7 @@ export default function OrderForm({}: Props) {
                     required: false,
                     validate: orderFormValidators.surname,
                   }}
-                  error={errors["lastname"]?.message as string}
+                  error={errors.lastname?.message}
                   name="lastname"
                   id="lastname-input"
                   label="Nom"
@@ -117,7 +169,7 @@ export default function OrderForm({}: Props) {
                     required: false,
                     validate: orderFormValidators.name,
                   }}
-                  error={errors["name"]?.message as string}
+                  error={errors["name"]?.message}
                   name="name"
                   id="name-input"
                   label="Prénom"
@@ -132,7 +184,7 @@ export default function OrderForm({}: Props) {
                   required: false,
                   validate: orderFormValidators.email,
                 }}
-                error={errors["email"]?.message as string}
+                error={errors.email?.message}
                 name="email"
                 id="email-input"
                 label="Email"
@@ -141,16 +193,41 @@ export default function OrderForm({}: Props) {
               />
             </section>
           )}
+        </section>
+        {isConfirming && selectedWilaya && confirmData !== null && (
+          <OrderConfirm data={confirmData} selectedWilaya={selectedWilaya} />
+        )}
+        <div className="flex h-16 items-start justify-end text-stone-950 dark:text-white">
+          <Prices />
         </div>
-
-        <button
-          className={`text flex h-12 w-44 items-center justify-center space-x-4 self-end rounded-lg bg-primary font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:bg-stone-200  disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-stone-700 disabled:dark:text-stone-800 ${
-            isDisabledSubmit && "cursor-not-allowed"
-          }`}
-          disabled={isDisabledSubmit}
+        {/* BUTTONS */}
+        <div
+          className="flex h-12 w-full justify-end gap-4 text-stone-500"
+          id="form-buttons"
         >
-          <MdOutlineShoppingCart className="h-6 w-6" /> Commander
-        </button>
+          {isConfirming && (
+            <button
+              className="text h-12 w-auto gap-2 rounded-lg px-6 focus:bg-stone-950/70 dark:bg-stone-950"
+              onClick={cancelConfirm}
+            >
+              <MdArrowBack className="h-6 w-6" /> Retour
+            </button>
+          )}
+
+          <button
+            className="text flex h-12 w-44 items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed  disabled:bg-stone-200 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-stone-700 disabled:dark:text-stone-900"
+            disabled={isDisabledSubmit || isLoading}
+          >
+            {isLoading ? (
+              <Loader className="h-6 w-6 border-white" />
+            ) : (
+              <span className="flex gap-2">
+                <MdOutlineShoppingCart className="h-6 w-6" /> Commander
+              </span>
+            )}
+            {/*  */}
+          </button>
+        </div>
       </form>
     </FormProvider>
   );

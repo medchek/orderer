@@ -2,24 +2,14 @@ import { STATUS_OK } from "@/lib/constants";
 import { PromiseStatus } from "@/types/api";
 import { StateCreator } from "zustand";
 
-interface Wilaya {
+export interface Wilaya {
   code: number;
   name: string;
   arName: string;
   officePrice: number;
   homePrice: number;
-  /** This state property is included when the request is made by the admin. Available in dashboard.*/
-  available?: boolean;
-}
-
-/** 
- * Wilaya State structure inside dashboard. 
- * 
- * The **available** state property is sent along with the regular wilaya data 
- * when the server responds to an admin user.
- * */
-export interface WilayaWithAvailability extends Wilaya {
-  available: boolean;
+  availableHome: boolean;
+  availableOffice: boolean;
 }
 
 export interface WilayaSlice {
@@ -28,7 +18,7 @@ export interface WilayaSlice {
   isFetchingWilayas: boolean;
   wilayaFetchStatus: PromiseStatus;
   setSelectedWilaya: (selectedWilaya: Wilaya) => void;
-  fetchPublicWilayas: () => Promise<{ status: PromiseStatus, wilayas: Wilaya[] }>;
+  fetchWilayas: () => Promise<{ status: PromiseStatus, wilayas: Wilaya[] }>;
   updateWilaya: (data: { homePrice?: number, officePrice?: number, available?: boolean, index: number }) => void;
   getFilteredWilayas: (searchTerm: string) => Wilaya[]
 }
@@ -41,7 +31,7 @@ export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
   setSelectedWilaya: (selectedWilaya: Wilaya) => {
     set(() => ({ selectedWilaya }));
   },
-  fetchPublicWilayas: async () => {
+  fetchWilayas: async () => {
     try {
       set(() => ({ isFetchingWilayas: true, wilayaFetchStatus: "fetching" }));
 

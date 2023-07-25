@@ -1,7 +1,7 @@
 type validationFunction = (value: string) => string | undefined;
 
 export const phoneRegex = /^0[756]{1}[0-9]{8}$/i;
-export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/gi;
+export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 
 interface OrderFormValidator {
   name: validationFunction;
@@ -46,12 +46,11 @@ export const orderFormValidators: OrderFormValidator = {
   },
   email: (val) => {
     const value = val.trim();
-
-    if (value) {
-      if (!emailRegex.test(value)) {
-        return "Veuillez entrer un email valide";
-      }
+    const isValidEmail = emailRegex.test(value)
+    if (!isValidEmail) {
+      return "Veuillez entrer un email valide";
     }
+
   },
   address: (val) => {
     const value = val.trim();

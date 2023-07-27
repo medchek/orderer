@@ -11,20 +11,19 @@ import { addPartitive } from "@/lib/utils";
 import { OrderFormValues } from "./OrderForm";
 
 export default function ShippingTypeSelector() {
-  const { shippingType, setShippingType, selectedWilaya } = useStore();
+  const { shippingType, setShippingType, selectedWilaya, confirmData } =
+    useStore();
 
   const {
     setValue,
     unregister,
     register,
     resetField,
-    setFocus,
-
     formState: { errors },
   } = useFormContext<OrderFormValues>();
 
   useEffect(() => {
-    setValue("isHome", true);
+    setValue("isHome", confirmData?.isHome ?? true);
   }, []);
 
   useEffect(() => {
@@ -37,7 +36,7 @@ export default function ShippingTypeSelector() {
         }`
       );
     } else {
-      resetField("address");
+      setValue("address", confirmData?.address ?? "");
     }
   }, [shippingType, selectedWilaya]);
 
@@ -83,7 +82,7 @@ export default function ShippingTypeSelector() {
             validate: orderFormValidators.address,
           }}
           name="address"
-          error={errors["address"]?.message as string}
+          error={errors.address?.message}
           label="Adresse de Livraison"
           placeholder="Votre adresse"
           type="text"
@@ -97,7 +96,7 @@ export default function ShippingTypeSelector() {
                     ? "sélectionnée"
                     : addPartitive(selectedWilaya.name)
                 }`
-              : undefined
+              : confirmData?.address
           }
           disabled={shippingType === SHIPPING_TYPE.OFFICE}
           autoComplete={shippingType === SHIPPING_TYPE.OFFICE ? "off" : "on"}

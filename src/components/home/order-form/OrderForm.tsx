@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../../Input";
 import WilayaSelectInput from "./WilayaSelectInput";
 import ShippingTypeSelector from "./ShippingTypeSelector";
@@ -22,7 +22,7 @@ import { toNumber } from "@/lib/utils";
 import Loader from "@/components/Loader";
 
 export interface OrderFormValues {
-  lastname: string;
+  lastName: string;
   name: string;
   phone: string;
   email: string;
@@ -42,13 +42,17 @@ export default function OrderForm({}: Props) {
     formState: { errors },
   } = methods;
 
-  const { selectedProducts, selectedWilaya, setIsConfirming, isConfirming } =
-    useStore();
+  const {
+    selectedProducts,
+    selectedWilaya,
+    setConfirmData,
+    confirmData,
+    isConfirming,
+    setIsConfirming,
+  } = useStore();
 
   const isDisabledSubmit =
     selectedProducts.length === 0 || selectedWilaya === null;
-
-  const [confirmData, setConfirmData] = useState<OrderFormValues | null>(null);
 
   const [showOptionalFields, setShowOptionalFields] = useState(false);
 
@@ -63,11 +67,11 @@ export default function OrderForm({}: Props) {
     console.log("submitting");
     if (!isConfirming) {
       // confirmation step
-      setIsConfirming(true);
       setConfirmData(data);
+      setIsConfirming(true);
     } else {
       // if the user confirms the data
-      const { address, email, isHome, lastname, name, phone, wilaya } = data;
+      const { address, email, isHome, lastName, name, phone, wilaya } = data;
       if (!selectedProducts.length) return;
 
       const requestData: PostOrderRequestPayload = {
@@ -77,19 +81,19 @@ export default function OrderForm({}: Props) {
         wilayaId: toNumber(wilaya),
         ...(email && { email }),
         ...(name && { name }),
-        ...(lastname && { lastName: lastname }),
-        ...(!isHome && { address }),
+        ...(lastName && { lastName }),
+        ...(isHome && { address }),
       };
+      console.log("requretdata => ", requestData);
       mutate(requestData);
     }
 
     // console.log(data);
-    console.log(data);
+    // console.log(data);
   };
 
   const cancelConfirm = () => {
     setIsConfirming(false);
-    setConfirmData(null);
   };
   return (
     <FormProvider {...methods}>
@@ -102,7 +106,9 @@ export default function OrderForm({}: Props) {
         className="mt-2 flex  w-full grow flex-col"
       >
         <section
-          className={`w-full grow flex-col ${isConfirming ? "hidden" : "flex"}`}
+          className={`w-full grow flex-col ${
+            !isConfirming ? "flex" : "hidden"
+          }`}
           id="from-input-group"
         >
           <div className="flex space-x-7">
@@ -119,6 +125,7 @@ export default function OrderForm({}: Props) {
               type="tel"
               placeholder="Votre Numero de Téléphone"
               maxLength={10}
+              defaultValue={confirmData?.phone}
             />
             <WilayaSelectInput
               register={register}
@@ -155,13 +162,14 @@ export default function OrderForm({}: Props) {
                     required: false,
                     validate: orderFormValidators.surname,
                   }}
-                  error={errors.lastname?.message}
-                  name="lastname"
+                  error={errors.lastName?.message}
+                  name="lastName"
                   id="lastname-input"
                   label="Nom"
                   placeholder="Votre Nom (Optionnel)"
                   maxLength={40}
                   minLength={3}
+                  defaultValue={confirmData?.lastName}
                 />
                 <Input
                   register={register}
@@ -169,13 +177,14 @@ export default function OrderForm({}: Props) {
                     required: false,
                     validate: orderFormValidators.name,
                   }}
-                  error={errors["name"]?.message}
+                  error={errors.name?.message}
                   name="name"
                   id="name-input"
                   label="Prénom"
                   placeholder="Votre Prénom (Optionnel)"
                   maxLength={40}
                   minLength={3}
+                  defaultValue={confirmData?.name}
                 />
               </div>
               <Input
@@ -190,10 +199,12 @@ export default function OrderForm({}: Props) {
                 label="Email"
                 type="email"
                 placeholder="Votre Email (Optionnel)"
+                defaultValue={confirmData?.email}
               />
             </section>
           )}
         </section>
+        {/* Show the orderConfirm component */}
         {isConfirming && selectedWilaya && confirmData !== null && (
           <OrderConfirm data={confirmData} selectedWilaya={selectedWilaya} />
         )}

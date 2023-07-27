@@ -1,3 +1,4 @@
+import { OrderFormValues } from "@/components/home/order-form/OrderForm";
 import { StateCreator } from "zustand";
 
 export enum SHIPPING_TYPE {
@@ -8,6 +9,8 @@ export enum SHIPPING_TYPE {
 export interface OrderFormSlice {
   shippingType: SHIPPING_TYPE;
   setShippingType: (shippingType: SHIPPING_TYPE) => void;
+  confirmData: OrderFormValues | null;
+  setConfirmData: (data: OrderFormValues | null) => void;
   isConfirming: boolean;
   setIsConfirming: (v: boolean) => void;
 }
@@ -16,6 +19,10 @@ export const orderFormSlice: StateCreator<OrderFormSlice> = (set) => ({
   shippingType: SHIPPING_TYPE.HOME,
   setShippingType: (shippingType: SHIPPING_TYPE) =>
     set(() => ({ shippingType })),
+  confirmData: null,
+  setConfirmData: (data: OrderFormValues | null) => set(() => ({ confirmData: data })),
   isConfirming: false,
-  setIsConfirming: (value: boolean) => set(() => ({ isConfirming: value }))
+  setIsConfirming: (v) => {
+    set(() => ({ isConfirming: v }))
+  },
 });

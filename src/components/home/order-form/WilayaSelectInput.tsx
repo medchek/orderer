@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
 import Loader from "../../Loader";
+import { useQuery } from "react-query";
+import { getWilayas } from "@/lib/clientApiHelpers";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
@@ -25,22 +27,20 @@ export default function WilayaSelectInput({
   error,
   ...props
 }: Props) {
-  const {
-    fetchWilayas,
-    wilayas,
-    isFetchingWilayas: isFetching,
-    shippingType,
-    setSelectedWilaya,
-  } = useStore((state) => state);
+  const { wilayas, shippingType, setSelectedWilaya, setWilayas, confirmData } =
+    useStore((state) => state);
 
   const inputRegister = register && register(name, registerRules);
-  useEffect(() => {
-    if (wilayas.length === 0) {
-      fetchWilayas().catch((err) => {
-        console.log("error fetching wilayas in component", err);
-      });
-    }
-  }, []);
+
+  const { isLoading } = useQuery({
+    queryKey: ["wilayas"],
+    queryFn: getWilayas,
+    onSuccess: (data) => {
+      setWilayas(data);
+    },
+    enabled: wilayas.length === 0,
+    cacheTime: 1000 * 60 * 10,
+  });
 
   const [shippingPrice, setShippingPrice] = useState<{
     home: number;
@@ -58,7 +58,7 @@ export default function WilayaSelectInput({
   };
   // used to track and set the default input value.
   // Needed to display the default message (value=0) acting as a placeholder
-  const [selectedValue, setSelectedValue] = useState(0);
+  const [selectedValue, setSelectedValue] = useState(confirmData?.wilaya ?? 0);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     // update the register value on change
@@ -100,17 +100,15 @@ export default function WilayaSelectInput({
       </label>
       <div className="relative flex h-12 w-full items-center">
         <select
-          disabled={isFetching}
+          disabled={isLoading}
           {...props}
           {...inputRegister}
           id={id}
-          className={`h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-input-dark dark:text-white dark:[color-scheme:dark] ${
-            isFetching && " cursor-not-allowed"
-          }`}
+          className="h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed dark:bg-input-dark dark:text-white dark:[color-scheme:dark]"
           onChange={handleOnChange}
           value={selectedValue}
         >
-          {isFetching ? (
+          {isLoading ? (
             <option value="" defaultValue="">
               Chargement...
             </option>
@@ -124,14 +122,14 @@ export default function WilayaSelectInput({
           )}
         </select>
 
-        {isFetching ? (
+        {isLoading ? (
           <Loader className="absolute right-4 h-6 w-6 border-stone-400" />
         ) : (
           <MdChevronRight className="pointer-events-none absolute right-4 h-7 w-7 rotate-90 dark:text-[#979797]" />
         )}
       </div>
       <div className="flex h-5 justify-between ">
-        <p className="grow text-sm text-red-600">{error && error}</p>
+        <p className="grow text-sm text-red-500">{error && error}</p>
         <p className="grow-0 text-right dark:text-gray-100">
           {displayShippingPrice()}
         </p>

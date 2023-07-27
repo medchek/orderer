@@ -1,4 +1,5 @@
 import { Product } from "@/store/productSlice";
+import { Wilaya } from "@/store/wilayaSlice";
 import { PostImageSuccessResponsePayload, PostOrderRequestPayload } from "@/types/api";
 
 import ky from "ky"
@@ -30,6 +31,10 @@ export const postImage = async (imageFile: File) => {
 };
 
 
+export const getWilayas = async (): Promise<Wilaya[]> => {
+  const data: Wilaya[] = await ky.get("/api/wilayas").json()
+  return data
+}
 export const getSingleProduct = async ([_, productCode]: (string | null)[]): Promise<Product> => {
   try {
     if (!productCode) throw "No product code";

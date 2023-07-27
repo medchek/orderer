@@ -96,9 +96,10 @@ export default function SelectedProductsDisplay() {
         {isModalOpen && <AddProduct closeModal={() => setIsModalOpen(false)} />}
       </div>
       <div className="flex w-full space-x-3">{productList}</div>
-      {/* <div className="flex h-14 items-center justify-end text-stone-950 dark:text-white">
-        <Prices />
-      </div> */}
+      <div className="flex items-center justify-end pt-1 text-sm text-stone-950 dark:text-stone-500">
+        {/* <Prices /> */}Produits sélectionnés {selectedProducts.length} (3
+        Maximum)
+      </div>
     </section>
   );
 }

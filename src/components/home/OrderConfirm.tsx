@@ -1,6 +1,9 @@
+"use client";
 import React from "react";
 import { OrderFormValues } from "./order-form/OrderForm";
 import { Wilaya } from "@/store/wilayaSlice";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 interface Props {
   data: OrderFormValues;
@@ -8,8 +11,9 @@ interface Props {
 }
 
 export default function OrderConfirm({ data, selectedWilaya }: Props) {
+  const { data: sessionData } = useSession();
   const fullName = () => {
-    const { name, lastname } = data;
+    const { name, lastName: lastname } = data;
     if (!name && !lastname) {
       return "Non mentioné";
     } else {
@@ -18,7 +22,7 @@ export default function OrderConfirm({ data, selectedWilaya }: Props) {
     }
   };
   return (
-    <section className=" flex w-full grow flex-col gap-3 py-4 text-sm xl:text-base [&>div]:flex [&>div]:h-14 [&>div]:w-full [&>div]:items-center [&>div]:rounded-lg [&>div]:px-4 [&>div]:text-white [&>div]:dark:bg-input-dark">
+    <section className=" flex w-full grow flex-col gap-3 text-sm xl:text-base [&>div]:flex [&>div]:h-14 [&>div]:w-full [&>div]:items-center [&>div]:rounded-lg [&>div]:px-4 [&>div]:text-white [&>div]:dark:bg-input-dark">
       <h2 className="text-lg font-semibold text-white">Résumé</h2>
       <div>
         <p className="w-40 text-stone-100">Téléphone</p>
@@ -42,6 +46,17 @@ export default function OrderConfirm({ data, selectedWilaya }: Props) {
           {!data.email ? "Non mentioné" : data.email}
         </p>
       </div>
+      {!sessionData && (
+        <p className="text-sm text-stone-500">
+          <Link
+            href="/login"
+            className="text-secondary hover:underline focus:underline"
+          >
+            Connectez vous
+          </Link>{" "}
+          pour sauvgarder vos information de livraison
+        </p>
+      )}
     </section>
   );
 }

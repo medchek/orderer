@@ -1,4 +1,5 @@
 "use client";
+import { discountedPrice } from "@/lib/utils";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
 import React from "react";
@@ -8,12 +9,9 @@ type Props = {};
 export default function Prices({}: Props) {
   const { selectedProducts, selectedWilaya, shippingType } = useStore();
 
-  const productsPrice = () =>
-    selectedProducts.reduce((prevVal, currentVal) => {
-      const discountedPrice =
-        currentVal.price - (currentVal.price * currentVal.discount) / 100;
-      return prevVal + discountedPrice;
-    }, 0);
+  const productsPrice = selectedProducts.reduce((prevVal, currentVal) => {
+    return prevVal + discountedPrice(currentVal.price, currentVal.discount);
+  }, 0);
 
   const shippingPrice =
     selectedWilaya === null // if no wilaya is selected, set the price to 0
@@ -22,7 +20,7 @@ export default function Prices({}: Props) {
       ? selectedWilaya.homePrice
       : selectedWilaya.officePrice;
 
-  const totalPrice = productsPrice() + shippingPrice;
+  const totalPrice = productsPrice + shippingPrice;
 
   return (
     <ul>

@@ -4,6 +4,12 @@ import type { JSX } from 'react';
 // import { prisma } from "../../prisma/db";
 
 const randId = (max: number = 1000) => Math.ceil(Math.random() * max);
+/**
+ * Adds zero before a single number
+ * @param n single number i.e 0 to 9
+ * @returns the number prefixed with 0
+ */
+const zeroPrefix = (n: number) => n < 10 && n > -10 ? `0${n}` : n
 
 export const randInputId = (prefix: string = "input") =>
   `${prefix}-${randId()}`;
@@ -122,4 +128,29 @@ export const addPartitive = (name: string) => {
     } else
       return `de ${name}`;
   };
+}
+/**
+ * Calculates the discounted price
+ * @param price the price
+ * @param discountPercentage the discount percentage which is a number in the 0 to 100 range 
+ * @returns the discounted price
+ */
+export const discountedPrice = (price: number, discountPercentage: number) => {
+  if (discountPercentage === 0 || discountPercentage < 0 || discountPercentage > 100) return price
+  return price - (price * discountPercentage / 100)
+}
+
+/**
+ * Formats a date object
+ * @param date date object
+ * @returns retuns DD/MM/YYYY HH:mm date string
+ */
+export const formatDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = zeroPrefix(date.getMonth() + 1);
+  const day = zeroPrefix(date.getDate());
+  const hours = zeroPrefix(date.getHours());
+  const minutes = zeroPrefix(date.getMinutes());
+
+  return `${day}/${month}/${year} ${hours}:${(minutes)}`
 }

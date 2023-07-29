@@ -6,7 +6,7 @@ import { MdDeleteOutline, MdOutlineSettings } from "react-icons/md";
 
 type Props = {};
 
-export default function ShippingPrices({}: Props) {
+export default function Orders({}: Props) {
   return (
     <div
       id="orders"

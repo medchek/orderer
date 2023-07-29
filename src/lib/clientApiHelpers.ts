@@ -14,7 +14,10 @@ export const postImage = async (imageFile: File) => {
       body: fromData,
     });
     const data = await response.json();
-    const f = await ky.post("").formData()
+    // const f = await ky.post("/api/images", {
+    //   body: fromData,
+    // }).formData()
+
     if (response.status === 201) {
       return {
         status: response.status,
@@ -35,6 +38,11 @@ export const getWilayas = async (): Promise<Wilaya[]> => {
   const data: Wilaya[] = await ky.get("/api/wilayas").json()
   return data
 }
+/**
+ * Fetch a single product from the api
+ * @param queryKey React query keys array where the second array item is the product code
+ * @returns fetched product data
+ */
 export const getSingleProduct = async ([_, productCode]: (string | null)[]): Promise<Product> => {
   try {
     if (!productCode) throw "No product code";
@@ -44,7 +52,13 @@ export const getSingleProduct = async ([_, productCode]: (string | null)[]): Pro
     console.error("Error fethcing single product: ", error)
     throw error
   }
-
+}
+/**
+ * fetche all the products from the api
+ * @returns all products data
+ */
+export const getProducts = async (): Promise<Product[]> => {
+  return await ky.get("/api/products").json();
 }
 
 /**

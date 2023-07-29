@@ -1,64 +1,81 @@
 "use client";
 import React, { Suspense, useEffect, useState } from "react";
 import { useStore } from "@/store";
-import Loader from "@/components/Loader";
 import ProductCard from "../../ProductCard";
-import { MdDeleteOutline, MdEdit } from "react-icons/md";
-import DashboardUpdateProduct from "./DashboardUpdateProduct";
+import { MdAdd, MdDeleteOutline, MdEdit } from "react-icons/md";
 import ModalLoader from "@/components/ModalLoader";
 import ProductCardLoader from "@/components/ProductCardLoader";
-const DashboardDeleteConfirm = React.lazy(
-  () => import("../DashboardDeleteConfirm")
+import { useQuery } from "react-query";
+import { getProducts } from "@/lib/clientApiHelpers";
+import dynamic from "next/dynamic";
+
+const DashboardUpdateProduct = dynamic(
+  () => import("./DashboardUpdateProduct"),
+  {
+    loading: () => <ModalLoader />,
+  }
+);
+const DashboardDeleteConfirm = dynamic(
+  () => import("../DashboardDeleteConfirm"),
+  {
+    loading: () => <ModalLoader />,
+  }
 );
 
 export default function DashboardProductsDisplay() {
-  const {
-    products,
-    fetchProducts,
-    hasFetchedAllProducts,
-    productsFetchStatus,
-  } = useStore();
+  const { products, setIsAddProductOpen, setProducts } = useStore();
   // product code to delete
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [productToUpdateIndex, setProductToUpdateIndex] = useState<
     number | null
   >(null);
-  useEffect(() => {
-    if (productsFetchStatus !== "success") {
-      fetchProducts();
-    }
-  }, []);
 
-  return productsFetchStatus === "fetching" ||
-    productsFetchStatus === "init" ? (
-    // <div className="flex w-full grow items-center justify-center">
-    //   <Loader className="h-8 w-8" />
-    // </div>
-    <section
-      id="product-display"
-      className="mr-6 grid w-full grow gap-5 overflow-hidden pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
-    >
-      {Array.from({ length: 8 }, (_, i) => (
-        <ProductCardLoader key={i} />
-      ))}
-    </section>
-  ) : productsFetchStatus === "error" ? (
-    <div className="flex w-full grow flex-col items-center gap-2">
-      <p className="mt-2 text-red-500">
-        Une érreur est survenu lors de la recherche des produits
-      </p>
-      <button
-        type="button"
-        className="h-10 w-28 rounded-lg  font-semibold text-red-500 transition-colors hover:bg-red-800 hover:text-red-50 focus:bg-red-950 focus:text-white"
-        onClick={fetchProducts}
+  const { status, refetch } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+    enabled: products.length === 0,
+    onSuccess: (products) => {
+      setProducts(products);
+    },
+  });
+
+  if (status === "loading") {
+    return (
+      <section
+        id="product-display"
+        className="mr-6 grid w-full grow gap-5 overflow-hidden pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
       >
-        Réessayer
-      </button>
-    </div>
-  ) : productsFetchStatus === "success" ? (
-    !products.length ? (
-      <section className=" flex w-full grow  justify-center dark:text-white">
+        {Array.from({ length: 8 }, (_, i) => (
+          <ProductCardLoader key={i} />
+        ))}
+      </section>
+    );
+  } else if (status === "error") {
+    return (
+      <div className="flex w-full grow flex-col items-center gap-2">
+        <p className="mt-2 text-red-500">
+          Une érreur est survenu lors de la recherche des produits
+        </p>
+        <button
+          type="button"
+          className="h-10 w-28 rounded-lg  font-semibold text-red-500 transition-colors hover:bg-red-800 hover:text-red-50 focus:bg-red-950 focus:text-white"
+          onClick={() => refetch()}
+        >
+          Réessayer
+        </button>
+      </div>
+    );
+  } else {
+    return !products.length ? (
+      <section className=" flex w-full grow items-center flex-col dark:text-stone-100 gap-2">
         <p className="mt-2">Aucun produit n'a été ajouté</p>
+        <button
+          type="button"
+          className="font-semibold focus:dark:bg-stone-900 px-3 rounded-lg h-9"
+          onClick={() => setIsAddProductOpen(true)}
+        >
+          <MdAdd className="w-6 h-6" /> Ajouter
+        </button>
       </section>
     ) : (
       <section
@@ -96,24 +113,20 @@ export default function DashboardProductsDisplay() {
           )
         )}
 
-        <Suspense fallback={<ModalLoader />}>
-          {productToDelete && (
-            <DashboardDeleteConfirm
-              productCode={productToDelete}
-              closeModal={() => setProductToDelete(null)}
-            />
-          )}
-        </Suspense>
+        {productToDelete && (
+          <DashboardDeleteConfirm
+            productCode={productToDelete}
+            closeModal={() => setProductToDelete(null)}
+          />
+        )}
 
-        <Suspense fallback={<ModalLoader />}>
-          {productToUpdateIndex !== null && (
-            <DashboardUpdateProduct
-              productIndex={productToUpdateIndex}
-              closeModal={() => setProductToUpdateIndex(null)}
-            />
-          )}
-        </Suspense>
+        {productToUpdateIndex !== null && (
+          <DashboardUpdateProduct
+            productIndex={productToUpdateIndex}
+            closeModal={() => setProductToUpdateIndex(null)}
+          />
+        )}
       </section>
-    )
-  ) : null;
+    );
+  }
 }

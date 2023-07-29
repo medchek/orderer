@@ -25,6 +25,7 @@ export interface ProductSlice {
   removeSelectedProduct: (index: number) => void;
   deleteProduct: (code: string) => void;
   fetchProducts: () => Promise<void>;
+  setProducts: (products: Product[]) => void;
   fetchSingleProduct: (code: string) => Promise<void>;
   addProduct: (product: Product) => void;
   updateProduct: (updatedProduct: Product, productIndex: number) => void;
@@ -77,6 +78,7 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
       console.error("Error fetching products", e);
     }
   },
+
   fetchSingleProduct: async (code: string) => {
     try {
       const data = await fetch(`/api/products/${code}`, {
@@ -90,6 +92,11 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
     } catch (e) {
       console.error("Error fetching product by code", e);
     }
+  },
+  setProducts: (products: Product[]) => {
+    set(() => ({
+      products,
+    }));
   },
   addProduct: (product: Product) => {
     set((state) => ({

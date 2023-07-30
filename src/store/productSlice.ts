@@ -23,6 +23,7 @@ export interface ProductSlice {
   hasFetchedAllProducts: boolean;
   productsFetchStatus: PromiseStatus,
   removeSelectedProduct: (index: number) => void;
+  removeAllSelectedProducts: () => void;
   deleteProduct: (code: string) => void;
   fetchProducts: () => Promise<void>;
   setProducts: (products: Product[]) => void;
@@ -45,6 +46,11 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
   removeSelectedProduct: (index: number) => {
     set((state) => ({
       selectedProducts: state.selectedProducts.filter((_, i) => i !== index),
+    }));
+  },
+  removeAllSelectedProducts: () => {
+    set((state) => ({
+      selectedProducts: [],
     }));
   },
   deleteProduct: (code: string) => {

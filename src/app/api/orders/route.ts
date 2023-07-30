@@ -1,7 +1,7 @@
 import { apiErrorResponse, uniqueId } from './../../../lib/utils';
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin as isAdministrator } from "../auth/[...nextauth]/route";
-import { STATUS_BAD_REQUEST, STATUS_CREATED, STATUS_OK, STATUS_UNAUTHORIZED } from "@/lib/constants";
+import { ORDER_CODE_LENGTH, STATUS_BAD_REQUEST, STATUS_CREATED, STATUS_OK, STATUS_UNAUTHORIZED } from "@/lib/constants";
 import { PostOrderRequestPayload } from '@/types/api';
 import Joi from 'joi';
 import { emailRegex, phoneRegex } from '@/lib/formValidators';
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     });
 
 
-    const orderCode = uniqueId(14, true)
+    const orderCode = uniqueId(ORDER_CODE_LENGTH, true)
 
     // if there are no user with this phone number, create one
     const order = await prisma.order.create({

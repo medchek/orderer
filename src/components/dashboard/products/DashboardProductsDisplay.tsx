@@ -39,6 +39,8 @@ export default function DashboardProductsDisplay() {
     },
   });
 
+  // old btn style :  bg-[#E9E9E9] text-sm font-semibold hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]
+
   if (status === "loading") {
     return (
       <section
@@ -93,17 +95,17 @@ export default function DashboardProductsDisplay() {
               stock={stock}
               key={code}
             >
-              <div className="flex gap-2">
+              <div className="flex gap-2 dark:text-stone-50 text-sm font-semibold ">
                 <button
                   type="button"
-                  className="flex h-8 grow items-center justify-center gap-1 rounded-md bg-[#E9E9E9] text-sm font-semibold hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]"
+                  className="h-8 grow  gap-1 rounded-md bg-[#E9E9E9] hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-stone-800  dark:hover:bg-stone-700 dark:focus:bg-stone-900 transition-colors"
                   onClick={() => setProductToUpdateIndex(i)}
                 >
                   <MdEdit className="h-5 w-5" /> Modifier
                 </button>
                 <button
                   type="button"
-                  className="flex h-8 w-8 items-center justify-center rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-red-600 "
+                  className=" h-8 w-8  rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-red-600 "
                   onClick={() => setProductToDelete(code)}
                 >
                   <MdDeleteOutline className="h-5 w-5" />

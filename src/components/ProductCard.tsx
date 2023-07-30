@@ -29,8 +29,8 @@ export default function ProductCard({
   });
 
   return (
-    <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-card-dark">
-      <div className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800">
+    <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-stone-950">
+      <div className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800 ">
         <img
           src={displayImage[0]}
           className="h-full w-full object-cover object-center"
@@ -46,13 +46,10 @@ export default function ProductCard({
         )}
       </div>
       {/* text */}
-      <section className="flex grow flex-col justify-between p-2">
+      <section className="flex grow flex-col justify-between p-2 text-stone-50">
         <div className="flex grow flex-col justify-between pb-2">
           <section className="space-y-1">
-            <p
-              className="line-clamp-2 h-12 font-semibold dark:text-white"
-              title={name}
-            >
+            <p className="line-clamp-2 h-12 font-semibold" title={name}>
               {name}
             </p>
             <div
@@ -67,9 +64,7 @@ export default function ProductCard({
             {stock && stock > 0 && (
               <p className="text-sm text-secondary">Stock: {stock}</p>
             )}
-            <p className="font-semibold dark:text-white">
-              Prix: {priceWidthDiscount}DA
-            </p>
+            <p className="font-semibold">Prix: {priceWidthDiscount}DA</p>
           </section>
         </div>
 

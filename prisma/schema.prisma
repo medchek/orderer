@@ -22,6 +22,9 @@ model Product {
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId Int?      @map("category_id")
 
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull)
+  subCategoryId Int?         @map("sub_category_id")
+
   images Image[]
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
@@ -38,7 +41,21 @@ model Category {
 
   products Product[]
 
+  subCategories SubCategory[]
+
   @@map("categories")
+}
+
+model SubCategory {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(200)
+
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId Int
+
+  products Product[]
+
+  @@map("sub_categories")
 }
 
 model Image {

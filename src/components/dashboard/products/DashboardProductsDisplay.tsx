@@ -5,25 +5,28 @@ import ProductCard from "../../ProductCard";
 import { MdAdd, MdDeleteOutline, MdEdit } from "react-icons/md";
 import ModalLoader from "@/components/ModalLoader";
 import ProductCardLoader from "@/components/ProductCardLoader";
-import { useQuery } from "react-query";
-import { getProducts } from "@/lib/clientApiHelpers";
+import { useMutation, useQuery } from "react-query";
+import { deleteProduct, getProducts } from "@/lib/clientApiHelpers";
 import dynamic from "next/dynamic";
 
 const DashboardUpdateProduct = dynamic(
   () => import("./DashboardUpdateProduct"),
-  {
-    loading: () => <ModalLoader />,
-  }
+  { loading: () => <ModalLoader /> }
 );
 const DashboardDeleteConfirm = dynamic(
   () => import("../DashboardDeleteConfirm"),
-  {
-    loading: () => <ModalLoader />,
-  }
+  { loading: () => <ModalLoader /> }
 );
 
 export default function DashboardProductsDisplay() {
-  const { products, setIsAddProductOpen, setProducts } = useStore();
+  const {
+    products,
+    setIsAddProductOpen,
+    setProducts,
+    deleteProduct: removePorductByCode,
+    showSnackbar,
+  } = useStore();
+
   // product code to delete
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const [productToUpdateIndex, setProductToUpdateIndex] = useState<
@@ -36,6 +39,23 @@ export default function DashboardProductsDisplay() {
     enabled: products.length === 0,
     onSuccess: (products) => {
       setProducts(products);
+    },
+  });
+
+  const { mutate: deleteProductMutation, isLoading: isDeleting } = useMutation({
+    mutationKey: ["deleteProduct"],
+    mutationFn: deleteProduct,
+    onSuccess: (productCode: string) => {
+      removePorductByCode(productCode);
+      showSnackbar("Produit supprimé!", "success");
+      // close the modal
+      setProductToDelete(null);
+    },
+    onError: () => {
+      showSnackbar(
+        "Une Erreur est survenu lors la suppression du produit, veuillez réessayer!",
+        "error"
+      );
     },
   });
 
@@ -119,6 +139,10 @@ export default function DashboardProductsDisplay() {
           <DashboardDeleteConfirm
             productCode={productToDelete}
             closeModal={() => setProductToDelete(null)}
+            label="Supprimer un produit"
+            text="Êtes-vous sûr de vouloir supprimer ce produit?"
+            onConfirm={() => deleteProductMutation(productToDelete)}
+            isLoading={isDeleting}
           />
         )}
 

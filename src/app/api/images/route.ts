@@ -13,7 +13,7 @@ import { MAX_UPLOAD_FILE_SIZE } from "@/lib/constants";
 
 export async function POST(req: NextRequest) {
   try {
-    if (await !isAdmin()) {
+    if (!await isAdmin()) {
       return NextResponse.json("unauthorized", { status: 401 });
     }
 

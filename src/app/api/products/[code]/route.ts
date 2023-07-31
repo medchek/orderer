@@ -60,7 +60,7 @@ export async function PATCH(
   }
 
   try {
-    if (await !isAdmin()) {
+    if (!await isAdmin()) {
       return NextResponse.json("unauthorized", { status: STATUS_UNAUTHORIZED });
     }
 
@@ -176,7 +176,7 @@ export async function DELETE(
   }
 
   try {
-    if (await !isAdmin()) {
+    if (!await isAdmin()) {
       return apiErrorResponse("Unauthorized", STATUS_UNAUTHORIZED);
     }
 

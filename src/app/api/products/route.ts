@@ -47,10 +47,10 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (await isAdmin()) {
-    return NextResponse.json("unauthorized", { status: STATUS_UNAUTHORIZED });
-  }
   try {
+    if (!await isAdmin()) {
+      return NextResponse.json("unauthorized", { status: STATUS_UNAUTHORIZED });
+    }
     const body: PostProductBodyPayload = await req.json();
     // console.log("request body => ", body);
 

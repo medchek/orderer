@@ -1,6 +1,6 @@
 import { Product } from "@/store/productSlice";
 import { Wilaya } from "@/store/wilayaSlice";
-import { PostImageSuccessResponsePayload, PostOrderRequestPayload } from "@/types/api";
+import { GetAllOrdersSuccessResponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload } from "@/types/api";
 
 import ky from "ky"
 
@@ -66,10 +66,20 @@ export const getProducts = async (): Promise<Product[]> => {
  * @param order 
  * @returns returns the order id
  */
-export const postOrder = async (order: PostOrderRequestPayload): Promise<string> => {
-  const orderId: string = await ky.post(`/api/orders`, {
+export const postOrder = async (order: PostOrderRequestPayload): Promise<PostOrderSuccessResponsePayload> => {
+  const orderId: PostOrderSuccessResponsePayload = await ky.post(`/api/orders`, {
     json: order
   }).json();
   return orderId
+  // await sleep(2000)
+  // return "WTU6UE17TTDBXQ"
+}
+
+export const getOrders = async (): Promise<GetAllOrdersSuccessResponsePayload[]> => {
+
+  return await ky.get("/api/orders").json();
+}
+export const deleteOrder = async (code: string): Promise<void> => {
+  return await ky.delete(`/api/orders/${code}`).json();
 }
 

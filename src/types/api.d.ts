@@ -54,8 +54,6 @@ export interface PatchShippingPricesRequestPayload {
   wilayas: number[];
 }
 
-
-
 export interface PostOrderRequestPayload {
   phone: string;
   name?: string;
@@ -65,4 +63,32 @@ export interface PostOrderRequestPayload {
   isHome: boolean;
   wilayaId: number;
   productsCode: string[];
+}
+export interface PostOrderSuccessResponsePayload {
+  orderCode: string;
+}
+
+export interface GetAllOrdersSuccessResponsePayload {
+  address: string | null;
+  code: string;
+  isHome: boolean;
+  status: Status | null;
+  createdAt: Date;
+  user: {
+    phone: string | null;
+  };
+  wilaya: {
+    name: string;
+    arName: string;
+    code: number;
+    homePrice: number;
+    officePrice: number;
+  };
+  orderProducts: {
+    product: {
+      name: string;
+      price: number;
+      discount: number;
+    };
+  }[]
 }

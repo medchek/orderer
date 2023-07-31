@@ -1,8 +1,8 @@
 import { apiErrorResponse, uniqueId } from './../../../lib/utils';
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin as isAdministrator } from "../auth/[...nextauth]/route";
+import { isAdmin } from "../auth/[...nextauth]/route";
 import { ORDER_CODE_LENGTH, STATUS_BAD_REQUEST, STATUS_CREATED, STATUS_OK, STATUS_UNAUTHORIZED } from "@/lib/constants";
-import { PostOrderRequestPayload } from '@/types/api';
+import { GetAllOrdersSuccessResponsePayload, PostOrderRequestPayload } from '@/types/api';
 import Joi from 'joi';
 import { emailRegex, phoneRegex } from '@/lib/formValidators';
 import { prisma } from '../../../../prisma/db';
@@ -107,4 +107,57 @@ export async function POST(req: NextRequest) {
     return apiErrorResponse("Global error creating order")
   }
 
+}
+
+
+export async function GET(_: NextRequest, { params }: { params: { page: number } }) {
+
+  // const { page } = params
+
+  try {
+    if (!await isAdmin()) {
+      return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
+    }
+    const orders: GetAllOrdersSuccessResponsePayload[] = await prisma.order.findMany({
+      select: {
+        address: true,
+        code: true,
+        isHome: true,
+        status: true,
+        createdAt: true,
+        user: {
+          select: {
+            phone: true,
+          }
+        },
+        wilaya: {
+          select: {
+            name: true,
+            arName: true,
+            code: true,
+            homePrice: true,
+            officePrice: true
+          }
+        },
+        orderProducts: {
+          select: {
+            product: {
+              select: {
+                name: true,
+                price: true,
+                discount: true,
+              }
+            }
+          }
+        }
+      },
+      take: 10,
+
+    })
+
+    return NextResponse.json(orders, { status: STATUS_OK })
+  } catch (error) {
+    console.error("Error getting orders from database:", error)
+    return apiErrorResponse("Couln't retrieve orders")
+  }
 }

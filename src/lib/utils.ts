@@ -46,7 +46,7 @@ export const uniqueId = (len = 20, uppercaseOnly = false): string => {
 
 
 /**
- * Used to simulate network latency
+ * Simulate network latency
  */
 export const sleep = (timeInMs: number): Promise<void> => {
   return new Promise((resolve) => {
@@ -145,7 +145,8 @@ export const discountedPrice = (price: number, discountPercentage: number) => {
  * @param date date object
  * @returns retuns DD/MM/YYYY HH:mm date string
  */
-export const formatDate = (date: Date) => {
+export const formatDate = (rawDate: Date | string) => {
+  const date = typeof rawDate === "string" ? new Date(rawDate) : rawDate
   const year = date.getFullYear();
   const month = zeroPrefix(date.getMonth() + 1);
   const day = zeroPrefix(date.getDate());

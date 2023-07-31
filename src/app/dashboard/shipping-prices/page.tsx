@@ -4,7 +4,7 @@ import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardUpdateShippingPrices, {
   MultipleWilayaSelection,
   SelectedWilaya,
-} from "@/components/dashboard/wilayas/DashboardUpdateShippingPrices";
+} from "@/components/dashboard/shipping-prices/DashboardUpdateShippingPrices";
 import { useStore } from "@/store";
 import { Wilaya } from "@/store/wilayaSlice";
 import React, { useEffect, useState } from "react";
@@ -262,7 +262,7 @@ export default function ShippingPrices({}: Props) {
       >
         <table className="w-full table-fixed">
           <thead>
-            <tr className="sticky top-0 z-10 h-20 min-h-[5rem] w-full border-0 border-hidden bg-white align-middle text-sm text-stone-500 dark:bg-dark-background [&>th]:text-left">
+            <tr className="sticky top-0 z-10 h-14 min-h-[5rem] w-full border-0 border-hidden bg-white dark:bg-dark align-middle text-sm text-stone-500 dark:bg-dark-background [&>th]:text-left">
               <th className="w-14 items-center pl-4 2xl:w-20">
                 <input
                   id="select-all-checkbox"

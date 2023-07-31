@@ -20,6 +20,7 @@ import { postOrder } from "@/lib/clientApiHelpers";
 import { PostOrderRequestPayload } from "@/types/api";
 import { toNumber } from "@/lib/utils";
 import Loader from "@/components/Loader";
+import { redirect, useRouter } from "next/navigation";
 
 export interface OrderFormValues {
   lastName: string;
@@ -34,7 +35,19 @@ export interface OrderFormValues {
 type Props = {};
 
 export default function OrderForm({}: Props) {
+  const { replace, prefetch } = useRouter();
   const methods = useForm<OrderFormValues>();
+
+  useEffect(() => {
+    prefetch("/thanks");
+    return () => {
+      // console.log("UNMOUNTED", isSuccess);
+      // if (isSuccess) {
+      removeAllSelectedProducts();
+      setIsConfirming(false);
+      // }
+    };
+  }, []);
 
   const {
     register,
@@ -49,6 +62,7 @@ export default function OrderForm({}: Props) {
     confirmData,
     isConfirming,
     setIsConfirming,
+    removeAllSelectedProducts,
   } = useStore();
 
   const isDisabledSubmit =
@@ -56,9 +70,15 @@ export default function OrderForm({}: Props) {
 
   const [showOptionalFields, setShowOptionalFields] = useState(false);
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isLoading, isSuccess } = useMutation({
     mutationFn: (data: PostOrderRequestPayload) => {
       return postOrder(data);
+    },
+    onSuccess: ({ orderCode }) => {
+      console.log("onSuccessRun!");
+
+      replace(`/thanks?code=${orderCode}`);
+      // clear the selection
     },
   });
 
@@ -84,8 +104,11 @@ export default function OrderForm({}: Props) {
         ...(lastName && { lastName }),
         ...(isHome && { address }),
       };
-      console.log("requretdata => ", requestData);
+      // console.log("requretdata => ", requestData);
       mutate(requestData);
+      // replace("/thanks?code=A5E5R8E6R9R5E2");
+      // removeAllSelectedProducts();
+      // setIsConfirming(false);
     }
 
     // console.log(data);
@@ -218,7 +241,8 @@ export default function OrderForm({}: Props) {
         >
           {isConfirming && (
             <button
-              className="text h-12 w-auto gap-2 rounded-lg px-6 focus:bg-stone-950/70 dark:bg-stone-950"
+              disabled={isLoading}
+              className="text h-12 w-auto gap-2 rounded-lg px-6 focus:bg-stone-950/70 dark:bg-stone-950 disabled:cursor-not-allowed"
               onClick={cancelConfirm}
             >
               <MdArrowBack className="h-6 w-6" /> Retour
@@ -227,7 +251,7 @@ export default function OrderForm({}: Props) {
 
           <button
             className="text flex h-12 w-44 items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed  disabled:bg-stone-200 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-stone-700 disabled:dark:text-stone-900"
-            disabled={isDisabledSubmit || isLoading}
+            disabled={isDisabledSubmit || isLoading || isSuccess}
           >
             {isLoading ? (
               <Loader className="h-6 w-6 border-white" />

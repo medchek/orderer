@@ -162,6 +162,7 @@ export default async function Orders({ params }: Props) {
                     onClear={() => {}}
                     transparentBg
                     images={product.images}
+                    small
                   />
                 ))}
               </div>

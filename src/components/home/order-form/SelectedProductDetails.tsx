@@ -1,8 +1,7 @@
 import { getImageDirectUrl, trucateString } from "@/lib/utils";
-import Image from "next/image";
 import React from "react";
 import { MdClear } from "react-icons/md";
-
+import { clsx } from "clsx";
 interface Props {
   name: string;
   description: string | null;
@@ -15,6 +14,10 @@ interface Props {
   onClear: () => void;
 
   disabledRemove: boolean;
+
+  transparentBg?: boolean;
+
+  small?: boolean;
 }
 
 export default function SelectedProductDetails({
@@ -25,6 +28,8 @@ export default function SelectedProductDetails({
   images,
   discount,
   disabledRemove,
+  transparentBg,
+  small,
   onClear,
 }: Props) {
   const discountedPrice =
@@ -33,7 +38,18 @@ export default function SelectedProductDetails({
   const productImageUrl = getImageDirectUrl(images[0].id);
   // old dark bg #121212
   return (
-    <div className="relative flex h-[154px] w-full items-center gap-3 rounded-2xl bg-[#F4F4F4] px-3 py-2 dark:bg-input-dark">
+    <div
+      className={clsx(
+        {
+          "bg-transparent": transparentBg,
+          "dark:bg-input-dark bg-[#F4F4F4] rounded-2xl": !transparentBg,
+          "h-[154px] gap-3": !small,
+          "h-[130px] gap-4": small,
+        },
+        "relative flex w-full items-center px-3 py-2"
+      )}
+    >
+      {/* Clear cross */}
       {productCount > 1 && !disabledRemove && (
         <button
           type="button"
@@ -44,8 +60,13 @@ export default function SelectedProductDetails({
           <MdClear className=" h-5 w-5 dark:text-stone-100" />
         </button>
       )}
-
-      <div className="relative flex h-32 w-32 min-w-[128px]">
+      {/* IMAGE */}
+      <div
+        className={clsx(
+          small ? "h-28 w-28 min-w-[7rem]" : "h-32 w-32 min-w-[8rem]",
+          "relative flex"
+        )}
+      >
         <img
           className="relative w-full rounded-xl object-cover"
           src={productImageUrl}
@@ -60,15 +81,46 @@ export default function SelectedProductDetails({
           </p>
         )}
       </div>
-      <div className="flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4">
+      <div
+        className={clsx(
+          small ? "h-28 max-h-28" : "h-32 max-h-32",
+          "flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4"
+        )}
+      >
         <div className="space-y-0.5">
-          <p className="line-clamp-2 font-semibold dark:text-white">{name}</p>
-          <p className="line-clamp-2 text-sm text-[#666666]">{description}</p>
+          <p
+            className={clsx(
+              // { "text-sm": small },
+              "line-clamp-2 font-semibold dark:text-stone-50"
+            )}
+          >
+            {name}
+          </p>
+          {/* DESCRIPTION */}
+          <p
+            className={clsx(
+              small ? "text-xs" : "text-sm",
+              "line-clamp-2 text-[#666666]"
+            )}
+          >
+            {description}
+          </p>
           {/* <p className="text-secondary text-sm font-semibold">En stock: 3</p> */}
         </div>
 
-        <p className="font-semibold text-[#171717] dark:text-white">
+        <p
+          className={clsx(
+            small && "text-sm",
+            "font-semibold text-[#171717] dark:text-stone-50"
+          )}
+        >
           Prix: {discountedPrice}DA
+          {discount > 0 && (
+            <span className="font-normal dark:text-stone-600">
+              {" "}
+              &bull; (<span className="line-through">{price}DA</span>)
+            </span>
+          )}
         </p>
       </div>
     </div>

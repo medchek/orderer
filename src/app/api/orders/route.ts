@@ -39,16 +39,18 @@ export async function POST(req: NextRequest) {
     const { isHome, phone, productsCode, wilayaId, address, lastName, name, email } = data;
 
     // check if the products exist
+    // remove potential array duplicates
+    const productsCodeNoDup = Array.from(new Set(productsCode))
 
     const productsExist = await prisma.product.count({
       where: {
         code: {
-          in: productsCode
+          in: productsCodeNoDup
         }
       }
     })
 
-    if (productsExist !== productsCode.length) {
+    if (productsExist !== productsCodeNoDup.length) {
       return apiErrorResponse("invalid product codes", STATUS_BAD_REQUEST)
     }
 
@@ -63,7 +65,7 @@ export async function POST(req: NextRequest) {
     const orderCode = uniqueId(ORDER_CODE_LENGTH, true)
 
     // if there are no user with this phone number, create one
-    const order = await prisma.order.create({
+    await prisma.order.create({
       data: {
         code: orderCode,
         isHome,
@@ -90,6 +92,7 @@ export async function POST(req: NextRequest) {
         },
         orderProducts: {
           createMany: {
+            // allow duplicates if the user wants to order the same product twice or more
             data: productsCode.map(code => ({ productCode: code }))
           }
         }

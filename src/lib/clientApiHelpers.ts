@@ -53,12 +53,23 @@ export const getSingleProduct = async ([_, productCode]: (string | null)[]): Pro
     throw error
   }
 }
+
 /**
  * fetche all the products from the api
  * @returns all products data
  */
 export const getProducts = async (): Promise<Product[]> => {
   return await ky.get("/api/products").json();
+}
+
+/**
+ * Delete a product by code
+ * @param productCode the product code
+ * @returns the delete product code
+ */
+export const deleteProduct = async (productCode: string): Promise<string> => {
+  await ky.delete(`/api/products/${productCode}`).json();
+  return productCode;
 }
 
 /**
@@ -71,15 +82,19 @@ export const postOrder = async (order: PostOrderRequestPayload): Promise<PostOrd
     json: order
   }).json();
   return orderId
-  // await sleep(2000)
-  // return "WTU6UE17TTDBXQ"
 }
 
 export const getOrders = async (): Promise<GetAllOrdersSuccessResponsePayload[]> => {
 
   return await ky.get("/api/orders").json();
 }
-export const deleteOrder = async (code: string): Promise<void> => {
-  return await ky.delete(`/api/orders/${code}`).json();
+/**
+ * Delete an order
+ * @param code the order code
+ * @returns the deleted order code
+ */
+export const deleteOrder = async (code: string): Promise<string> => {
+  await ky.delete(`/api/orders/${code}`).json();
+  return code
 }
 

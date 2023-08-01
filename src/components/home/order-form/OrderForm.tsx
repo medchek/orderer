@@ -15,7 +15,7 @@ import { orderFormValidators } from "@/lib/formValidators";
 import { useStore } from "@/store";
 import Prices from "./Prices";
 import OrderConfirm from "../OrderConfirm";
-import { useMutation } from "react-query";
+import { useMutation } from "@tanstack/react-query";
 import { postOrder } from "@/lib/clientApiHelpers";
 import { PostOrderRequestPayload } from "@/types/api";
 import { toNumber } from "@/lib/utils";
@@ -75,10 +75,7 @@ export default function OrderForm({}: Props) {
       return postOrder(data);
     },
     onSuccess: ({ orderCode }) => {
-      console.log("onSuccessRun!");
-
       replace(`/thanks?code=${orderCode}`);
-      // clear the selection
     },
   });
 
@@ -87,7 +84,13 @@ export default function OrderForm({}: Props) {
     console.log("submitting");
     if (!isConfirming) {
       // confirmation step
+      // mark the address as empty is the the shipping type is to the office
+      const { isHome } = data;
+      if (!isHome) {
+        data.address = "";
+      }
       setConfirmData(data);
+      // show the confirm component
       setIsConfirming(true);
     } else {
       // if the user confirms the data

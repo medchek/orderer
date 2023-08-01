@@ -4,6 +4,7 @@ import { OrderFormValues } from "./order-form/OrderForm";
 import { Wilaya } from "@/store/wilayaSlice";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { addPartitive } from "@/lib/utils";
 
 interface Props {
   data: OrderFormValues;
@@ -34,7 +35,13 @@ export default function OrderConfirm({ data, selectedWilaya }: Props) {
       </div>
       <div>
         <p className="w-40 text-stone-100">Adresse</p>
-        <p className="font-semibold">{data.address}</p>
+        <p className="font-semibold">
+          {data.address !== ""
+            ? data.address
+            : `Bureau de livraison de la wilaya ${addPartitive(
+                selectedWilaya.name
+              )}`}
+        </p>
       </div>
       <div>
         <p className="w-40 text-stone-100">Nom/Prénom</p>

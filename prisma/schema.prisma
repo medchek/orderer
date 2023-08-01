@@ -95,10 +95,10 @@ model Order {
   status Status? @default(UNCONFIRMED)
   isHome Boolean @default(true) @map("is_home")
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
-  wilaya   Wilaya @relation(fields: [wilayaId], references: [id])
+  wilaya   Wilaya @relation(fields: [wilayaId], references: [id], onDelete: Cascade)
   wilayaId Int    @map("wilaya_id")
 
   address String? @db.VarChar(255)
@@ -112,10 +112,10 @@ model Order {
 }
 
 model OrdersProducts {
-  product     Product @relation(fields: [productCode], references: [code])
+  product     Product @relation(fields: [productCode], references: [code], onDelete: Cascade)
   productCode String  @db.VarChar(25)
 
-  order   Order @relation(fields: [orderId], references: [id])
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId Int
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)

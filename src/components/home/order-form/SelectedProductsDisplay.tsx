@@ -5,7 +5,7 @@ import ProductDetails from "@/components/home/order-form/SelectedProductDetails"
 import { MdAdd } from "react-icons/md";
 import AddProduct from "../AddProduct";
 import AddProductButton from "../AddProductButton";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { useSearchParams } from "next/navigation";
 import Loader from "@/components/Loader";
@@ -22,7 +22,7 @@ export default function SelectedProductsDisplay() {
 
   // const [isFetchingProduct, setIsFetchingProduct] = useState(false);
 
-  const { status } = useQuery({
+  const { status, isFetching } = useQuery({
     queryKey: ["products", searchParams.get("product")],
     queryFn: ({ queryKey }) => getSingleProduct(queryKey),
     enabled: !!searchParams.get("product") && !selectedProducts.length,
@@ -54,7 +54,7 @@ export default function SelectedProductsDisplay() {
 
   const productList = !selectedProducts.length ? (
     <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-[#F4F4F4] px-3 py-2 font-semibold dark:bg-input-dark dark:text-stone-200">
-      {status === "loading" ? (
+      {isFetching ? (
         <Loader />
       ) : (
         <button

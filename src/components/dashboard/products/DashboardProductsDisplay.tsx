@@ -5,7 +5,7 @@ import ProductCard from "../../ProductCard";
 import { MdAdd, MdDeleteOutline, MdEdit } from "react-icons/md";
 import ModalLoader from "@/components/ModalLoader";
 import ProductCardLoader from "@/components/ProductCardLoader";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteProduct, getProducts } from "@/lib/clientApiHelpers";
 import dynamic from "next/dynamic";
 

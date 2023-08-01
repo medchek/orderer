@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
 import Loader from "../../Loader";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getWilayas } from "@/lib/clientApiHelpers";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -32,7 +32,7 @@ export default function WilayaSelectInput({
 
   const inputRegister = register && register(name, registerRules);
 
-  const { isLoading } = useQuery({
+  const { isFetching } = useQuery({
     queryKey: ["wilayas"],
     queryFn: getWilayas,
     onSuccess: (data) => {
@@ -100,7 +100,7 @@ export default function WilayaSelectInput({
       </label>
       <div className="relative flex h-12 w-full items-center">
         <select
-          disabled={isLoading}
+          disabled={isFetching}
           {...props}
           {...inputRegister}
           id={id}
@@ -108,7 +108,7 @@ export default function WilayaSelectInput({
           onChange={handleOnChange}
           value={selectedValue}
         >
-          {isLoading ? (
+          {isFetching ? (
             <option value="" defaultValue="">
               Chargement...
             </option>
@@ -122,7 +122,7 @@ export default function WilayaSelectInput({
           )}
         </select>
 
-        {isLoading ? (
+        {isFetching ? (
           <Loader className="absolute right-4 h-6 w-6 border-stone-400" />
         ) : (
           <MdChevronRight className="pointer-events-none absolute right-4 h-7 w-7 rotate-90 dark:text-[#979797]" />

@@ -4,6 +4,7 @@ import LoginForm from "@/components/login/LoginForm";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { RedirectType } from "next/dist/client/components/redirect";
 
 export const metadata = {
   title: "Connexion - TRB Eshop",
@@ -21,8 +22,8 @@ export default async function Login({}: Props) {
       {/* {JSON.stringify(session.user)} */}
     </main>
   ) : session.user?.email === process.env.GOOGLE_ADMIN_EMAIL ? (
-    redirect("/dashboard")
+    redirect("/dashboard", RedirectType.replace)
   ) : (
-    redirect("/")
+    redirect("/", RedirectType.replace)
   );
 }

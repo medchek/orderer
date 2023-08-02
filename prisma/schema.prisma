@@ -84,8 +84,23 @@ model Wilaya {
 
   orders Order[]
   User   User[]
+  Town   Town[]
 
   @@map("wilayas")
+}
+
+model Town {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(100)
+  arName String @map("ar_name") @db.VarChar(100)
+  code   Int    @unique @db.Integer
+
+  wilaya   Wilaya @relation(fields: [wilayaId], references: [id], onDelete: Cascade)
+  wilayaId Int    @map("wilaya_id")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  User      User[]
+  Order     Order[]
 }
 
 model Order {
@@ -100,6 +115,9 @@ model Order {
 
   wilaya   Wilaya @relation(fields: [wilayaId], references: [id], onDelete: Cascade)
   wilayaId Int    @map("wilaya_id")
+
+  town   Town @relation(references: [id], fields: [townId], onDelete: Cascade)
+  townId Int  @map("town_id")
 
   address String? @db.VarChar(255)
 
@@ -138,6 +156,9 @@ model User {
 
   wilaya   Wilaya? @relation(references: [id], fields: [wilayaId], onDelete: SetNull)
   wilayaId Int?    @map("wilaya_id")
+
+  town   Town? @relation(references: [id], fields: [townId], onDelete: SetNull)
+  townId Int?  @map("town_id")
 
   orders Order[]
 

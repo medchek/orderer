@@ -1,6 +1,8 @@
-import { dummyProductData, wilayaData } from "./seedData";
+
 import { prisma } from "./db";
-import { uniqueId } from "../src/lib/utils";
+import wilayasData from "./seeders/wilayasSeedData";
+import { dummyProductData } from "./seeders/productsSeedData";
+import townsData from "./seeders/townsSeedData";
 
 interface FakeProductData {
   id: number;
@@ -15,8 +17,31 @@ async function main() {
   const firstWilaya = await prisma.wilaya.count({ where: { id: 1 } });
   if (firstWilaya === 0) {
     await prisma.wilaya.createMany({
-      data: wilayaData,
+      data: wilayasData,
     });
+  }
+
+  // seed towns of wilaya
+  const firstTown = await prisma.town.count();
+
+  if (firstTown === 0) {
+    const wilayaCodes = Object.keys(townsData);
+
+    for (const wilayCodeSring of wilayaCodes) {
+      const wilayCode = parseInt(wilayCodeSring);
+      const wilayaTowns = townsData[wilayCodeSring];
+
+      for (const { arName, code, name } of wilayaTowns) {
+        await prisma.town.create({
+          data: {
+            arName,
+            name,
+            code,
+            wilayaId: wilayCode,
+          },
+        })
+      }
+    }
   }
 
   if (process.env.NODE_ENV === "development") {
@@ -30,29 +55,6 @@ async function main() {
         },
       });
     }
-    // grab more data from a testing api and inject them inside the db as well,
-    // this will allow testing for pagination
-    /*
-    const data = await fetch("https://fakestoreapi.com/products");
-    const fakeProducts = await (data.json() as Promise<FakeProductData[]>);
-    fakeProducts.forEach(async ({ title, description, image, price }) => {
-      await prisma.product.create({
-        data: {
-          code: uniqueId(20),
-          name: title,
-          price: Math.floor(price * 100),
-          description,
-          stock: 3,
-          images: {
-            create: [{ id: image }],
-          },
-        },
-        include: {
-          images: true,
-        },
-      });
-    });
-    */
   }
 }
 

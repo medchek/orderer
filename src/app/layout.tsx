@@ -2,8 +2,8 @@
 import AuthProvider from "@/components/AuthProvider";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { QueryClientProvider, QueryClient } from "react-query";
-
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -15,6 +15,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 30,
     },
   },
 });
@@ -30,6 +31,7 @@ export default function RootLayout({
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             {children}
+            <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
         </AuthProvider>
       </body>

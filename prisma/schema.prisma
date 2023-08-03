@@ -95,12 +95,14 @@ model Town {
   arName String @map("ar_name") @db.VarChar(100)
   code   Int    @unique @db.Integer
 
-  wilaya   Wilaya @relation(fields: [wilayaId], references: [id], onDelete: Cascade)
-  wilayaId Int    @map("wilaya_id")
+  wilaya     Wilaya @relation(fields: [wilayaCode], references: [code], onDelete: Cascade)
+  wilayaCode Int    @map("wilaya_code")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   User      User[]
   Order     Order[]
+
+  @@map("towns")
 }
 
 model Order {

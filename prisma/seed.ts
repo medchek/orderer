@@ -37,7 +37,7 @@ async function main() {
             arName,
             name,
             code,
-            wilayaId: wilayCode,
+            wilayaCode: wilayCode,
           },
         })
       }

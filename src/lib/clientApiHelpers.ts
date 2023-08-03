@@ -1,6 +1,6 @@
 import { Product } from "@/store/productSlice";
 import { Wilaya } from "@/store/wilayaSlice";
-import { GetAllOrdersSuccessResponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload } from "@/types/api";
+import { GetAllOrdersSuccessResponsePayload, GetCategoriesSuccessResponsePayload, GetTownsSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload } from "@/types/api";
 
 import ky from "ky"
 
@@ -33,11 +33,26 @@ export const postImage = async (imageFile: File) => {
   }
 };
 
-
+/**
+ * Fetch all the wilayas from the api
+ * @returns an array of all the wilayas
+ */
 export const getWilayas = async (): Promise<Wilaya[]> => {
   const data: Wilaya[] = await ky.get("/api/wilayas").json()
   return data
 }
+
+/**
+ * Fetch all the wilayas from the api
+ * @returns an array of all the wilayas
+ */
+export const getTowns = async (wilayaCode: number): Promise<GetTownsSuccessResponsePayload> => {
+  return await ky.get(`/api/towns/${wilayaCode}`).json()
+
+}
+
+
+
 /**
  * Fetch a single product from the api
  * @param queryKey React query keys array where the second array item is the product code
@@ -96,5 +111,19 @@ export const getOrders = async (): Promise<GetAllOrdersSuccessResponsePayload[]>
 export const deleteOrder = async (code: string): Promise<string> => {
   await ky.delete(`/api/orders/${code}`).json();
   return code
+}
+
+/**
+ * Fetch all the categories from the api
+ * @returns the list of categories and their sub-categories
+ */
+export const getCategories = async (): Promise<GetCategoriesSuccessResponsePayload> => {
+  return await ky.get("/api/categories").json()
+}
+
+export const postCategory = async (data: PostCategoryRequestPayload): Promise<PostCategorySuccessReponsePayload> => {
+  return await ky.post("/api/categories", {
+    json: data
+  }).json()
 }
 

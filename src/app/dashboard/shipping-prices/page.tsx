@@ -5,8 +5,11 @@ import DashboardUpdateShippingPrices, {
   MultipleWilayaSelection,
   SelectedWilaya,
 } from "@/components/dashboard/shipping-prices/DashboardUpdateShippingPrices";
+import { getWilayas } from "@/lib/clientApiHelpers";
 import { useStore } from "@/store";
 import { Wilaya } from "@/store/wilayaSlice";
+import { useQuery } from "@tanstack/react-query";
+import { clsx } from "clsx";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
@@ -17,8 +20,11 @@ export default function ShippingPrices({}: Props) {
     wilayas: storeWilayas,
     wilayaFetchStatus,
     fetchWilayas,
+    setWilayas: setStoreWilayas,
     getFilteredWilayas,
   } = useStore();
+
+  // filtered wilayas list
   const [wilayas, setWilayas] = useState<Wilaya[]>([]);
 
   const [selectedWilayasList, setSelectedWilayasList] =
@@ -55,29 +61,10 @@ export default function ShippingPrices({}: Props) {
     setIsModalOpen(true);
   };
 
-  /**
-   * Creates the logic to be able to select wilayas
-   */
-  useEffect(() => {
-    if (wilayaFetchStatus !== "success") {
-      fetchWilayas().then(({ status, wilayas }) => {
-        if (status === "success") {
-          setWilayas(wilayas);
-          setSelectedWilayasList(
-            wilayas.map(({ code, availableHome, availableOffice }, index) => ({
-              code,
-              selected: false,
-              availableHome,
-              availableOffice,
-              index,
-            }))
-          );
-        }
-      });
-    } else {
-      // if the wilayas are already present, just populate the selected state
+  const populateSelectedWilayaList = () => {
+    if (storeWilayas.length) {
       setSelectedWilayasList(
-        storeWilayas.map(({ code, availableHome, availableOffice }, index) => ({
+        wilayas.map(({ code, availableHome, availableOffice }, index) => ({
           code,
           selected: false,
           availableHome,
@@ -86,6 +73,26 @@ export default function ShippingPrices({}: Props) {
         }))
       );
     }
+  };
+
+  /**
+   * Creates the logic to be able to select wilayas
+   */
+
+  const { isFetching, isSuccess, isError, refetch } = useQuery({
+    queryKey: ["wilayas"],
+    queryFn: getWilayas,
+    refetchOnMount: true,
+    onSuccess: (data) => {
+      setStoreWilayas(data);
+      populateSelectedWilayaList();
+    },
+    enabled: storeWilayas.length === 0,
+  });
+
+  useEffect(() => {
+    // if the wilayas are already present, just populate the selected state
+    populateSelectedWilayaList();
   }, []);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,7 +195,7 @@ export default function ShippingPrices({}: Props) {
       );
   };
 
-  const loadingSkeleton = Array.from({ length: 14 }, (_, i) => (
+  const loadingSkeleton = Array.from({ length: 18 }, (_, i) => (
     <tr
       key={i}
       className="h-12 min-h-[3rem] w-full animate-pulse [&>td>div]:h-4 [&>td>div]:rounded-md [&>td>div]:bg-stone-800 [&>td]:text-left [&>td]:align-middle"
@@ -254,11 +261,10 @@ export default function ShippingPrices({}: Props) {
       {/* new Body  */}
 
       <section
-        className={`relative h-full w-full overflow-x-hidden pr-2 dark:[color-scheme:dark] ${
-          wilayaFetchStatus === "init" || wilayaFetchStatus === "fetching"
-            ? "overflow-y-hidden"
-            : "overflow-y-auto"
-        }`}
+        className={clsx(
+          "relative h-full w-full overflow-x-hidden pr-2 dark:[color-scheme:dark]",
+          isSuccess && "overflow-y-auto"
+        )}
       >
         <table className="w-full table-fixed">
           <thead>
@@ -286,22 +292,23 @@ export default function ShippingPrices({}: Props) {
             </tr>
           </thead>
           <tbody className="h-full text-sm text-white">
-            {(wilayaFetchStatus === "init" ||
-              wilayaFetchStatus === "fetching") &&
-              loadingSkeleton}
+            {isFetching && loadingSkeleton}
 
-            {wilayaFetchStatus === "success" && wilayaList()}
+            {isSuccess && wilayaList()}
 
-            {wilayaFetchStatus === "error" && (
-              <tr className="absolute flex w-full flex-col items-center ">
-                <td className="flex flex-col items-center justify-center gap-2">
-                  <p className="mt-2 text-red-500">
+            {isError && (
+              <tr className="absolute flex w-full flex-col items-center h-full justify-center">
+                <td className="flex flex-col items-center justify-center gap-2 -translate-y-20">
+                  <div className="flex items-center justify-center rounded-full border-4 w-10 h-10 text-xl font-bold text-red-500 border-red-500">
+                    !
+                  </div>
+                  <p className="mt-2 text-stone-400">
                     Une érreur est survenu lors de la recherche des wilayas
                   </p>
                   <button
                     type="button"
-                    className="h-10 w-28 rounded-lg  font-semibold text-white transition-colors hover:bg-stone-800  focus:bg-stone-900/70 "
-                    onClick={fetchWilayas}
+                    className="h-9 px-4 rounded-lg  font-semibold text-stone-100 transition-colors dark:hover:bg-stone-900/70  dark:focus:bg-stone-950 "
+                    onClick={() => refetch}
                   >
                     Réessayer
                   </button>
@@ -310,6 +317,7 @@ export default function ShippingPrices({}: Props) {
             )}
           </tbody>
         </table>
+        {/* <div className="h-10 w-full bg-red-500"></div> */}
       </section>
       {isModalOpen && (
         <DashboardUpdateShippingPrices

@@ -7,10 +7,29 @@ interface Props {
   disabledSubmit?: boolean;
   cancelText?: string;
   confirmText: string;
-  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
   disableCancel?: boolean;
-  onConfirm: DOMAttributes<HTMLButtonElement>["onClick"];
+  confirmButtonType?: "button" | "submit";
+  onConfirm?: DOMAttributes<HTMLButtonElement>["onClick"];
   onCancel: () => void;
+}
+
+interface BaseProps {
+  id?: string;
+  isLoading?: boolean;
+  disabledSubmit?: boolean;
+  cancelText?: string;
+  confirmText: string;
+  disableCancel?: boolean;
+  onCancel: () => void;
+}
+
+interface SubmitConfirmType extends BaseProps {
+  confirmButtonType?: "submit";
+  onConfirm?: DOMAttributes<HTMLButtonElement>["onClick"];
+}
+interface ButtonConfirmType extends BaseProps {
+  confirmButtonType?: "button";
+  onConfirm: DOMAttributes<HTMLButtonElement>["onClick"];
 }
 
 export default function ModalActionButtons({
@@ -19,13 +38,13 @@ export default function ModalActionButtons({
   cancelText,
   confirmText,
   disableCancel,
-  type,
+  confirmButtonType,
   disabledSubmit,
   onConfirm,
   id,
-}: Props) {
+}: SubmitConfirmType | ButtonConfirmType) {
   return (
-    <section id={id} className="flex items-center justify-end gap-4 py-4">
+    <section id={id} className="flex items-center justify-end gap-4 py-4 px-1">
       <button
         type="button"
         className="h-10 w-36 rounded-md font-bold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
@@ -35,7 +54,7 @@ export default function ModalActionButtons({
         {cancelText ?? "Annuler"}
       </button>
       <button
-        type={type}
+        type={confirmButtonType}
         className="h-10 w-36 rounded-md bg-blue-600 font-bold text-white transition-colors hover:bg-secondary focus:bg-blue-700  disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
         disabled={isLoading || disabledSubmit}
         onClick={onConfirm}

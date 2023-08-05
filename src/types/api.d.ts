@@ -92,3 +92,33 @@ export interface GetAllOrdersSuccessResponsePayload {
     };
   }[]
 }
+
+export interface PostCategoryRequestPayload {
+  name: string;
+}
+export interface PostCategorySuccessReponsePayload {
+  id: number;
+  name: string;
+}
+
+export type GetCategoriesSuccessResponsePayload = {
+  id: number;
+  name: string;
+  subCategories?: { id: number; name: string }[]
+}[]
+
+export interface PostSubCategoryRequestPayload {
+  categoryId: number;
+  name: string;
+}
+
+export interface PostSubCategorySuccessResponsePayload extends PostSubCategoryRequestPayload {
+  id: number
+}
+
+export type GetTownsSuccessResponsePayload = {
+  name: string;
+  arName: string;
+  code: number;
+}[]
+

@@ -1,6 +1,6 @@
 import { Product } from "@/store/productSlice";
 import { Wilaya } from "@/store/wilayaSlice";
-import { GetAllOrdersSuccessResponsePayload, GetCategoriesSuccessResponsePayload, GetTownsSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload } from "@/types/api";
+import { GetAllOrdersSuccessResponsePayload, GetCategoriesSuccessResponsePayload, GetTownsSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload, PostSubCategoryRequestPayload, PostSubCategorySuccessResponsePayload } from "@/types/api";
 
 import ky from "ky"
 
@@ -123,6 +123,11 @@ export const getCategories = async (): Promise<GetCategoriesSuccessResponsePaylo
 
 export const postCategory = async (data: PostCategoryRequestPayload): Promise<PostCategorySuccessReponsePayload> => {
   return await ky.post("/api/categories", {
+    json: data
+  }).json()
+}
+export const postSubCategory = async (data: PostSubCategoryRequestPayload): Promise<PostSubCategorySuccessResponsePayload> => {
+  return await ky.post("/api/subcategories", {
     json: data
   }).json()
 }

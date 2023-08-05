@@ -53,12 +53,12 @@ export default function ShippingTypeSelector() {
   };
 
   return (
-    <div className="flex w-full space-x-7">
-      <div className="flex w-1/2 flex-col space-y-1">
-        <p className="text-lg font-semibold dark:text-white">
+    <div className="flex w-full gap-4 2xl:gap-7">
+      <div className="flex w-1/2 flex-col gap-1">
+        <p className="2xl:text-lg font-semibold dark:text-white">
           Type de Livraison
         </p>
-        <div className="flex h-12 space-x-4">
+        <div className="flex h-12 gap-2 2xl:gap-4">
           <TypeSelectorButton
             text="À Domicile"
             isSelected={shippingType === SHIPPING_TYPE.HOME}

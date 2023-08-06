@@ -20,7 +20,7 @@ export default function Snackbar({}: Props) {
     <div
       id="snack"
       className={clsx(
-        "absolute bottom-6 left-0 right-0 z-50 mx-auto flex h-14 w-96 items-center justify-between rounded-xl px-4 text-sm  shadow-lg",
+        "absolute bottom-6 left-0 right-0 z-50 mx-auto flex h-14 w-96 items-center justify-between rounded-xl px-4 py-2 text-sm gap-2  shadow-lg",
         {
           "text-red-50 dark:bg-red-700": snackType === "error",
           "bg-stone-900 dark:text-stone-100": snackType !== "error",

@@ -27,8 +27,9 @@ export default function DashboardNav({}: Props) {
   ];
 
   const LinkList = links.map(({ href, name, icon }) => (
+    // old dark link: dark:bg-[#22233f] dark:hover:bg-[#2f325f] dark:focus:bg-[#070714]
     <Link
-      className="flex h-12 w-full items-center text-sm rounded-lg bg-[#EC2A2A] pl-5  font-semibold text-white transition-colors first-letter:capitalize hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-[#22233f] dark:hover:bg-[#2f325f] dark:focus:bg-[#070714] [&>svg]:w-6 [&>svg]:h-6 gap-4"
+      className="flex h-12 w-full items-center text-sm rounded-lg bg-[#EC2A2A] pl-5  font-semibold text-white transition-colors first-letter:capitalize hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-stone-900 dark:hover:bg-stone-800 focus:dark:bg-stone-900/50  [&>svg]:w-6 [&>svg]:h-6 gap-4"
       key={href}
       href={`/dashboard/${href}`}
     >
@@ -39,7 +40,7 @@ export default function DashboardNav({}: Props) {
     <div
       id="dashboard-nav"
       // dark:bg-[#0b0c1f]
-      className="flex h-full min-w-[280px] flex-col justify-between bg-primary-darker px-5 py-2 dark:bg-card-dark "
+      className="flex h-full min-w-[280px] flex-col justify-between bg-primary-darker px-5 py-2 dark:bg-stone-950 "
     >
       <section className="flex grow  flex-col">
         <div

@@ -1,3 +1,5 @@
+import { PatchCategorySuccessResponsePayload } from './../types/api.d';
+import { CategoryType } from "@/store/dashboardSlice";
 import { Product } from "@/store/productSlice";
 import { Wilaya } from "@/store/wilayaSlice";
 import { GetAllOrdersSuccessResponsePayload, GetCategoriesSuccessResponsePayload, GetTownsSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload, PostSubCategoryRequestPayload, PostSubCategorySuccessResponsePayload } from "@/types/api";
@@ -132,3 +134,25 @@ export const postSubCategory = async (data: PostSubCategoryRequestPayload): Prom
   }).json()
 }
 
+/**
+ * Delete request for categories and subcategories api routes
+ * @param id The resource id
+ * @param type This affects the api route endpoint. either categories or subcategories
+ * @returns the id and category type that were provided
+ */
+export const deleteCategory = async ({ type, id }: { id: number, type: CategoryType }): Promise<{ id: number, type: CategoryType }> => {
+  await ky.delete(`/api/${type === "category" ? "categories" : "subcategories"}/${id}`).json()
+  return { id, type };
+}
+
+/**
+ * Patch request for categories and subcategories api routes
+ * @param id The resource id
+ * @param type This affects the api route endpoint. either categories or subcategories
+ * @param name the new category name to be patched
+ * @returns the id and category type and the new category name that were provided
+ */
+export const patchCategory = async ({ type, id, name }: { id: number, type: CategoryType, name: string }): Promise<{ id: number, type: CategoryType, name: string }> => {
+  const patchedData: PatchCategorySuccessResponsePayload = await ky.delete(`/api/${type === "category" ? "categories" : "subcategories"}/${id}`).json();
+  return { ...patchedData, type };
+}

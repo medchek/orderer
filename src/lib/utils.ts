@@ -1,6 +1,10 @@
 import { customAlphabet } from "nanoid";
 import { NextResponse } from 'next/server';
-import type { JSX } from 'react';
+import { ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { Prisma } from "@prisma/client";
+import { PRISMA_NOT_FOUND_ERROR_CODE } from "./constants";
+
 // import { prisma } from "../../prisma/db";
 
 const randId = (max: number = 1000) => Math.ceil(Math.random() * max);
@@ -97,22 +101,6 @@ export const toNullIfEmptyString = (
 };
 
 
-/**
- * Sends a structured json response to the client.
- * @param message the error message - default: Internal server error
- * @param status the error http status code- default: 500
- * @returns NextResponse json response
- */
-export const apiErrorResponse = (message?: string, status?: number) => {
-  return NextResponse.json({
-    error: {
-      message: message ?? "Internal server error",
-      status: status ?? 500
-    }
-  }, {
-    status: status ?? 500
-  })
-}
 
 /**
  * Adds the French partitive de or d' based on the name
@@ -154,4 +142,45 @@ export const formatDate = (rawDate: Date | string) => {
   const minutes = zeroPrefix(date.getMinutes());
 
   return `${day}/${month}/${year} ${hours}:${(minutes)}`
+}
+
+
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+
+/**
+ * Checks if the thrown error is a prisma exception and whether the expcetion code
+ * points to a not found resource
+ * @param error error thrown in the catch block of api call
+ * @return true if it's a not found prisma error, otherwise, false
+ */
+export const isNotFoundPrismaError = (error: unknown) => {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === PRISMA_NOT_FOUND_ERROR_CODE) {
+      return true
+    }
+  }
+  return false
+}
+
+
+
+/**
+ * Sends a structured json response to the client.
+ * @param message the error message - default: Internal server error
+ * @param status the error http status code- default: 500
+ * @returns NextResponse json response
+ */
+export const apiErrorResponse = (message?: string, status?: number) => {
+  return NextResponse.json({
+    error: {
+      message: message ?? "Internal server error",
+      status: status ?? 500
+    }
+  }, {
+    status: status ?? 500
+  })
 }

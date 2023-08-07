@@ -3,6 +3,7 @@ import { prisma } from "./db";
 import wilayasData from "./seeders/wilayasSeedData";
 import { dummyProductData } from "./seeders/productsSeedData";
 import townsData from "./seeders/townsSeedData";
+import { dummyCategoriesdata } from "./seeders/categoriesSeedData";
 
 interface FakeProductData {
   id: number;
@@ -56,6 +57,10 @@ async function main() {
       });
     }
   }
+
+  await prisma.category.createMany({
+    data: dummyCategoriesdata,
+  })
 }
 
 main()

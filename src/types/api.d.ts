@@ -122,3 +122,14 @@ export type GetTownsSuccessResponsePayload = {
   code: number;
 }[]
 
+export interface PatchCategoryRequestPayload {
+  name: string;
+}
+export interface PatchSubcategorySuccessResponsePayload {
+  id: number;
+  /** Parent category id */
+  categoryId: number;
+  name: string;
+}
+
+export interface PatchCategorySuccessResponsePayload extends PatchCategoryRequestPayload { id: number; }

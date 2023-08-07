@@ -1,4 +1,4 @@
-import { PatchCategorySuccessResponsePayload } from './../types/api.d';
+import { PatchCategoryRequestPayload, PatchCategorySuccessResponsePayload, PatchSubcategorySuccessResponsePayload } from './../types/api.d';
 import { CategoryType } from "@/store/dashboardSlice";
 import { Product } from "@/store/productSlice";
 import { Wilaya } from "@/store/wilayaSlice";
@@ -146,13 +146,28 @@ export const deleteCategory = async ({ type, id }: { id: number, type: CategoryT
 }
 
 /**
- * Patch request for categories and subcategories api routes
- * @param id The resource id
- * @param type This affects the api route endpoint. either categories or subcategories
- * @param name the new category name to be patched
- * @returns the id and category type and the new category name that were provided
+ * Patch request for categories api route
+ * @param id The category id
+ * @param name the new category name
+ * @returns the id and the new name of the category
  */
-export const patchCategory = async ({ type, id, name }: { id: number, type: CategoryType, name: string }): Promise<{ id: number, type: CategoryType, name: string }> => {
-  const patchedData: PatchCategorySuccessResponsePayload = await ky.delete(`/api/${type === "category" ? "categories" : "subcategories"}/${id}`).json();
-  return { ...patchedData, type };
+
+export const patchCategory = async ({ id, name }: { id: number, name: string }): Promise<PatchCategorySuccessResponsePayload> => {
+  const patchedData: PatchCategorySuccessResponsePayload = await ky.patch(`/api/categories/${id}`, {
+    json: { name }
+  }).json();
+  return patchedData
+}
+
+/**
+ * Patch request for subcategories api route
+ * @param id The subcategory resource id
+ * @param name the new subcategory name
+ * @returns the id, parent category id and the new name of the sub category
+ */
+export const PatchSubcategory = async ({ id, name }: { id: number; name: string }): Promise<PatchSubcategorySuccessResponsePayload> => {
+  const patchedData: PatchSubcategorySuccessResponsePayload = await ky.patch(`/api/subcategories/${id}`, {
+    json: { name }
+  }).json();
+  return patchedData
 }

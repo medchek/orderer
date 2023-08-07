@@ -1,8 +1,5 @@
-import React, { useState } from "react";
 import Modal from "../Modal";
 import Loader from "../Loader";
-import { STATUS_OK } from "@/lib/constants";
-import { useStore } from "@/store";
 
 interface Props {
   label: string;

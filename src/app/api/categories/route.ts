@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
-import { apiErrorResponse } from "@/lib/utils";
+import { apiErrorResponse, isUniqueConstraintPrismaError } from "@/lib/utils";
 import { GetCategoriesSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload } from "@/types/api";
 import Joi from "joi";
-import { STATUS_BAD_REQUEST, STATUS_CREATED, STATUS_OK } from "@/lib/constants";
+import { STATUS_BAD_REQUEST, STATUS_CONFLICT, STATUS_CREATED, STATUS_OK } from "@/lib/constants";
 import { prisma } from "../../../../prisma/db";
 
 export async function POST(req: NextRequest) {
@@ -26,11 +26,17 @@ export async function POST(req: NextRequest) {
     }
 
     const createdCategory: PostCategorySuccessReponsePayload = await prisma.category.create({
-      data: body
+      data: { name: validation.value.name }
     })
 
     return NextResponse.json(createdCategory, { status: STATUS_CREATED })
   } catch (error) {
+
+    if (isUniqueConstraintPrismaError(error)) {
+      return apiErrorResponse("category name already exists", STATUS_CONFLICT)
+    }
+
+
     console.error("Error saving category:", error)
     return apiErrorResponse("Couln't save category")
   }
@@ -44,7 +50,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json("unauthorized", { status: 401 });
     }
 
-    const categories: GetCategoriesSuccessResponsePayload = await prisma.category.findMany({
+    // const count = await prisma.category.count();
+    const categories = await prisma.category.findMany({
       select: {
         name: true,
         id: true,
@@ -57,7 +64,7 @@ export async function GET(req: NextRequest) {
       }
     })
 
-    return NextResponse.json(categories, { status: STATUS_OK })
+    return NextResponse.json(categories as GetCategoriesSuccessResponsePayload, { status: STATUS_OK })
   } catch (error) {
     console.error("Error getting categories:", error)
     return apiErrorResponse("Couln't get categories")

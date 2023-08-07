@@ -103,12 +103,12 @@ export default function DashboardUpdateCategory({
           newCategories
         );
 
-        showSnackbar("Sous catégorie modifiée avec succès", "default");
+        showSnackbar("Sous-catégorie modifiée avec succès", "default");
         closeModal();
       },
       onError: () => {
         showSnackbar(
-          `Une érreur est survenu lors la suppression de la sous catégorie`,
+          `Une érreur est survenu lors la suppression de la sous-catégorie`,
           "error"
         );
       },
@@ -155,10 +155,10 @@ export default function DashboardUpdateCategory({
       }}
       error={errors.name?.message}
       label={`Modifier une ${
-        type === "category" ? "catégorie" : "sous catégorie"
+        type === "category" ? "catégorie" : "sous-catégorie"
       }`}
       inputPlaceholder={`Nouveau nom de la  ${
-        type === "category" ? "catégorie" : "sous catégorie"
+        type === "category" ? "catégorie" : "sous-catégorie"
       }`}
     />
   );

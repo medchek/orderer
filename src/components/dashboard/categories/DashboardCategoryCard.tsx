@@ -37,7 +37,7 @@ export default function DashboardCategoryCard({
           <button
             type="button"
             className="dark:focus:bg-stone-900 dark:hover:bg-stone-800/70 transition-colors h-8 w-8 rounded-lg"
-            title="Ajouter une sous catégorie"
+            title="Ajouter une sous-catégorie"
             onClick={openAddSubCategory}
           >
             <MdAdd className="h-7 w-7" />

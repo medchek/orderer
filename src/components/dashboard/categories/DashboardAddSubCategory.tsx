@@ -41,7 +41,7 @@ export default function DashboardAddSubCategory({
     mutationFn: postSubCategory,
     onError: () => {
       showSnackbar(
-        "Une érreur est survenu lors de la création de la sous catégorie, veuillez reéssayer",
+        "Une érreur est survenu lors de la création de la sous-catégorie, veuillez reéssayer",
         "error"
       );
     },
@@ -73,7 +73,7 @@ export default function DashboardAddSubCategory({
           ["categories"],
           categoriesCopy
         );
-        showSnackbar("Sous catégorie ajouté!", "default");
+        showSnackbar("Sous-catégorie ajouté!", "default");
         closeModal();
       }
     },
@@ -87,7 +87,7 @@ export default function DashboardAddSubCategory({
   return (
     <DashbarodCategoryModal<AddSubCategoryFieldValues>
       label="Ajouter une sous-catégorie"
-      inputPlaceholder={`Ajouter une sous catégorie pour ${category.name}`}
+      inputPlaceholder={`Ajouter une sous-catégorie pour ${category.name}`}
       register={register}
       registerRules={{
         required: "Ce champ est obligatoire",

@@ -75,14 +75,14 @@ export default function DashboardDeleteCategory({
         }
 
         showSnackbar(
-          `${type === "category" ? "Catégorie" : "Sous catégorie"} supprimée`,
+          `${type === "category" ? "Catégorie" : "Sous-catégorie"} supprimée`,
           "default"
         );
         closeModal();
       }
     },
     onError: () => {
-      const text = type === "category" ? "categorie" : "sous catégorie";
+      const text = type === "category" ? "categorie" : "sous-catégorie";
       showSnackbar(
         `Une érreur est survenu lors la suppression de la ${text}`,
         "error"
@@ -100,10 +100,10 @@ export default function DashboardDeleteCategory({
         })
       }
       label={`Supprimer une ${
-        type === "category" ? "catégorie" : "sous catégorie"
+        type === "category" ? "catégorie" : "sous-catégorie"
       }`}
       text={`Êtes-vous sûr de vouloir supprimer la ${
-        type === "category" ? "catégorie" : "sous catégorie"
+        type === "category" ? "catégorie" : "sous-catégorie"
       } ${name}. ${
         type === "category"
           ? "Cela aussi supprimera toute sous-catégorie liée à celle-ci."

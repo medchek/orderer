@@ -48,7 +48,7 @@ model Category {
 
 model SubCategory {
   id   Int    @id @default(autoincrement())
-  name String @unique @db.VarChar(200)
+  name String @db.VarChar(200)
 
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId Int

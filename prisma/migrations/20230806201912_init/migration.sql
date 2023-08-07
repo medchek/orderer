@@ -158,9 +158,6 @@ CREATE UNIQUE INDEX "products_code_key" ON "products"("code");
 CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "sub_categories_name_key" ON "sub_categories"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "images_id_key" ON "images"("id");
 
 -- CreateIndex

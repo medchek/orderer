@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Prisma } from "@prisma/client";
-import { PRISMA_NOT_FOUND_ERROR_CODE } from "./constants";
+import { PRISMA_NOT_FOUND_ERROR_CODE, PRISMA_UNIQUE_CONSTRAINT_ERROR_CODE } from "./constants";
 
 // import { prisma } from "../../prisma/db";
 
@@ -160,6 +160,20 @@ export function cn(...inputs: ClassValue[]) {
 export const isNotFoundPrismaError = (error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === PRISMA_NOT_FOUND_ERROR_CODE) {
+      return true
+    }
+  }
+  return false
+}
+/**
+ * Checks if the thrown error is a prisma exception and whether the expcetion code
+ * points to a disallowed duplicate field value
+ * @param error error thrown in the catch block of api call
+ * @return true if it's a unique constraint prisma error, otherwise, false
+ */
+export const isUniqueConstraintPrismaError = (error: unknown) => {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === PRISMA_UNIQUE_CONSTRAINT_ERROR_CODE) {
       return true
     }
   }

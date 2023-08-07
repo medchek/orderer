@@ -14,6 +14,7 @@ export const STATUS_CONTENT_TOO_LARGE = 413;
 
 
 export const PRISMA_NOT_FOUND_ERROR_CODE = "P2025"
+export const PRISMA_UNIQUE_CONSTRAINT_ERROR_CODE = "P2002"
 
 
 export enum OrderStatus {

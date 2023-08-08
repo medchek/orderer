@@ -6,13 +6,14 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardCategoryCard from "@/components/dashboard/categories/DashboardCategoryCard";
 import DashboardCategoryPagination from "@/components/dashboard/categories/DashboardCategoryPagination";
+import DashboardCategoryToolbar from "@/components/dashboard/categories/DashboardCategoryToolbar";
 import DashboardUpdateCategory from "@/components/dashboard/categories/DashboardUpdateCategory";
 import { getCategories } from "@/lib/clientApiHelpers";
 import { useStore } from "@/store";
 import { CategoryDataOpen } from "@/store/dashboardSlice";
 import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdAdd, MdMoreVert } from "react-icons/md";
 import { TbCategory2 } from "react-icons/tb";
 
@@ -38,7 +39,10 @@ export default function Categories({}: Props) {
     setDeleteCategoryData,
     editCategoryData,
     setEditCategoryData,
-    showSnackbar,
+    categoryFilterTerm: filterTerm,
+    categoryFilterType: filterType,
+    categoryPerPage,
+    setCategoryPerPage,
   } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
 
@@ -56,6 +60,28 @@ export default function Categories({}: Props) {
   const { isFetching, data, refetch, isError, isSuccess } = useQuery({
     queryKey: ["categories"],
     queryFn: getCategories,
+    select: (data) => {
+      if (filterTerm) {
+        if (filterType === "category") {
+          return data.filter((cat) =>
+            cat.name.toLowerCase().includes(filterTerm)
+          );
+        } else {
+          return data.filter((cat) => {
+            const subcategories = cat.subCategories;
+            if (!subcategories) return false;
+
+            for (const subcat of subcategories) {
+              if (subcat.name.toLowerCase().includes(filterTerm)) {
+                return true;
+              }
+            }
+          });
+        }
+      } else {
+        return data;
+      }
+    },
   });
 
   const loadingSkeleton = Array.from({ length: 12 }, (_, i) => {
@@ -72,13 +98,36 @@ export default function Categories({}: Props) {
     );
   });
 
+  useEffect(() => {});
+  // pagination
   const [itemOffset, setItemOffset] = useState(0);
-  const itemsPerPage = 9;
-  const endOffset = itemOffset + itemsPerPage;
-  const pageCount = Math.ceil((data ? data.length : 0) / itemsPerPage);
+  // track the pagination currently selected page number
+  const [selectedPageNumber, setSelectedPageNumber] = useState(0);
+  const endOffset = itemOffset + categoryPerPage;
+  const pageCount = Math.ceil((data ? data.length : 0) / categoryPerPage);
+
+  const currentItems = data?.slice(itemOffset, endOffset);
+  // in case of a delete request, the pages that would result in 0 displayed items
+  // should redirect to the previous page in the pagination
+  useEffect(() => {
+    if (isSuccess && currentItems) {
+      if (!currentItems.length) {
+        if (selectedPageNumber > 0) {
+          // calculate the new offset
+          setSelectedPageNumber(selectedPageNumber - 1);
+          const previousPage =
+            ((selectedPageNumber - 1) * categoryPerPage) % (data?.length ?? 0);
+          setItemOffset(previousPage);
+        }
+      }
+    }
+  }, [currentItems, isSuccess]);
 
   const handlePaginationClick = (event: { selected: number }) => {
-    const newOffset = (event.selected * itemsPerPage) % (data?.length ?? 0);
+    const newOffset = (event.selected * categoryPerPage) % (data?.length ?? 0);
+    // track the current page
+    setSelectedPageNumber(event.selected);
+    // set the new offset
     setItemOffset(newOffset);
   };
 
@@ -90,7 +139,13 @@ export default function Categories({}: Props) {
           <div className="grow flex items-center justify-center">
             <div className="flex flex-col items-center gap-2 -translate-y-20">
               <TbCategory2 className="w-20 h-20" />
-              <p>Aucune catégories n'a encore été ajoutée</p>
+              <p>
+                {!!filterTerm
+                  ? `Aucune ${
+                      filterType === "category" ? "catégorie" : "sous-catégorie"
+                    } n'a été trouvée avec ce nom`
+                  : "Aucune catégorie n'a encore été ajoutée"}
+              </p>
               <button
                 type="button"
                 className="px-2 h-10  rounded-lg text-stone-50 font-semibold dark:hover:bg-stone-900 dark:focus:bg-stone-900/70 transition-colors"
@@ -102,9 +157,7 @@ export default function Categories({}: Props) {
           </div>
         );
       } else {
-        const currentItems = data.slice(itemOffset, endOffset);
-
-        return currentItems.map(
+        return currentItems?.map(
           ({ id, name, subCategories: subCategroies }) => {
             const categoryData: CategoryDataOpen = {
               isOpen: true,
@@ -145,19 +198,9 @@ export default function Categories({}: Props) {
     >
       <div className="flex flex-col w-full grow overflow-y-hidden px-1">
         <DashboardHeader label="Categories" noPadding />
-        <div
-          id="categories-toolbar"
-          className="flex h-16 min-h-[4rem] w-full items-center justify-between "
-        >
-          <button
-            type="button"
-            className="px-2 h-10 bg-blue-600 rounded-lg text-stone-50 font-semibold hover:bg-secondary focus:bg-blue-700 transition-colors"
-            onClick={() => setIsAddCategoryOpen(true)}
-          >
-            <MdAdd className="w-7 h-7" /> Ajouter une catégorie
-          </button>
-          <DashboardSearchInput placeholder="Chercher une catégorie" />
-        </div>
+        <DashboardCategoryToolbar
+          openAddCategory={() => setIsAddCategoryOpen(true)}
+        />
         <section className="relative flex flex-col w-full grow text-stone-50 gap-4 overflow-y-auto">
           {displayData()}
         </section>
@@ -167,7 +210,7 @@ export default function Categories({}: Props) {
         onPageChange={handlePaginationClick}
         pageRangeDisplayed={5}
         pageCount={pageCount}
-        renderOnZeroPageCount={null}
+        forcePage={selectedPageNumber}
       />
 
       {isAddCategoryOpen && <AddCategory closeModal={closeAddSubcategory} />}

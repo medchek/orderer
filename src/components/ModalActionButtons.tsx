@@ -1,5 +1,6 @@
 import React, { type DOMAttributes, type ButtonHTMLAttributes } from "react";
 import Loader from "./Loader";
+import { cn } from "@/lib/utils";
 
 interface Props {
   id?: string;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 interface BaseProps {
+  className?: string;
   id?: string;
   isLoading?: boolean;
   disabledSubmit?: boolean;
@@ -40,11 +42,15 @@ export default function ModalActionButtons({
   disableCancel,
   confirmButtonType,
   disabledSubmit,
+  className,
   onConfirm,
   id,
 }: SubmitConfirmType | ButtonConfirmType) {
   return (
-    <section id={id} className="flex items-center justify-end gap-4 py-4 px-1">
+    <section
+      id={id}
+      className={cn("flex items-center justify-end gap-4 py-4 px-1", className)}
+    >
       <button
         type="button"
         className="h-10 w-36 rounded-md font-bold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"

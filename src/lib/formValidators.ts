@@ -11,6 +11,7 @@ interface OrderFormValidator {
   email: validationFunction;
   address: validationFunction;
   wilaya: validationFunction;
+  town: validationFunction;
 }
 interface DashboardAddProductFormValidator {
   name: validationFunction;
@@ -65,6 +66,13 @@ export const orderFormValidators: OrderFormValidator = {
 
     if (value == "0") {
       return "Aucune wilaya n'a été selectionnée";
+    }
+  },
+  town: (val) => {
+    const value = val.trim();
+
+    if (value == "0") {
+      return "Aucune commune n'a été selectionnée";
     }
   },
 };

@@ -8,7 +8,8 @@ export interface Product {
   code: string;
   discount: number;
   stock: number | null;
-  categoryId: number | null;
+  category: { name: string } | null;
+  subCategory: { name: string } | null;
   images: { id: string }[];
 }
 

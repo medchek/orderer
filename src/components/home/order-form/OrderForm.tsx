@@ -1,15 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../../Input";
 import WilayaSelectInput from "./WilayaSelectInput";
 import ShippingTypeSelector from "./ShippingTypeSelector";
 
-import {
-  MdArrowBack,
-  MdChevronRight,
-  MdOutlineShoppingCart,
-} from "react-icons/md";
+import { MdArrowBack, MdOutlineShoppingCart } from "react-icons/md";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { orderFormValidators } from "@/lib/formValidators";
 import { useStore } from "@/store";
@@ -20,7 +16,8 @@ import { postOrder } from "@/lib/clientApiHelpers";
 import { PostOrderRequestPayload } from "@/types/api";
 import { toNumber } from "@/lib/utils";
 import Loader from "@/components/Loader";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import TownSelectInput from "./TownSelectInput";
 
 export interface OrderFormValues {
   lastName: string;
@@ -28,6 +25,7 @@ export interface OrderFormValues {
   phone: string;
   email: string;
   wilaya: string;
+  town: string;
   address: string;
   isHome: boolean;
 }
@@ -58,6 +56,7 @@ export default function OrderForm({}: Props) {
   const {
     selectedProducts,
     selectedWilaya,
+    selectedTown,
     setConfirmData,
     confirmData,
     isConfirming,
@@ -66,7 +65,9 @@ export default function OrderForm({}: Props) {
   } = useStore();
 
   const isDisabledSubmit =
-    selectedProducts.length === 0 || selectedWilaya === null;
+    selectedProducts.length === 0 ||
+    selectedWilaya === null ||
+    selectedTown === null;
 
   const [showOptionalFields, setShowOptionalFields] = useState(false);
 
@@ -94,7 +95,8 @@ export default function OrderForm({}: Props) {
       setIsConfirming(true);
     } else {
       // if the user confirms the data
-      const { address, email, isHome, lastName, name, phone, wilaya } = data;
+      const { address, email, isHome, lastName, name, phone, wilaya, town } =
+        data;
       if (!selectedProducts.length) return;
 
       const requestData: PostOrderRequestPayload = {
@@ -102,6 +104,7 @@ export default function OrderForm({}: Props) {
         phone,
         productsCode: selectedProducts.map((p) => p.code),
         wilayaId: toNumber(wilaya),
+        townCode: toNumber(town),
         ...(email && { email }),
         ...(name && { name }),
         ...(lastName && { lastName }),
@@ -137,7 +140,7 @@ export default function OrderForm({}: Props) {
           }`}
           id="from-input-group"
         >
-          <div className="flex space-x-7">
+          <div className="flex gap-4 2xl:gap-">
             <Input
               register={register}
               registerRules={{
@@ -153,21 +156,39 @@ export default function OrderForm({}: Props) {
               maxLength={10}
               defaultValue={confirmData?.phone}
             />
+            <Input
+              register={register}
+              registerRules={{
+                validate: orderFormValidators.name,
+              }}
+              error={errors.name?.message}
+              name="name"
+              id="name-input"
+              label="Nom/Prénom"
+              type="text"
+              placeholder="Votre Nom/Prénom (Optionnel)"
+              maxLength={10}
+              defaultValue={confirmData?.phone}
+            />
+          </div>
+          <div className="flex gap-4 2xl:gap-7">
             <WilayaSelectInput
               register={register}
-              name="wilaya"
-              registerRules={{
-                validate: orderFormValidators.wilaya,
-              }}
               error={errors.wilaya?.message}
               id="wilaya-select"
               label="Wilaya de Livraison"
             />
+            <TownSelectInput
+              register={register}
+              error={errors.town?.message}
+              id="town-select"
+              label="Commune"
+            />
           </div>
-          <div className="flex space-x-7">
+          <div className="flex gap-7">
             <ShippingTypeSelector />
           </div>
-          <button
+          {/* <button
             type="button"
             className="mb-2 flex h-10 items-center justify-between rounded-md pl-2  text-stone-100 transition-colors hover:dark:bg-[#17181D]"
             onClick={() => setShowOptionalFields(!showOptionalFields)}
@@ -228,12 +249,19 @@ export default function OrderForm({}: Props) {
                 defaultValue={confirmData?.email}
               />
             </section>
-          )}
+          )} */}
         </section>
         {/* Show the orderConfirm component */}
-        {isConfirming && selectedWilaya && confirmData !== null && (
-          <OrderConfirm data={confirmData} selectedWilaya={selectedWilaya} />
-        )}
+        {isConfirming &&
+        selectedWilaya &&
+        selectedTown &&
+        confirmData !== null ? (
+          <OrderConfirm
+            data={confirmData}
+            selectedWilaya={selectedWilaya}
+            selectedTown={selectedTown}
+          />
+        ) : null}
         <div className="flex h-16 items-start justify-end text-stone-950 dark:text-white">
           <Prices />
         </div>
@@ -263,7 +291,6 @@ export default function OrderForm({}: Props) {
                 <MdOutlineShoppingCart className="h-6 w-6" /> Commander
               </span>
             )}
-            {/*  */}
           </button>
         </div>
       </form>

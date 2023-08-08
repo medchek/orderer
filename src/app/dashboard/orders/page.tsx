@@ -78,17 +78,15 @@ export default function Orders({}: Props) {
       // no data
       if (!ordersData || ordersData.length === 0) {
         return createPortal(
-          <div className="w-96 h-auto  -translate-y-12">
-            {/* <div className="flex justify-center items-center w-full h-full  -translate-y-12"> */}
+          <div className="w-96 h-auto -translate-y-12">
             <div className="w-96 text-center flex flex-col items-center gap-1  text-stone-100">
               <BsListNested className="w-20 h-20" />
               <p>Aucune commande n'a été encore enregistrée</p>
               <p className="text-stone-400 text-sm">
-                Vous serez informé via les notifications chaque fois qu'une
-                nouvelle commande est enregistrée
+                Vous serez informé via notifications chaque fois qu'une nouvelle
+                commande est enregistrée
               </p>
             </div>
-            {/* </div> */}
           </div>,
           document.getElementById(portalTargetElementId) as Element
         );

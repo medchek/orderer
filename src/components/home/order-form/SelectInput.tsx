@@ -1,4 +1,5 @@
 import Loader from "@/components/Loader";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { RegisterOptions, UseFormRegister } from "react-hook-form";
 import { MdChevronRight } from "react-icons/md";
@@ -25,6 +26,7 @@ export default function SelectInput({
   error,
   disabled,
   textRight,
+  className,
   ...props
 }: Props) {
   const inputRegister = register && register(name, registerRules);
@@ -38,7 +40,10 @@ export default function SelectInput({
           disabled={isLoading || disabled}
           {...props}
           {...inputRegister}
-          className="h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input-dark dark:text-white dark:[color-scheme:dark] 2xl:text-base text-sm capitalize"
+          className={cn(
+            "h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base text-sm",
+            className
+          )}
         >
           {children}
         </select>

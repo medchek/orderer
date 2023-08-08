@@ -1,3 +1,6 @@
+import { Product } from "@/store/productSlice";
+
+
 export type PromiseStatus = "init" | "fetching" | "success" | "error"
 
 
@@ -9,28 +12,23 @@ export interface PostImageSuccessResponsePayload {
   originalName: string;
   originalSize: number;
 }
-
+export interface GetProductsSuccessResponsePayload {
+  count: number;
+  products: Product[]
+}
 export interface PostProductBodyPayload {
   name: string;
   price: number;
   description: string;
   stock: number | null;
-  categoryId: number | null;
+  category: { categoryId: number, subcategoryId?: number } | null;
   discount: number;
   images: string[];
 }
 
 
-export interface PostProductSuccessResponsePayload {
-  code: string;
-  name: string;
-  price: number;
-  description: string | null;
-  stock: number | null;
-  categoryId: number | null;
-  discount: number;
-  images: { id: string }[];
-}
+
+export interface PostProductSuccessResponsePayload extends Product { }
 
 export interface PatchProductBodyPayload {
   name?: string;
@@ -62,6 +60,7 @@ export interface PostOrderRequestPayload {
   address?: string;
   isHome: boolean;
   wilayaId: number;
+  townCode: number;
   productsCode: string[];
 }
 export interface PostOrderSuccessResponsePayload {

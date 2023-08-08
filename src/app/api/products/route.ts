@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../prisma/db";
-import { getServerSession } from "next-auth";
-import { apiErrorResponse, uniqueId } from "@/lib/utils";
+import { apiErrorResponse, isUniqueConstraintPrismaError, uniqueId } from "@/lib/utils";
 import Joi from "joi";
 import {
+  GetProductsSuccessResponsePayload,
   PostProductBodyPayload,
   PostProductSuccessResponsePayload,
 } from "@/types/api";
-import { authOptions, isAdmin } from "../auth/[...nextauth]/route";
+import { isAdmin } from "../auth/[...nextauth]/route";
 import {
   PRODUCT_CODE_LENGTH,
   STATUS_BAD_REQUEST,
@@ -19,6 +19,9 @@ import {
 
 export async function GET() {
   try {
+
+    const count = await prisma.product.count();
+
     const products = await prisma.product.findMany({
       select: {
         name: true,
@@ -32,6 +35,12 @@ export async function GET() {
             id: true,
           },
         },
+        category: {
+          select: { name: true }
+        },
+        subCategory: {
+          select: { name: true }
+        }
       },
       orderBy: {
         createdAt: "desc",
@@ -39,7 +48,7 @@ export async function GET() {
     });
 
     await prisma.$disconnect();
-    return NextResponse.json(products);
+    return NextResponse.json<GetProductsSuccessResponsePayload>({ count, products });
   } catch (e) {
     console.error(e);
     return apiErrorResponse("Error fetching all products");
@@ -59,7 +68,10 @@ export async function POST(req: NextRequest) {
       price: Joi.number().strict().strict().positive().precision(2).min(1).max(1000000000000).required(),
       description: Joi.string().allow(""),
       stock: Joi.number().strict().positive().min(1).precision(0).allow(null),
-      categoryId: Joi.number().strict().positive().precision(0).allow(null),
+      category: Joi.object({
+        categoryId: Joi.number().strict().precision(0).required(),
+        subcategoryId: Joi.number().strict().precision(0).optional()
+      }).strict().allow(null).required(),
       discount: Joi.number().strict().positive().allow(0).min(0).max(100).precision(0),
       images: Joi.array()
         .min(1)
@@ -75,17 +87,6 @@ export async function POST(req: NextRequest) {
     }
     // validated data
     const data = validation.value
-
-    // check if the name already exists,
-    const doesNameExist = await prisma.product.count({
-      where: { name: data.name },
-    });
-
-    if (doesNameExist !== 0) {
-      return apiErrorResponse("product name already exists",
-        STATUS_CONFLICT,
-      );
-    }
 
     // check if the posted image ids exist in the db
     const dbImagesIds = await prisma.image.count({
@@ -106,7 +107,8 @@ export async function POST(req: NextRequest) {
         code,
         name: data.name,
         price: data.price,
-        categoryId: data.categoryId,
+        categoryId: data.category?.categoryId ?? null,
+        subCategoryId: data.category?.subcategoryId ?? null,
         description: data.description,
         stock: data.stock,
         images: {
@@ -115,13 +117,15 @@ export async function POST(req: NextRequest) {
       },
       include: {
         category: true,
+        subCategory: true,
         images: true,
       },
     });
 
     const responsePayload: PostProductSuccessResponsePayload = {
       code,
-      categoryId: product.categoryId,
+      category: product.category ? { name: product.category.name } : null,
+      subCategory: product.subCategory ? { name: product.subCategory.name } : null,
       description: product.description,
       discount: product.discount,
       images: product.images,
@@ -137,6 +141,13 @@ export async function POST(req: NextRequest) {
       }
     );
   } catch (e) {
+
+    if (isUniqueConstraintPrismaError(e)) {
+      return apiErrorResponse("product name already exists",
+        STATUS_CONFLICT,
+      );
+    }
+
     console.error("Erros posting a product:", e);
     return apiErrorResponse("Error posting product");
   }

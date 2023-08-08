@@ -21,7 +21,11 @@ export default async function ThankYouPage({ searchParams }: Props) {
   const headersMap = headers();
   const orderCode = searchParams.code;
   const host = headersMap.get("host");
-  const protocol = headersMap.get("x-forwarded-proto");
+  console.log(Array.from(headersMap.entries()));
+  const protocol =
+    headersMap.get("x-forwarded-proto") ?? (host === "localhost" || "127.0.0.1")
+      ? "http"
+      : "https";
 
   if (!host || !orderCode || orderCode.length !== ORDER_CODE_LENGTH) {
     return redirect("/", RedirectType.replace);

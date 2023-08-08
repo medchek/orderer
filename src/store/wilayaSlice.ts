@@ -14,10 +14,8 @@ export interface Wilaya {
 
 export interface WilayaSlice {
   wilayas: Wilaya[];
-  selectedWilaya: Wilaya | null;
   isFetchingWilayas: boolean;
   wilayaFetchStatus: PromiseStatus;
-  setSelectedWilaya: (selectedWilaya: Wilaya) => void;
   fetchWilayas: () => Promise<{ status: PromiseStatus, wilayas: Wilaya[] }>;
   updateWilaya: (data: { homePrice?: number, officePrice?: number, available?: boolean, index: number }) => void;
   setWilayas: (data: Wilaya[]) => void;
@@ -26,12 +24,9 @@ export interface WilayaSlice {
 
 export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
   wilayas: [],
-  selectedWilaya: null,
   isFetchingWilayas: false,
   wilayaFetchStatus: "init",
-  setSelectedWilaya: (selectedWilaya: Wilaya) => {
-    set(() => ({ selectedWilaya }));
-  },
+
   fetchWilayas: async () => {
     try {
       set(() => ({ isFetchingWilayas: true, wilayaFetchStatus: "fetching" }));

@@ -1,9 +1,16 @@
 import { OrderFormValues } from "@/components/home/order-form/OrderForm";
 import { StateCreator } from "zustand";
+import { Wilaya } from "./wilayaSlice";
 
 export enum SHIPPING_TYPE {
   HOME,
   OFFICE,
+}
+
+export interface Town {
+  code: number;
+  name: string;
+  arName: string;
 }
 
 export interface OrderFormSlice {
@@ -13,6 +20,14 @@ export interface OrderFormSlice {
   setConfirmData: (data: OrderFormValues | null) => void;
   isConfirming: boolean;
   setIsConfirming: (v: boolean) => void;
+
+  selectedWilaya: Wilaya | null;
+  setSelectedWilaya: (selectedWilaya: Wilaya) => void;
+
+  selectedTown: Town | null,
+  setSelectedTown: (town: Town) => void;
+
+
 }
 
 export const orderFormSlice: StateCreator<OrderFormSlice> = (set) => ({
@@ -25,4 +40,13 @@ export const orderFormSlice: StateCreator<OrderFormSlice> = (set) => ({
   setIsConfirming: (v) => {
     set(() => ({ isConfirming: v }))
   },
+
+  selectedWilaya: null,
+  setSelectedWilaya: (selectedWilaya) => {
+    set(() => ({ selectedWilaya }));
+  },
+  selectedTown: null,
+  setSelectedTown: (town) => {
+    set(() => ({ selectedTown: town }));
+  }
 });

@@ -1,19 +1,18 @@
 "use client";
-import { MdChevronRight } from "react-icons/md";
 import React, { SelectHTMLAttributes } from "react";
-import { FieldValues, RegisterOptions, UseFormRegister } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { RegisterOptions, UseFormRegister } from "react-hook-form";
+import { useState } from "react";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
-import Loader from "../../Loader";
 import { useQuery } from "@tanstack/react-query";
 import { getWilayas } from "@/lib/clientApiHelpers";
+import SelectInput from "./SelectInput";
+import { OrderFormValues } from "./OrderForm";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   id: string;
-  name: string;
-  register?: UseFormRegister<any>;
+  register: UseFormRegister<OrderFormValues>;
   registerRules?: RegisterOptions;
   error?: string;
 }
@@ -23,23 +22,16 @@ export default function WilayaSelectInput({
   id,
   register,
   registerRules,
-  name,
   error,
   ...props
 }: Props) {
-  const { wilayas, shippingType, setSelectedWilaya, setWilayas, confirmData } =
-    useStore((state) => state);
+  const { shippingType, setSelectedWilaya, confirmData } = useStore(
+    (state) => state
+  );
 
-  const inputRegister = register && register(name, registerRules);
-
-  const { isFetching } = useQuery({
+  const { isFetching, data } = useQuery({
     queryKey: ["wilayas"],
     queryFn: getWilayas,
-    onSuccess: (data) => {
-      setWilayas(data);
-    },
-    enabled: wilayas.length === 0,
-    cacheTime: 1000 * 60 * 10,
   });
 
   const [shippingPrice, setShippingPrice] = useState<{
@@ -62,13 +54,12 @@ export default function WilayaSelectInput({
 
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     // update the register value on change
-    if (inputRegister) inputRegister.onChange(e);
-
     const wilayaCode = parseInt(e.target.value);
     // set the selected wilaya value
     setSelectedValue(wilayaCode);
-    // look for the wilaya within the store array
-    const targetWilaya = wilayas.find((w) => w.code === wilayaCode);
+
+    // look for the wilaya
+    const targetWilaya = data?.find((w) => w.code === wilayaCode);
     // set the price accordingly
     if (targetWilaya) {
       // save the selectedWilya in the store
@@ -81,59 +72,45 @@ export default function WilayaSelectInput({
     }
   };
 
-  const selectOptions = wilayas.map((wilaya) => {
-    return (
-      <option value={wilaya.code} key={wilaya.code} defaultValue={16}>
-        {wilaya.code} - {wilaya.name} (
-        {shippingType === SHIPPING_TYPE.HOME
-          ? wilaya.homePrice
-          : wilaya.officePrice}
-        DA)
-      </option>
-    );
-  });
+  const selectOptions = () => {
+    if (data) {
+      return [
+        <option value={0} disabled hidden key="0">
+          Selectionnez la wilaya de livraison
+        </option>,
+        data.map((wilaya) => {
+          return (
+            <option value={wilaya.code} key={wilaya.code}>
+              {wilaya.code} - {wilaya.name} (
+              {shippingType === SHIPPING_TYPE.HOME
+                ? wilaya.homePrice
+                : wilaya.officePrice}
+              DA)
+            </option>
+          );
+        }),
+      ];
+    }
+  };
 
   return (
-    <div className="flex w-full flex-col space-y-1">
-      <label htmlFor={id} className="text-lg font-semibold dark:text-white">
-        {label}
-      </label>
-      <div className="relative flex h-12 w-full items-center">
-        <select
-          disabled={isFetching}
-          {...props}
-          {...inputRegister}
-          id={id}
-          className="h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed dark:bg-input-dark dark:text-white dark:[color-scheme:dark]"
-          onChange={handleOnChange}
-          value={selectedValue}
-        >
-          {isFetching ? (
-            <option value="" defaultValue="">
-              Chargement...
-            </option>
-          ) : (
-            [
-              <option className="text-white" value={0} disabled hidden key="0">
-                Selectionnez la wilaya de livraison
-              </option>,
-              ...selectOptions,
-            ]
-          )}
-        </select>
-
-        {isFetching ? (
-          <Loader className="absolute right-4 h-6 w-6 border-stone-400" />
-        ) : (
-          <MdChevronRight className="pointer-events-none absolute right-4 h-7 w-7 rotate-90 dark:text-[#979797]" />
-        )}
-      </div>
-      <div className="flex h-5 justify-between ">
-        <p className="grow text-sm text-red-500">{error && error}</p>
-        <p className="grow-0 text-right dark:text-gray-100">
-          {displayShippingPrice()}
-        </p>
-      </div>
-    </div>
+    <SelectInput
+      {...props}
+      disabled={isFetching}
+      isLoading={isFetching}
+      name="wilaya"
+      label="Wilaya de Livraison"
+      register={register}
+      registerRules={{
+        required: "Aucune wilaya n'a été selectionnée",
+        // validate: orderFormValidators.wilaya,
+        onChange: handleOnChange,
+      }}
+      id={id}
+      // className="h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed dark:bg-input-dark dark:text-white dark:[color-scheme:dark] 2xl:text-base text-sm"
+      value={selectedValue}
+    >
+      {selectOptions()}
+    </SelectInput>
   );
 }

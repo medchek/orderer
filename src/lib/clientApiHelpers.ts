@@ -1,8 +1,7 @@
-import { PatchCategoryRequestPayload, PatchCategorySuccessResponsePayload, PatchSubcategorySuccessResponsePayload } from './../types/api.d';
+import { GetAllOrdersSuccessResponsePayload, GetCategoriesSuccessResponsePayload, GetTownsSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload, PostSubCategoryRequestPayload, PostSubCategorySuccessResponsePayload, PatchCategorySuccessResponsePayload, PatchSubcategorySuccessResponsePayload, PostProductBodyPayload, PostProductSuccessResponsePayload, GetProductsSuccessResponsePayload } from "@/types/api";
 import { CategoryType } from "@/store/dashboardSlice";
 import { Product } from "@/store/productSlice";
 import { Wilaya } from "@/store/wilayaSlice";
-import { GetAllOrdersSuccessResponsePayload, GetCategoriesSuccessResponsePayload, GetTownsSuccessResponsePayload, PostCategoryRequestPayload, PostCategorySuccessReponsePayload, PostImageSuccessResponsePayload, PostOrderRequestPayload, PostOrderSuccessResponsePayload, PostSubCategoryRequestPayload, PostSubCategorySuccessResponsePayload } from "@/types/api";
 
 import ky from "ky"
 
@@ -34,6 +33,12 @@ export const postImage = async (imageFile: File) => {
     throw e;
   }
 };
+
+export const postSingleImage = async (imageFile: File): Promise<PostImageSuccessResponsePayload> => {
+  return await ky.post("/api/images", {
+    body: imageFile
+  }).json()
+}
 
 /**
  * Fetch all the wilayas from the api
@@ -75,8 +80,19 @@ export const getSingleProduct = async ([_, productCode]: (string | null)[]): Pro
  * fetche all the products from the api
  * @returns all products data
  */
-export const getProducts = async (): Promise<Product[]> => {
+export const getProducts = async (): Promise<GetProductsSuccessResponsePayload> => {
   return await ky.get("/api/products").json();
+}
+
+/**
+ * Request to create a new product through post request
+ * @param data the product body data
+ * @returns created product data
+ */
+export const postProduct = async (data: PostProductBodyPayload): Promise<PostProductSuccessResponsePayload> => {
+  return await ky.post("/api/products", {
+    json: data
+  }).json()
 }
 
 /**

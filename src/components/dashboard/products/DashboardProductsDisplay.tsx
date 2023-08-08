@@ -8,6 +8,8 @@ import ProductCardLoader from "@/components/ProductCardLoader";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { deleteProduct, getProducts } from "@/lib/clientApiHelpers";
 import dynamic from "next/dynamic";
+import DashboardFetchError from "../DashboardFetchError";
+import { TbPackage } from "react-icons/tb";
 
 const DashboardUpdateProduct = dynamic(
   () => import("./DashboardUpdateProduct"),
@@ -33,12 +35,11 @@ export default function DashboardProductsDisplay() {
     number | null
   >(null);
 
-  const { status, refetch } = useQuery({
+  const { status, refetch, data, isFetching, isError } = useQuery({
     queryKey: ["products"],
     queryFn: getProducts,
-    enabled: products.length === 0,
     onSuccess: (products) => {
-      setProducts(products);
+      // setProducts(products);
     },
   });
 
@@ -61,7 +62,7 @@ export default function DashboardProductsDisplay() {
 
   // old btn style :  bg-[#E9E9E9] text-sm font-semibold hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]
 
-  if (status === "loading") {
+  if (isFetching) {
     return (
       <section
         id="product-display"
@@ -72,39 +73,36 @@ export default function DashboardProductsDisplay() {
         ))}
       </section>
     );
-  } else if (status === "error") {
+  } else if (isError) {
     return (
-      <div className="flex w-full grow flex-col items-center gap-2">
-        <p className="mt-2 text-red-500">
-          Une érreur est survenu lors de la recherche des produits
-        </p>
-        <button
-          type="button"
-          className="h-10 w-28 rounded-lg  font-semibold text-red-500 transition-colors hover:bg-red-800 hover:text-red-50 focus:bg-red-950 focus:text-white"
-          onClick={() => refetch()}
-        >
-          Réessayer
-        </button>
+      <div className="relative flex items-center justify-center w-full h-full">
+        <DashboardFetchError
+          text="Une érreur est survenu lors de la recherche des produits"
+          refetch={refetch}
+        />
       </div>
     );
   } else {
-    return !products.length ? (
-      <section className=" flex w-full grow items-center flex-col dark:text-stone-100 gap-2">
-        <p className="mt-2">Aucun produit n'a été ajouté</p>
-        <button
-          type="button"
-          className="font-semibold focus:dark:bg-stone-900 px-3 rounded-lg h-9"
-          onClick={() => setIsAddProductOpen(true)}
-        >
-          <MdAdd className="w-6 h-6" /> Ajouter
-        </button>
-      </section>
+    return !data || !data.products.length ? (
+      <div className="grow flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2 -translate-y-20 text-stone-50">
+          <TbPackage className="w-20 h-20" />
+          <p>Aucun produit n'a été encore ajouté</p>
+          <button
+            type="button"
+            className="px-2 h-10  rounded-lg font-semibold dark:hover:bg-stone-900 dark:focus:bg-stone-900/70 transition-colors"
+            onClick={() => setIsAddProductOpen(true)}
+          >
+            <MdAdd className="w-7 h-7" /> Ajouter un produit
+          </button>
+        </div>
+      </div>
     ) : (
       <section
         id="product-display"
         className="mr-6 grid w-full grow gap-5 overflow-y-auto pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
       >
-        {products.map(
+        {data.products.map(
           ({ name, code, description, discount, images, price, stock }, i) => (
             <ProductCard
               name={name}
@@ -137,7 +135,7 @@ export default function DashboardProductsDisplay() {
 
         {productToDelete && (
           <DashboardDeleteConfirm
-            productCode={productToDelete}
+            // productCode={productToDelete}
             closeModal={() => setProductToDelete(null)}
             label="Supprimer un produit"
             text="Êtes-vous sûr de vouloir supprimer ce produit?"

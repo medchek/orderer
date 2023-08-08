@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
       name: Joi.string().min(3).max(40).optional(),
       email: Joi.string().regex(emailRegex).optional(),
       wilayaId: Joi.number().strict().min(1).max(58).required(),
+      townCode: Joi.number().strict().min(1001).max(58003).required(),
       productsCode: Joi.array().min(1).max(3).items(Joi.string().regex(/^[a-zA-Z0-9]{20}$/)),
     });
 
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     // validated data
     const data = validation.value;
-    const { isHome, phone, productsCode, wilayaId, address, lastName, name, email } = data;
+    const { isHome, phone, productsCode, wilayaId, address, lastName, name, email, townCode } = data;
 
     // check if the products exist
     // remove potential array duplicates
@@ -75,6 +76,11 @@ export async function POST(req: NextRequest) {
             id: wilayaId
           }
         },
+        town: {
+          connect: {
+            code: townCode
+          }
+        },
         user: {
           ...(user && { connect: { id: user.id } }),
           ...(!user && {
@@ -106,7 +112,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ orderCode }, { status: STATUS_CREATED })
   } catch (error) {
-
+    console.error("Error creating order", error)
     return apiErrorResponse("Global error creating order")
   }
 

@@ -32,6 +32,7 @@ export default async function Orders({ params }: Props) {
     },
     include: {
       wilaya: true,
+      town: true,
       orderProducts: {
         select: {
           product: {
@@ -102,10 +103,6 @@ export default async function Orders({ params }: Props) {
                     label: "Nom",
                     content: fullName(data.user.name, data.user.lastName),
                   },
-                  {
-                    label: "Email",
-                    content: handleEmptyValue(data.user.email),
-                  },
                 ]}
               />
               <OrderInfoSegment
@@ -115,6 +112,11 @@ export default async function Orders({ params }: Props) {
                   {
                     label: "Wilaya",
                     content: `${data.wilaya.code} - ${data.wilaya.name}`,
+                  },
+                  {
+                    label: "Commune",
+                    content: data.town.name,
+                    capitalize: true,
                   },
                   {
                     label: "Adresse",

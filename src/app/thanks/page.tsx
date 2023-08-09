@@ -21,7 +21,6 @@ export default async function ThankYouPage({ searchParams }: Props) {
   const headersMap = headers();
   const orderCode = searchParams.code;
   const host = headersMap.get("host");
-  console.log(Array.from(headersMap.entries()));
   const protocol =
     headersMap.get("x-forwarded-proto") ?? (host === "localhost" || "127.0.0.1")
       ? "http"
@@ -32,7 +31,6 @@ export default async function ThankYouPage({ searchParams }: Props) {
   }
   const orderStatusLink = `${protocol}://${host}/orders/${orderCode}`;
   // const orderCode = headersMap.get("x-invoke-query");
-  console.log("order=>", host, searchParams.code);
   // if (!orderCode || orderCode.length !== ORDER_CODE_LENGTH) {
   //   console.log(orderCode);
   //   return redirect("/", RedirectType.replace);

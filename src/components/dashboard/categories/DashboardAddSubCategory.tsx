@@ -81,6 +81,28 @@ export default function DashboardAddSubCategory({
 
   const onFormSubmit: SubmitHandler<AddSubCategoryFieldValues> = (data) => {
     const { name } = data;
+
+    // check if the subcategory name already exists
+    const categories =
+      queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
+        "categories",
+      ]);
+    if (categories) {
+      const subcategories = categories.find((cat) => cat.id === category.id)
+        ?.subCategories;
+
+      if (subcategories) {
+        for (const subcat of subcategories) {
+          if (subcat.name.toLowerCase() === name.toLowerCase()) {
+            return showSnackbar(
+              "Sous-catégorie déjà exists pour cette catégorie!",
+              "error"
+            );
+          }
+        }
+      }
+    }
+
     mutate({ categoryId: category.id, name });
   };
 

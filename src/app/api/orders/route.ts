@@ -148,6 +148,13 @@ export async function GET(_: NextRequest, { params }: { params: { page: number }
             officePrice: true
           }
         },
+        town: {
+          select: {
+            code: true,
+            arName: true,
+            name: true
+          }
+        },
         orderProducts: {
           select: {
             product: {

@@ -1,4 +1,6 @@
+import { OrderStatus } from "@/lib/constants";
 import { Product } from "@/store/productSlice";
+import { Status } from "@prisma/client";
 
 
 export type PromiseStatus = "init" | "fetching" | "success" | "error"
@@ -71,7 +73,7 @@ export interface GetAllOrdersSuccessResponsePayload {
   address: string | null;
   code: string;
   isHome: boolean;
-  status: Status | null;
+  status: Status;
   createdAt: Date;
   user: {
     phone: string | null;
@@ -83,6 +85,11 @@ export interface GetAllOrdersSuccessResponsePayload {
     homePrice: number;
     officePrice: number;
   };
+  town: {
+    code: number,
+    arName: string,
+    name: string
+  }
   orderProducts: {
     product: {
       name: string;

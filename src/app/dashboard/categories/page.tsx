@@ -98,7 +98,7 @@ export default function Categories({}: Props) {
     );
   });
 
-  useEffect(() => {});
+
   // pagination
   const [itemOffset, setItemOffset] = useState(0);
   // track the pagination currently selected page number

@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('UNCONFIRMED', 'PROCEEDING', 'SUCCESS', 'CANCELED', 'RETURNED');
+CREATE TYPE "Status" AS ENUM ('UNCONFIRMED', 'CONFIRMED', 'SHIPPING', 'SUCCESS', 'CANCELED', 'RETURNED');
 
 -- CreateTable
 CREATE TABLE "products" (
@@ -74,7 +74,7 @@ CREATE TABLE "towns" (
 CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
     "code" VARCHAR(100) NOT NULL,
-    "status" "Status" DEFAULT 'UNCONFIRMED',
+    "status" "Status" NOT NULL DEFAULT 'UNCONFIRMED',
     "is_home" BOOLEAN NOT NULL DEFAULT true,
     "user_id" TEXT NOT NULL,
     "wilaya_id" INTEGER NOT NULL,

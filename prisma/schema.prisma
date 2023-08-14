@@ -109,7 +109,7 @@ model Order {
   id Int @id @default(autoincrement())
 
   code   String  @unique @db.VarChar(100)
-  status Status? @default(UNCONFIRMED)
+  status Status  @default(UNCONFIRMED)
   isHome Boolean @default(true) @map("is_home")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -215,7 +215,8 @@ model VerificationToken {
 
 enum Status {
   UNCONFIRMED
-  PROCEEDING // the package is on the way
+  CONFIRMED
+  SHIPPING // the package is on the way
   SUCCESS
   CANCELED
   RETURNED

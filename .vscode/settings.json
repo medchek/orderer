@@ -1,0 +1,20 @@
+{
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    // react-paginate related
+    "nextClassName",
+    "nextLinkClassName",
+    "pageClassName",
+    "pageLinkClassName",
+    "previousClassName",
+    "previousLinkClassName",
+    "activeClassName",
+    "activeLinkClassName",
+    "disabledLinkClassName",
+    "disabledClassName",
+    "breakClassName",
+    "breakLinkClassName"
+  ]
+}

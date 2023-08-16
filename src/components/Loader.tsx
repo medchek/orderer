@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface Props
@@ -13,9 +14,10 @@ interface Props
 export default function Loader({ className }: Props) {
   return (
     <div
-      className={`animate-spin rounded-full border-2 border-r-transparent dark:border-r-transparent ${
-        className ? className : "h-6 w-6 border-stone-400"
-      }`}
+      className={cn(
+        "animate-spin rounded-full border-2 border-r-transparent dark:border-r-transparent h-6 w-6 border-stone-400",
+        className
+      )}
     ></div>
   );
 }

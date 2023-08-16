@@ -6,7 +6,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export default function DashboardSearchInput({ className, ...props }: Props) {
   return (
-    <div className={cn("relative flex h-10 w-64 items-center", className)}>
+    <div className={cn("relative flex h-10 w-64 min-w-[16rem] items-center", className)}>
       <MdSearch className="absolute left-2 h-6 w-6 text-stone-400" />
       <input
         type="search"

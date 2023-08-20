@@ -1,9 +1,12 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { BsListNested, BsPersonSlash } from "react-icons/bs";
 import { TbBox, TbCategory2 } from "react-icons/tb";
 import { LiaShippingFastSolid } from "react-icons/lia";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
 type LinkType = {
   name: string;
@@ -14,6 +17,7 @@ type LinkType = {
 type Props = {};
 
 export default function DashboardNav({}: Props) {
+  const pathName = usePathname();
   const links: LinkType[] = [
     { name: "Produits", href: "", icon: <TbBox /> },
     { name: "Categories", href: "categories", icon: <TbCategory2 /> },
@@ -29,7 +33,12 @@ export default function DashboardNav({}: Props) {
   const LinkList = links.map(({ href, name, icon }) => (
     // old dark link: dark:bg-[#22233f] dark:hover:bg-[#2f325f] dark:focus:bg-[#070714]
     <Link
-      className="flex h-12 w-full items-center text-sm rounded-lg bg-[#EC2A2A] pl-5  font-semibold text-white transition-colors first-letter:capitalize hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-stone-900 dark:hover:bg-stone-800 focus:dark:bg-stone-900/50  [&>svg]:w-6 [&>svg]:h-6 gap-4"
+      className={clsx(
+        "flex h-12 w-full items-center text-sm rounded-lg  pl-5  font-semibold dark:text-stone-200 transition-colors first-letter:capitalize [&>svg]:w-6 [&>svg]:h-6 gap-4",
+        pathName === `/dashboard/${href}`
+          ? "dark:bg-black/50"
+          : "dark:bg-stone-900 hover:bg-[#ff4545] bg-[#EC2A2A] focus:bg-[#da2020] dark:hover:bg-stone-800 focus:dark:bg-stone-900/50 "
+      )}
       key={href}
       href={`/dashboard/${href}`}
     >

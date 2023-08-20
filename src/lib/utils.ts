@@ -133,7 +133,7 @@ export const discountedPrice = (price: number, discountPercentage: number) => {
  * @param date date object
  * @returns retuns DD/MM/YYYY HH:mm date string
  */
-export const formatDate = (rawDate: Date | string) => {
+export const formatDate = (rawDate: Date | string, noTime = false) => {
   const date = typeof rawDate === "string" ? new Date(rawDate) : rawDate
   const year = date.getFullYear();
   const month = zeroPrefix(date.getMonth() + 1);
@@ -141,7 +141,7 @@ export const formatDate = (rawDate: Date | string) => {
   const hours = zeroPrefix(date.getHours());
   const minutes = zeroPrefix(date.getMinutes());
 
-  return `${day}/${month}/${year} ${hours}:${(minutes)}`
+  return `${day}/${month}/${year}` + (!noTime ? ` ${hours}:${(minutes)}` : "")
 }
 
 

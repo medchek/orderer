@@ -24,10 +24,10 @@ export default function DashboardFetchError({
         <div className="flex items-center justify-center rounded-full border-4 w-10 h-10 text-xl font-bold text-red-500 border-red-500">
           !
         </div>
-        <p className="mt-2 text-stone-300">{text}</p>
+        <p className="mt-2 text-stone-300 text-sm">{text}</p>
         <button
           type="button"
-          className="h-9 px-4 rounded-lg  font-semibold text-stone-100 transition-colors dark:bg-red-900/70 dark:hover:bg-red-900/80  dark:focus:bg-red-900/50"
+          className="h-9 px-4 rounded-lg text-sm font-semibold text-stone-100 transition-colors dark:bg-red-900/70 dark:hover:bg-red-900/80  dark:focus:bg-red-900/50"
           onClick={refetch}
         >
           Réessayer

@@ -1,14 +1,12 @@
 "use client";
+import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardUpdateShippingPrices, {
-  MultipleWilayaSelection,
+  WilayaSelection,
   SelectedWilaya,
 } from "@/components/dashboard/shipping-prices/DashboardUpdateShippingPrices";
-import { getWilayas } from "@/lib/clientApiHelpers";
-import { useStore } from "@/store";
-import { Wilaya } from "@/store/wilayaSlice";
-import { useQuery } from "@tanstack/react-query";
+import { useWilayasQuery } from "@/lib/queryHooks";
 import { clsx } from "clsx";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
@@ -16,29 +14,26 @@ import { MdEdit } from "react-icons/md";
 type Props = {};
 
 export default function ShippingPrices({}: Props) {
-  const {
-    wilayas: storeWilayas,
-    wilayaFetchStatus,
-    fetchWilayas,
-    setWilayas: setStoreWilayas,
-    getFilteredWilayas,
-  } = useStore();
-
   // filtered wilayas list
-  const [wilayas, setWilayas] = useState<Wilaya[]>([]);
 
+  /**
+   * State of all wilayas selection data created upon component mounting
+   */
   const [selectedWilayasList, setSelectedWilayasList] =
-    useState<MultipleWilayaSelection>([]);
+    useState<WilayaSelection>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [selectedWilaya, setSelectedWilaya] = useState<SelectedWilaya | null>(
-    null
-  );
+  /**
+   * state to modify a single wilaya at a time
+   */
+  const [selectedSingleWilaya, setSelectedSingleWilaya] =
+    useState<SelectedWilaya | null>(null);
 
-  const [multipleSelected, setMultipleSelected] =
-    useState<MultipleWilayaSelection>([]);
-
+  /**
+   * State to modify multiple wilayas at once
+   */
+  const [multipleSelected, setMultipleSelected] = useState<WilayaSelection>([]);
   useEffect(() => {
     if (selectedWilayasList.length) {
       setMultipleSelected(
@@ -48,7 +43,7 @@ export default function ShippingPrices({}: Props) {
   }, [selectedWilayasList]);
 
   const closeModal = () => {
-    setSelectedWilaya(null);
+    setSelectedSingleWilaya(null);
     setIsModalOpen(false);
   };
 
@@ -57,55 +52,49 @@ export default function ShippingPrices({}: Props) {
    * @param index the selected wilaya index
    */
   const openModal = (index: number) => {
-    setSelectedWilaya({ ...wilayas[index], index } as SelectedWilaya);
+    if (!wilayaData) return;
+    setSelectedSingleWilaya({ ...wilayaData[index], index });
     setIsModalOpen(true);
   };
 
-  const populateSelectedWilayaList = () => {
-    if (storeWilayas.length) {
+  const initSelectedWilayaList = () => {
+    if (wilayaData?.length) {
       setSelectedWilayasList(
-        wilayas.map(({ code, availableHome, availableOffice }, index) => ({
-          code,
+        wilayaData.map((w, index) => ({
+          ...w,
           selected: false,
-          availableHome,
-          availableOffice,
           index,
         }))
       );
     }
   };
 
-  /**
-   * Creates the logic to be able to select wilayas
-   */
-
-  const { isFetching, isSuccess, isError, refetch } = useQuery({
-    queryKey: ["wilayas"],
-    queryFn: getWilayas,
-    refetchOnMount: true,
-    onSuccess: (data) => {
-      setStoreWilayas(data);
-      populateSelectedWilayaList();
+  const {
+    isFetching,
+    isSuccess,
+    isError,
+    refetch,
+    data: wilayaData,
+  } = useWilayasQuery({
+    onSuccess: () => {
+      initSelectedWilayaList();
     },
-    enabled: storeWilayas.length === 0,
   });
 
   useEffect(() => {
     // if the wilayas are already present, just populate the selected state
-    populateSelectedWilayaList();
-  }, []);
+    if (wilayaData?.length) {
+      initSelectedWilayaList();
+    }
+  }, [wilayaData]);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedWilayasList(
-      selectedWilayasList.map(
-        ({ code, availableHome, availableOffice }, index) => ({
-          code,
-          selected: e.target.checked,
-          availableHome,
-          availableOffice,
-          index,
-        })
-      )
+      selectedWilayasList.map((w, index) => ({
+        ...w,
+        selected: e.target.checked,
+        index,
+      }))
     );
   };
 
@@ -115,32 +104,34 @@ export default function ShippingPrices({}: Props) {
     setSelectedWilayasList(selectedWilayaCopy);
   };
 
-  const [filterTerm, setFilterTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.trim().toLowerCase();
-    setFilterTerm(searchTerm);
+    setSearchTerm(searchTerm);
   };
 
-  useEffect(() => {
-    if (storeWilayas.length) {
-      console.log("changed!");
-      const filteredWilayas = getFilteredWilayas(filterTerm);
-      setWilayas(filteredWilayas);
-    }
-  }, [filterTerm, storeWilayas]);
-
   const wilayaList = () => {
-    if (!wilayas.length) {
+    const isWilayaCode = /^[1-9][0-9]?$/gi.test(searchTerm);
+    const filteredData = !searchTerm.length
+      ? wilayaData
+      : wilayaData?.filter(({ name, code }) => {
+          if (isWilayaCode) {
+            return code === parseInt(searchTerm);
+          } else {
+            return name.toLocaleLowerCase().includes(searchTerm);
+          }
+        });
+    if (!filteredData?.length) {
       return (
-        <tr className="absolute flex h-14 w-full  items-center justify-center">
-          <td className="absolute w-full text-center align-middle text-stone-400">
+        <div className="absolute flex h-14 w-full  items-center justify-center">
+          <div className="absolute w-full text-center align-middle text-stone-400">
             <p>Aucune wilaya ne corresponds à votre recherche</p>
-          </td>
-        </tr>
+          </div>
+        </div>
       );
     } else
-      return wilayas.map(
+      return filteredData.map(
         (
           {
             name,
@@ -152,104 +143,123 @@ export default function ShippingPrices({}: Props) {
           },
           idx
         ) => (
-          <tr
+          <div
+            className={clsx(
+              "w-auto rounded-lg bg-stone-950 px-4 py-3 flex flex-col text-stone-100 gap-2 max-h-[13.5rem]",
+              { "ring-2": selectedWilayasList[idx]?.selected }
+            )}
             key={code}
-            className="h-12 min-h-[3rem] w-full overflow-hidden rounded-lg text-sm text-white transition-colors hover:bg-stone-600/10 [&>td]:pr-6 [&>td]:text-left [&>td]:align-middle"
           >
-            <td className="rounded-bl-lg rounded-tl-lg pl-4">
+            <div className="flex items-center gap-4">
               <input
                 type="checkbox"
-                className="h-4 w-4"
+                className="h-5 w-5"
+                id={`wilaya-${code}-checkbox`}
                 checked={!!selectedWilayasList[idx]?.selected}
                 onChange={() => handleSelectWilaya(idx)}
               />
-            </td>
-            <td>{code}</td>
-            <td>{name}</td>
-            <td>{homePrice}DA</td>
-            <td>{officePrice}DA</td>
-            <td
-              className={`${availableHome ? "text-secondary" : "text-red-500"}`}
+              <label htmlFor={`wilaya-${code}-checkbox`} className="w-full">
+                {code} - {name}
+              </label>
+            </div>
+            <hr className="border-stone-900" />
+            <section className="text-sm">
+              <p className="text-stone-600 mb-1">Livraison à domicile</p>
+              <div className="flex items-center justify-between">
+                <p>{homePrice}DA</p>
+                <div
+                  className={clsx(
+                    "px-2 rounded-md h-7 flex items-center justify-center",
+                    availableHome
+                      ? "bg-zinc-900 text-blue-400"
+                      : "bg-red-950/25 text-red-400"
+                  )}
+                >
+                  {availableHome ? "Disponible" : "Non disponible"}
+                </div>
+              </div>
+            </section>
+            <section className="text-sm">
+              <p className="text-stone-600 mb-1">Livraison au bureau</p>
+              <div className="flex items-center justify-between">
+                <p>{officePrice}DA</p>
+                <div
+                  className={clsx(
+                    "px-2 rounded-md h-7 flex items-center justify-center",
+                    availableOffice
+                      ? "bg-zinc-900 text-blue-400"
+                      : "bg-red-950/25 text-red-400"
+                  )}
+                >
+                  {availableOffice ? "Disponible" : "Non disponible"}
+                </div>
+              </div>
+            </section>
+            <button
+              type="button"
+              className="gap-1 dark:bg-stone-900 h-8 rounded-md dark:hover:bg-stone-800 dark:focus:bg-stone-900/50 text-sm"
+              onClick={() => openModal(idx)}
             >
-              {availableHome ? "Disponible" : "Non disponible"}
-            </td>
-            <td
-              className={`${
-                availableOffice ? "text-secondary" : "text-red-500"
-              }`}
-            >
-              {availableOffice ? "Disponible" : "Non disponible"}
-            </td>
-            <td className="rounded-br-lg rounded-tr-lg">
-              <button
-                type="button"
-                title="Modifier les prix de livraisons"
-                className="h-8 w-8 rounded-lg transition-colors dark:hover:bg-stone-800 dark:focus:bg-stone-900/50"
-                onClick={() => openModal(idx)}
-              >
-                <MdEdit className="h-5 w-5" />
-              </button>
-            </td>
-          </tr>
+              <MdEdit className="h-5 w-5" />
+              Modifier
+            </button>
+          </div>
         )
       );
   };
 
   const loadingSkeleton = Array.from({ length: 18 }, (_, i) => (
-    <tr
+    <div
       key={i}
-      className="h-12 min-h-[3rem] w-full animate-pulse [&>td>div]:h-4 [&>td>div]:rounded-md [&>td>div]:bg-stone-800 [&>td]:text-left [&>td]:align-middle"
+      className="w-full animate-pulse bg-stone-950 h-48 p-4 [&>div]:bg-stone-800 flex flex-col justify-between"
     >
-      <td className="rounded-bl-lg rounded-tl-lg pl-4">
-        <div className="h-4 w-4"></div>
-      </td>
-      <td>
-        <div className="h-4 w-10/12"></div>
-      </td>
-      <td>
-        <div className="h-4 w-10/12"></div>
-      </td>
-      <td>
-        <div className="h-4 w-10/12"></div>
-      </td>
-      <td>
-        <div className="h-4 w-10/12"></div>
-      </td>
-      <td>
-        <div className="h-4 w-10/12"></div>
-      </td>
-      <td>
-        <div className="h-4 w-10/12"></div>
-      </td>
-      <td className="rounded-br-lg rounded-tr-lg">
-        <div className="h-4 w-8"></div>
-      </td>
-    </tr>
+      <div className="h-5 rounded-md"></div>
+      <div className="h-4 w-1/2 rounded-md"></div>
+      <div className="h-5 rounded-md"></div>
+      <div className="h-4 w-1/2 rounded-md"></div>
+
+      <div className="h-6 rounded-md"></div>
+    </div>
   ));
 
   return (
     <div
       id="shipping-prices"
-      className="flex w-full grow flex-col overflow-y-hidden py-3 pl-6"
+      className="flex w-full grow flex-col overflow-y-hidden py-3 pl-4 dark:[color-scheme:dark]"
     >
-      <DashboardHeader label="Prix de livraisons" />
+      <DashboardHeader label="Prix de livraisons" className="pl-2" />
       {/* ----------------------------------------------------------- */}
       <section
         id="shipping-prices-toolbar"
-        className="mr-6 flex h-16 min-h-[4rem] items-center justify-between"
+        className="mr-6 flex h-16 min-h-[4rem] items-center justify-between pl-2 "
       >
-        <button
-          type="button"
-          className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-stone-800 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 dark:disabled:bg-stone-900 dark:disabled:text-stone-600"
-          onClick={() => {
-            // reset the selected wilaya to tell the update component that multiple wilayas should be modified
-            setSelectedWilaya(null);
-            setIsModalOpen(true);
-          }}
-          disabled={multipleSelected.length < 1}
-        >
-          <MdEdit className="h-6 w-6" /> Modifier la sélection
-        </button>
+        <div className="flex gap-2">
+          <label
+            htmlFor="wilaya-select-all-checkbox"
+            className="w-10 h-10 dark:bg-stone-950 dark:hover:bg-stone-900 rounded-md flex items-center justify-center"
+            title="Tout sélectionner"
+          >
+            <input
+              type="checkbox"
+              className="h-5 w-5"
+              id="wilaya-select-all-checkbox"
+              // checked={!!selectedWilayasList[idx]?.selected}
+              onChange={handleSelectAll}
+            />
+          </label>
+          <button
+            type="button"
+            className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-stone-800 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 dark:disabled:bg-stone-900 dark:disabled:text-stone-600"
+            onClick={() => {
+              // reset the selected wilaya to tell the update component that multiple wilayas should be modified
+              setSelectedSingleWilaya(null);
+              setIsModalOpen(true);
+            }}
+            disabled={multipleSelected.length <= 0}
+          >
+            <MdEdit className="h-6 w-6" /> Modifier la sélection
+          </button>
+        </div>
 
         <DashboardSearchInput
           placeholder="Chercher une wilaya"
@@ -260,68 +270,19 @@ export default function ShippingPrices({}: Props) {
 
       {/* new Body  */}
 
-      <section
-        className={clsx(
-          "relative h-full w-full overflow-x-hidden pr-2 dark:[color-scheme:dark]",
-          isSuccess && "overflow-y-auto"
+      <section className="relative h-full w-full overflow-x-hidden pr-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 p-2">
+        {isFetching && loadingSkeleton}
+        {isSuccess && wilayaList()}
+        {isError && !isFetching && (
+          <DashboardFetchError
+            refetch={refetch}
+            text="Une érreur est survenu lors de la recherche des wilayas"
+          />
         )}
-      >
-        <table className="w-full table-fixed">
-          <thead>
-            <tr className="sticky top-0 z-10 h-14 min-h-[5rem] w-full border-0 border-hidden bg-white dark:bg-dark align-middle text-sm text-stone-500 dark:bg-dark-background [&>th]:text-left">
-              <th className="w-14 items-center pl-4 2xl:w-20">
-                <input
-                  id="select-all-checkbox"
-                  type="checkbox"
-                  onChange={handleSelectAll}
-                  className="h-4 w-4"
-                  disabled={wilayaFetchStatus !== "success"}
-                />
-              </th>
-              <th className="w-20">#</th>
-              <th className="w-44 2xl:w-44">Nom</th>
-              <th className="w-40" title="Prix de livraison à domicile">
-                Prix à domicile
-              </th>
-              <th className="w-40" title="Prix de livraison au bureau">
-                Prix au bureau
-              </th>
-              <th className="w-48">Disponibilité à domicile</th>
-              <th className="w-48">Disponibilité au bureau</th>
-              <th className="">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="h-full text-sm text-white">
-            {isFetching && loadingSkeleton}
-
-            {isSuccess && wilayaList()}
-
-            {isError && (
-              <tr className="absolute flex w-full flex-col items-center h-full justify-center">
-                <td className="flex flex-col items-center justify-center gap-2 -translate-y-20">
-                  <div className="flex items-center justify-center rounded-full border-4 w-10 h-10 text-xl font-bold text-red-500 border-red-500">
-                    !
-                  </div>
-                  <p className="mt-2 text-stone-400">
-                    Une érreur est survenu lors de la recherche des wilayas
-                  </p>
-                  <button
-                    type="button"
-                    className="h-9 px-4 rounded-lg  font-semibold text-stone-100 transition-colors dark:hover:bg-stone-900/70  dark:focus:bg-stone-950 "
-                    onClick={() => refetch}
-                  >
-                    Réessayer
-                  </button>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        {/* <div className="h-10 w-full bg-red-500"></div> */}
       </section>
       {isModalOpen && (
         <DashboardUpdateShippingPrices
-          selectedWilaya={selectedWilaya}
+          selectedWilaya={selectedSingleWilaya}
           selectedMultiple={multipleSelected}
           closeModal={closeModal}
         />

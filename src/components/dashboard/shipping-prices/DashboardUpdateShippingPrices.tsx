@@ -11,8 +11,12 @@ import Loader from "../../Loader";
 import { STATUS_OK } from "@/lib/constants";
 import SwitchButton from "@/components/SwitchButton";
 import { Wilaya } from "@/store/wilayaSlice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { patchWilayas } from "@/lib/clientApiHelpers";
+import { fetchWilayaQueryKey, patchWilayaMutationKey } from "@/lib/queryKeys";
+import { klona } from "klona/json";
 
-export type MultipleWilayaSelection = {
+export type WilayaSelection = {
   code: number;
   selected: boolean;
   availableHome: boolean;
@@ -33,7 +37,7 @@ interface Props {
   /**
    * A list of selected wilayas to be updated
    */
-  selectedMultiple: MultipleWilayaSelection;
+  selectedMultiple: WilayaSelection;
   // selectedWilayaIndex: number | null;
 }
 
@@ -48,6 +52,7 @@ export default function DashboardUpdateShippingPrices({
   selectedMultiple,
 }: // selectedWilayaIndex,
 Props) {
+  const queryClient = useQueryClient();
   const { showSnackbar, updateWilaya } = useStore();
   const methods = useForm<UpdateShippingPricesFormValues>();
 
@@ -62,6 +67,48 @@ Props) {
   const [isAvailableOffice, setIsAvailableOffice] = useState<boolean>(
     selectedWilaya === null ? true : selectedWilaya.availableOffice
   );
+
+  const { mutate: patchWilaya, isLoading } = useMutation({
+    mutationKey: patchWilayaMutationKey,
+    mutationFn: patchWilayas,
+    onSuccess: (data) => {
+      const wilayasData =
+        queryClient.getQueryData<Wilaya[]>(fetchWilayaQueryKey);
+
+      if (!wilayasData) return;
+      const wilayasDataCopy = klona(wilayasData);
+      const { wilayas } = data;
+      // go through each wilaya to be modifed
+      wilayas.forEach((code) => {
+        // const wilayaIndex = wilayasDataCopy.findIndex((w) => w.code === code);
+        const targetWilaya = wilayasDataCopy[code - 1];
+        // if (wilayaIndex < 0) return;
+        if (data.availableHome !== undefined) {
+          targetWilaya.availableHome = data.availableHome;
+        }
+        if (data.availableOffice) {
+          targetWilaya.availableOffice = data.availableOffice;
+        }
+        if (data.homePrice) {
+          targetWilaya.homePrice = data.homePrice;
+        }
+        if (data.officePrice) {
+          targetWilaya.officePrice = data.officePrice;
+        }
+      });
+
+      queryClient.setQueryData(fetchWilayaQueryKey, wilayasDataCopy);
+      closeModal();
+      showSnackbar(
+        selectedWilaya !== null
+          ? `Wilaya modifiée avec succès`
+          : "Wilayas modifiées avec succès"
+      );
+    },
+    onError: () => {
+      showSnackbar("Une érreur est survenu, veuillez réessayer", "error");
+    },
+  });
 
   useEffect(() => {
     if (selectedWilaya) {
@@ -99,7 +146,6 @@ Props) {
     }
   };
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const onFormSubmit: SubmitHandler<UpdateShippingPricesFormValues> = async (
     data,
     e
@@ -165,38 +211,7 @@ Props) {
 
       console.log("Multiple request body", requestBody);
     }
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("/api/wilayas", {
-        method: "PATCH",
-        body: JSON.stringify(requestBody),
-      });
-
-      if (response.status === STATUS_OK) {
-        showSnackbar(
-          selectedWilaya !== null
-            ? `Wilaya modifiée avec succès`
-            : "Wilayas modifiées avec succès"
-        );
-        // update the state as well, since no data is recived by the server
-        const { wilayas, ...updateData } = requestBody;
-        if (selectedWilaya) {
-          updateWilaya({ ...updateData, index: selectedWilaya.index });
-        } else {
-          selectedMultiple.forEach(({ index }) => {
-            updateWilaya({ ...updateData, index });
-          });
-        }
-        closeModal();
-      } else {
-        throw `Error of type ${response.status}`;
-      }
-    } catch (error) {
-      showSnackbar("Une érreur est survenu, veuillez réessayer", "error");
-      console.log("Error updating wilaya shipping prices", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    patchWilaya(requestBody);
   };
   return (
     <Modal
@@ -205,7 +220,7 @@ Props) {
       className="flex w-full flex-col rounded-lg  bg-[#F3F3F3] px-6 py-3 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       closeOnClickOutside
       centerModalContent
-      preventClose={isSubmitting}
+      preventClose={isLoading}
     >
       <form
         className="w-full px-2"
@@ -273,7 +288,7 @@ Props) {
             <div className="flex h-12 items-center justify-between pr-2">
               <p className="text-sm text-stone-400">
                 Render la wilaya disponible ou non disponible pour livraison au
-                bureau de livraison
+                bureau
               </p>
               <SwitchButton
                 isActive={isAvailableOffice}
@@ -289,23 +304,19 @@ Props) {
         >
           <button
             type="button"
-            className="h-10 w-36 rounded-md font-bold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
+            className="h-10 w-36 rounded-md font-semibold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
             onClick={closeModal}
           >
             Annuler
           </button>
           <button
             type="submit"
-            className="h-10 w-36 rounded-md bg-blue-600 font-bold text-white transition-colors hover:bg-secondary focus:bg-blue-700  disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
+            className="h-10 w-36 rounded-md bg-blue-600 font-semibold text-white transition-colors hover:bg-secondary focus:bg-blue-700  disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
             // onClick={handleDeleteProduct}
             // disabled
-            disabled={isSubmitting}
+            disabled={isLoading}
           >
-            {isSubmitting ? (
-              <Loader className="h-6 w-6" />
-            ) : (
-              <span>Modifier</span>
-            )}
+            {isLoading ? <Loader className="h-6 w-6" /> : <span>Modifier</span>}
           </button>
         </section>
       </form>

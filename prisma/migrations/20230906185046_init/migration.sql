@@ -103,6 +103,7 @@ CREATE TABLE "users" (
     "email" VARCHAR(255),
     "address" VARCHAR(255),
     "phone" VARCHAR(15),
+    "isBlackListed" BOOLEAN DEFAULT false,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "wilaya_id" INTEGER,

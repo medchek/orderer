@@ -1,13 +1,13 @@
-import { postCategory } from "@/lib/clientApiHelpers";
 import { useStore } from "@/store";
-import { GetCategoriesSuccessResponsePayload } from "@/types/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { klona } from "klona/json";
 import DashbarodCategoryModal from "./DashbarodCategoryModal";
-import { HTTPError } from "ky";
 import { STATUS_CONFLICT } from "@/lib/constants";
+import { usePostCategory } from "../api/postCategory";
+import { GetCategoriesSuccessResponse } from "../api/getCategories";
+import { queryKeys } from "@/lib/queryKeys";
 
 interface Props {
   closeModal: () => void;
@@ -25,12 +25,10 @@ export default function DashboardAddCategory({ closeModal }: Props) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ name: string }>();
+  } = useForm<AddCategoryFormValues>();
 
-  const { isLoading, mutate } = useMutation({
-    mutationKey: ["categories"],
-    mutationFn: postCategory,
-    onError: (error: HTTPError) => {
+  const { isLoading, mutate } = usePostCategory({
+    onError: (error) => {
       const status = error.response.status;
       let errorMsg =
         "Une érreur est survenu lors de la création de la catégorie, veuillez reéssayer";
@@ -41,16 +39,16 @@ export default function DashboardAddCategory({ closeModal }: Props) {
     },
     onSuccess: (data) => {
       const currentCategories =
-        queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
-          "categories",
-        ]);
+        queryClient.getQueryData<GetCategoriesSuccessResponse>(
+          queryKeys.categories.all.queryKey
+        );
       if (!currentCategories) return;
       const newCategories = currentCategories
         ? klona([...currentCategories, data])
         : [data];
 
-      queryClient.setQueryData<GetCategoriesSuccessResponsePayload>(
-        ["categories"],
+      queryClient.setQueryData<GetCategoriesSuccessResponse>(
+        queryKeys.categories.all.queryKey,
         newCategories
       );
       showSnackbar("Catégorie ajouté!", "default");
@@ -68,9 +66,9 @@ export default function DashboardAddCategory({ closeModal }: Props) {
   const onFormSubmit: SubmitHandler<AddCategoryFormValues> = (data) => {
     // check if the category already exists
     const categories =
-      queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
-        "categories",
-      ]);
+      queryClient.getQueryData<GetCategoriesSuccessResponse>(
+        queryKeys.categories.all.queryKey
+      );
 
     if (categories) {
       const nameExists = categories.findIndex(

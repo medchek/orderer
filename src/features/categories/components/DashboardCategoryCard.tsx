@@ -1,10 +1,3 @@
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import React from "react";
 import { MdAdd, MdMoreVert } from "react-icons/md";
 import DashboardCategoryDropdown from "./DashboardCategoryDropdown";
 import { useStore } from "@/store";
@@ -21,7 +14,7 @@ interface Props {
 
 export default function DashboardCategoryCard({
   categoryName,
-  categoryId,
+
   subCategories,
   onDeleteClick,
   onEditClick,

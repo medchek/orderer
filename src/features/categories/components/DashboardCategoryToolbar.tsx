@@ -1,6 +1,9 @@
 import React from "react";
-import { MdAdd, MdCheck, MdOutlineFilterList } from "react-icons/md";
-import DashboardSearchInput from "../DashboardSearchInput";
+import {
+  MdAdd,
+  MdCheck, MdOutlineManageSearch
+} from "react-icons/md";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { useStore } from "@/store";
+import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 
 interface Props {
   openAddCategory: () => void;
@@ -41,29 +45,22 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
         <MdAdd className="w-7 h-7" /> Ajouter une catégorie
       </button>
       <div className="flex gap-2 h-10">
-        <DashboardSearchInput
-          placeholder={`Chercher une ${
-            categoryFilterType === "category" ? "catégorie" : "sous-catégorie"
-          }`}
-          onChange={handleOnChange}
-          value={categoryFilterTerm}
-        />
-        {/*  */}
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             title="Filtrer par"
-            className="dark:bg-stone-950 dark:hover:bg-stone-900  transition-colors h-10 w-10 rounded-lg outline-none shadow-md text-stone-50"
+            className="dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950  transition-colors h-10 w-10 rounded-lg outline-none shadow-md text-stone-400 flex items-center justify-center"
           >
-            <MdOutlineFilterList className="h-7 w-7" />
+            {/* <MdOutlineFilterList className="h-7 w-7" /> */}
+            <MdOutlineManageSearch className="h-7 w-7" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
             avoidCollisions
             sideOffset={10}
             align="end"
-            className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm text-stone-50"
+            className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm text-neutral-200"
           >
-            <DropdownMenuLabel className="px-2 font-semibold">
-              Filtrer Par
+            <DropdownMenuLabel className="px-2 text-stone-500">
+              Chercher par
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
@@ -86,6 +83,14 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <DashboardSearchInput
+          placeholder={`Chercher une ${
+            categoryFilterType === "category" ? "catégorie" : "sous-catégorie"
+          }`}
+          onChange={handleOnChange}
+          value={categoryFilterTerm}
+        />
+
       </div>
     </div>
   );

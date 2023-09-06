@@ -1,6 +1,6 @@
 import { toNumber } from "@/lib/utils";
 import { useStore } from "@/store";
-import React, { useState } from "react";
+import React from "react";
 import { MdChevronRight } from "react-icons/md";
 import ReactPaginate, { type ReactPaginateProps } from "react-paginate";
 
@@ -9,7 +9,7 @@ interface Props extends ReactPaginateProps {}
 export default function DashboardCategoryPagination({ ...props }: Props) {
   const { categoryPerPage, setCategoryPerPage } = useStore();
 
-  const perPageOptions = [5, , 7, 9, 10, 15, 20, 25];
+  const perPageOptions = [5, 7, 9, 10, 15, 20, 25];
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = toNumber(e.target.value);
     setCategoryPerPage(value);

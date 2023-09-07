@@ -1,7 +1,7 @@
 import { CategoryType } from "@/store/dashboardSlice";
 import { MutationOptions } from "@/types/api";
 import { useMutation } from "@tanstack/react-query";
-import ky, { HTTPError } from "ky";
+import ky from "ky";
 
 type DeleteCategoryFnArgs = {
   id: number;
@@ -17,10 +17,10 @@ type DeleteCategoryFnArgs = {
 export const deleteCategory = async ({
   type,
   id,
-}: DeleteCategoryFnArgs): Promise<{ id: number; type: CategoryType }> => {
+}: DeleteCategoryFnArgs): Promise<DeleteCategoryFnArgs> => {
   await ky
     .delete(
-      `/api/${type === "category" ? "categories" : "subcategories"}/${id}`
+      `/api/${type === "category" ? "categories" : "subcategories"}/${id}`,
     )
     .json();
   return { id, type };
@@ -28,7 +28,6 @@ export const deleteCategory = async ({
 
 type UseDeleteCategoryOptions = MutationOptions<
   DeleteCategoryFnArgs,
-  HTTPError,
   DeleteCategoryFnArgs
 >;
 export const useDeleteCategory = (options: UseDeleteCategoryOptions) => {

@@ -4,9 +4,7 @@ import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { MdClear } from "react-icons/md";
 
-interface Props {}
-
-export default function Snackbar({}: Props) {
+export default function Snackbar() {
   const { snackText, snackType, hideSnackbar, snackTimeout } = useStore();
 
   useEffect(() => {

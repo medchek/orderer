@@ -67,13 +67,13 @@ export default function Modal({
       <div {...props} ref={ref}>
         {!hideHeader && (
           <div id="dialog-header" className="flex grow-0 justify-between px-2">
-            <h1 className="text-xl font-semibold dark:text-white">{label}</h1>
+            <h1 className="text-xl font-semibold dark:text-neutral-100">{label}</h1>
             <button
               onClick={closeModal}
-              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] disabled:cursor-not-allowed dark:focus:bg-white/10"
+              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] disabled:cursor-not-allowed dark:focus:bg-neutral-950"
               disabled={preventClose}
             >
-              <MdClear className="h-6 w-6 dark:text-gray-500" />
+              <MdClear className="h-6 w-6 dark:text-neutral-500" />
             </button>
           </div>
         )}

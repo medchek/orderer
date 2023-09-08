@@ -3,37 +3,31 @@ import React, { SelectHTMLAttributes } from "react";
 import { UseFormRegister } from "react-hook-form";
 import { useState } from "react";
 import { useStore } from "@/store";
-import { useQuery } from "@tanstack/react-query";
-import { getTowns } from "@/lib/clientApiHelpers";
 import SelectInput from "./SelectInput";
 import { OrderFormValues } from "./OrderForm";
 import { orderFormValidators } from "@/lib/formValidators";
 import { toNumber } from "@/lib/utils";
+import { useGetTowns } from "@/features/shipping-prices/api/getTowns";
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
-  label: string;
   id: string;
   register: UseFormRegister<OrderFormValues>;
   error?: string;
 }
 
-export default function TownSelectInput({
-  label,
+export default function TownSelect({
   id,
   register,
   error,
   ...props
 }: Props) {
   const { selectedWilaya, setSelectedTown, confirmData } = useStore(
-    (state) => state
+    (state) => state,
   );
 
   // const inputRegister = register && register(name, registerRules);
 
-  const { isFetching, data } = useQuery({
-    queryKey: ["towns", selectedWilaya?.code],
-    // disabled the warning as the query is enable only if the selectedWilaya is not null
-    queryFn: () => getTowns(selectedWilaya?.code!),
+  const { isFetching, data } = useGetTowns(selectedWilaya?.code ?? 0, {
     enabled:
       selectedWilaya !== null &&
       selectedWilaya.code > 0 &&
@@ -82,7 +76,7 @@ export default function TownSelectInput({
     >
       {!selectedWilaya && (
         <option value="0" disabled hidden>
-          Selectionnez une wilaya d'abord
+          Selectionnez une wilaya d&apos;abord
         </option>
       )}
 

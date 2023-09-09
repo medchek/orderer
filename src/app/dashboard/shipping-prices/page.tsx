@@ -5,15 +5,15 @@ import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardUpdateShippingPrices, {
   WilayaSelection,
   SelectedWilaya,
-} from "@/components/dashboard/shipping-prices/DashboardUpdateShippingPrices";
-import { useWilayasQuery } from "@/lib/queryHooks";
-import { clsx } from "clsx";
+} from "@/features/shipping-prices/components/DashboardUpdateShippingPrices";
+import { useGetWilayas } from "@/features/shipping-prices/api/getWilayas";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
+import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
+import { LiaShippingFastSolid } from "react-icons/lia";
+import DashboardWilayaCard from "@/features/shipping-prices/components/DashboardWilayaCard";
 
-type Props = {};
-
-export default function ShippingPrices({}: Props) {
+export default function ShippingPrices() {
   // filtered wilayas list
 
   /**
@@ -68,6 +68,12 @@ export default function ShippingPrices({}: Props) {
       );
     }
   };
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value.trim().toLowerCase();
+    setSearchTerm(searchTerm);
+  };
 
   const {
     isFetching,
@@ -75,9 +81,18 @@ export default function ShippingPrices({}: Props) {
     isError,
     refetch,
     data: wilayaData,
-  } = useWilayasQuery({
-    onSuccess: () => {
-      initSelectedWilayaList();
+  } = useGetWilayas({
+    select: (data) => {
+      const isWilayaCode = /^[1-9][0-9]?$/gi.test(searchTerm);
+      return !searchTerm.length
+        ? data
+        : data?.filter(({ name, code }) => {
+            if (isWilayaCode) {
+              return code === parseInt(searchTerm);
+            } else {
+              return name.toLocaleLowerCase().includes(searchTerm);
+            }
+          });
     },
   });
 
@@ -104,123 +119,26 @@ export default function ShippingPrices({}: Props) {
     setSelectedWilayasList(selectedWilayaCopy);
   };
 
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchTerm = e.target.value.trim().toLowerCase();
-    setSearchTerm(searchTerm);
-  };
-
   const wilayaList = () => {
-    const isWilayaCode = /^[1-9][0-9]?$/gi.test(searchTerm);
-    const filteredData = !searchTerm.length
-      ? wilayaData
-      : wilayaData?.filter(({ name, code }) => {
-          if (isWilayaCode) {
-            return code === parseInt(searchTerm);
-          } else {
-            return name.toLocaleLowerCase().includes(searchTerm);
-          }
-        });
-    if (!filteredData?.length) {
+    if (!wilayaData?.length) {
       return (
-        <div className="absolute flex h-14 w-full  items-center justify-center">
-          <div className="absolute w-full text-center align-middle text-stone-400">
-            <p>Aucune wilaya ne corresponds à votre recherche</p>
-          </div>
-        </div>
+        <DashboardEmptyState
+          text="Aucune wilaya ne corresponds à votre recherche"
+          className="absolute top-0 left-0"
+          Icon={<LiaShippingFastSolid className="w-12 h-12" />}
+        />
       );
     } else
-      return filteredData.map(
-        (
-          {
-            name,
-            code,
-            availableHome,
-            availableOffice,
-            homePrice,
-            officePrice,
-          },
-          idx
-        ) => (
-          <div
-            className={clsx(
-              "w-auto rounded-lg bg-stone-950 px-4 py-3 flex flex-col text-stone-100 gap-2 max-h-[13.5rem]",
-              { "ring-2": selectedWilayasList[idx]?.selected }
-            )}
-            key={code}
-          >
-            <div className="flex items-center gap-4">
-              <input
-                type="checkbox"
-                className="h-5 w-5"
-                id={`wilaya-${code}-checkbox`}
-                checked={!!selectedWilayasList[idx]?.selected}
-                onChange={() => handleSelectWilaya(idx)}
-              />
-              <label htmlFor={`wilaya-${code}-checkbox`} className="w-full">
-                {code} - {name}
-              </label>
-            </div>
-            <hr className="border-stone-900" />
-            <section className="text-sm">
-              <p className="text-stone-600 mb-1">Livraison à domicile</p>
-              <div className="flex items-center justify-between">
-                <p>{homePrice}DA</p>
-                <div
-                  className={clsx(
-                    "px-2 rounded-md h-7 flex items-center justify-center",
-                    availableHome
-                      ? "bg-zinc-900 text-blue-400"
-                      : "bg-red-950/25 text-red-400"
-                  )}
-                >
-                  {availableHome ? "Disponible" : "Non disponible"}
-                </div>
-              </div>
-            </section>
-            <section className="text-sm">
-              <p className="text-stone-600 mb-1">Livraison au bureau</p>
-              <div className="flex items-center justify-between">
-                <p>{officePrice}DA</p>
-                <div
-                  className={clsx(
-                    "px-2 rounded-md h-7 flex items-center justify-center",
-                    availableOffice
-                      ? "bg-zinc-900 text-blue-400"
-                      : "bg-red-950/25 text-red-400"
-                  )}
-                >
-                  {availableOffice ? "Disponible" : "Non disponible"}
-                </div>
-              </div>
-            </section>
-            <button
-              type="button"
-              className="gap-1 dark:bg-stone-900 h-8 rounded-md dark:hover:bg-stone-800 dark:focus:bg-stone-900/50 text-sm"
-              onClick={() => openModal(idx)}
-            >
-              <MdEdit className="h-5 w-5" />
-              Modifier
-            </button>
-          </div>
-        )
-      );
+      return wilayaData?.map((wilaya, idx) => (
+        <DashboardWilayaCard
+          key={wilaya.code}
+          wilaya={wilaya}
+          handleEditClick={() => openModal(idx)}
+          handleSelectClick={() => handleSelectWilaya(idx)}
+          isSelected={selectedWilayasList[idx]?.selected}
+        />
+      ));
   };
-
-  const loadingSkeleton = Array.from({ length: 18 }, (_, i) => (
-    <div
-      key={i}
-      className="w-full animate-pulse bg-stone-950 h-48 p-4 [&>div]:bg-stone-800 flex flex-col justify-between"
-    >
-      <div className="h-5 rounded-md"></div>
-      <div className="h-4 w-1/2 rounded-md"></div>
-      <div className="h-5 rounded-md"></div>
-      <div className="h-4 w-1/2 rounded-md"></div>
-
-      <div className="h-6 rounded-md"></div>
-    </div>
-  ));
 
   return (
     <div
@@ -269,17 +187,31 @@ export default function ShippingPrices({}: Props) {
       {/* ----------------------------------------------------------- */}
 
       {/* new Body  */}
+      <div className="w-full h-full grow overflow-x-hidden">
+        <section className="relative w-full pr-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 p-2">
+          {isFetching &&
+            Array.from({ length: 18 }, (_, i) => (
+              <div
+                key={i}
+                className="w-full animate-pulse bg-stone-950 h-48 p-4 [&>div]:bg-stone-800 flex flex-col justify-between"
+              >
+                <div className="h-5 rounded-md"></div>
+                <div className="h-4 w-1/2 rounded-md"></div>
+                <div className="h-5 rounded-md"></div>
+                <div className="h-4 w-1/2 rounded-md"></div>
 
-      <section className="relative h-full w-full overflow-x-hidden pr-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 p-2">
-        {isFetching && loadingSkeleton}
-        {isSuccess && wilayaList()}
-        {isError && !isFetching && (
-          <DashboardFetchError
-            refetch={refetch}
-            text="Une érreur est survenu lors de la recherche des wilayas"
-          />
-        )}
-      </section>
+                <div className="h-6 rounded-md"></div>
+              </div>
+            ))}
+          {isSuccess && wilayaList()}
+          {isError && !isFetching && (
+            <DashboardFetchError
+              refetch={refetch}
+              text="Une érreur est survenu lors de la recherche des wilayas"
+            />
+          )}
+        </section>
+      </div>
       {isModalOpen && (
         <DashboardUpdateShippingPrices
           selectedWilaya={selectedSingleWilaya}

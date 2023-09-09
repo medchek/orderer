@@ -1,20 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Modal from "../../Modal";
-import Input from "../../Input";
+import { useState } from "react";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { addPartitive, toNumber } from "@/lib/utils";
 import { useStore } from "@/store";
-import { PatchShippingPricesRequestPayload } from "@/types/api";
 
-import Loader from "../../Loader";
-import { STATUS_OK } from "@/lib/constants";
 import SwitchButton from "@/components/SwitchButton";
 import { Wilaya } from "@/store/wilayaSlice";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { patchWilayas } from "@/lib/clientApiHelpers";
-import { fetchWilayaQueryKey, patchWilayaMutationKey } from "@/lib/queryKeys";
+import { useQueryClient } from "@tanstack/react-query";
 import { klona } from "klona/json";
+import { queryKeys } from "@/lib/queryKeys";
+import {
+  PatchShippingPricesRequestPayload,
+  usePatchShippingPrices,
+} from "../api/patchWilaya";
+import Modal from "@/components/Modal";
+import Input from "@/components/Input";
+import Loader from "@/components/Loader";
+import { useEffectOnce } from "usehooks-ts";
 
 export type WilayaSelection = {
   code: number;
@@ -53,7 +56,7 @@ export default function DashboardUpdateShippingPrices({
 }: // selectedWilayaIndex,
 Props) {
   const queryClient = useQueryClient();
-  const { showSnackbar, updateWilaya } = useStore();
+  const { showSnackbar } = useStore();
   const methods = useForm<UpdateShippingPricesFormValues>();
 
   const {
@@ -62,47 +65,45 @@ Props) {
     formState: { errors },
   } = methods;
   const [isAvailableHome, setIsAvailableHome] = useState<boolean>(
-    selectedWilaya === null ? true : selectedWilaya.availableHome
+    selectedWilaya === null ? true : selectedWilaya.availableHome,
   );
   const [isAvailableOffice, setIsAvailableOffice] = useState<boolean>(
-    selectedWilaya === null ? true : selectedWilaya.availableOffice
+    selectedWilaya === null ? true : selectedWilaya.availableOffice,
   );
 
-  const { mutate: patchWilaya, isLoading } = useMutation({
-    mutationKey: patchWilayaMutationKey,
-    mutationFn: patchWilayas,
+  const { mutate: patchWilaya, isLoading } = usePatchShippingPrices({
     onSuccess: (data) => {
-      const wilayasData =
-        queryClient.getQueryData<Wilaya[]>(fetchWilayaQueryKey);
+      const wilayasData = queryClient.getQueryData<Wilaya[]>(
+        queryKeys.wilayas.all.queryKey,
+      );
 
       if (!wilayasData) return;
       const wilayasDataCopy = klona(wilayasData);
       const { wilayas } = data;
       // go through each wilaya to be modifed
       wilayas.forEach((code) => {
-        // const wilayaIndex = wilayasDataCopy.findIndex((w) => w.code === code);
         const targetWilaya = wilayasDataCopy[code - 1];
         // if (wilayaIndex < 0) return;
         if (data.availableHome !== undefined) {
           targetWilaya.availableHome = data.availableHome;
         }
-        if (data.availableOffice) {
+        if (data.availableOffice !== undefined) {
           targetWilaya.availableOffice = data.availableOffice;
         }
-        if (data.homePrice) {
+        if (data.homePrice !== undefined) {
           targetWilaya.homePrice = data.homePrice;
         }
-        if (data.officePrice) {
+        if (data.officePrice !== undefined) {
           targetWilaya.officePrice = data.officePrice;
         }
       });
 
-      queryClient.setQueryData(fetchWilayaQueryKey, wilayasDataCopy);
+      queryClient.setQueryData(queryKeys.wilayas.all.queryKey, wilayasDataCopy);
       closeModal();
       showSnackbar(
         selectedWilaya !== null
           ? `Wilaya modifiée avec succès`
-          : "Wilayas modifiées avec succès"
+          : "Wilayas modifiées avec succès",
       );
     },
     onError: () => {
@@ -110,7 +111,7 @@ Props) {
     },
   });
 
-  useEffect(() => {
+  useEffectOnce(() => {
     if (selectedWilaya) {
       setIsAvailableHome(selectedWilaya.availableHome);
       setIsAvailableOffice(selectedWilaya.availableOffice);
@@ -127,7 +128,7 @@ Props) {
       //   setIsAvailable(true);
       // }
     }
-  }, []);
+  });
   const displayWilayaName = () => {
     const name = selectedWilaya?.name;
     // if it's null, then, only a single wilaya is requested to be modified
@@ -148,7 +149,7 @@ Props) {
 
   const onFormSubmit: SubmitHandler<UpdateShippingPricesFormValues> = async (
     data,
-    e
+    e,
   ) => {
     e?.preventDefault();
     // if only a single wilaya is selected, check if anything changed
@@ -189,10 +190,10 @@ Props) {
       const officePrice = rawOfficePrice.trim();
       // if all the available state isn't the same as when the component got created
       const isAvailableHomeChanged = selectedMultiple.every(
-        (w) => w.availableHome !== isAvailableHome
+        (w) => w.availableHome !== isAvailableHome,
       );
       const isAvailableOfficeChanged = selectedMultiple.every(
-        (w) => w.availableOffice !== isAvailableOffice
+        (w) => w.availableOffice !== isAvailableOffice,
       );
       if (
         !homePrice &&

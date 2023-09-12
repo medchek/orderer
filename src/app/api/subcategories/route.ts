@@ -1,14 +1,20 @@
+import { PostSubCategorySuccessResponse } from "./../../../features/categories/api/postSubcategory";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
-import { apiErrorResponse } from "@/lib/utils";
-import { PostSubCategoryRequestPayload, PostSubCategorySuccessResponsePayload } from "@/types/api";
+import { apiErrorResponse, isNotFoundPrismaError } from "@/lib/utils";
+
 import Joi from "joi";
-import { STATUS_BAD_REQUEST, STATUS_CREATED, STATUS_OK } from "@/lib/constants";
+import {
+  STATUS_BAD_REQUEST,
+  STATUS_CONFLICT,
+  STATUS_CREATED,
+} from "@/lib/constants";
 import { prisma } from "../../../../prisma/db";
+import { PostSubCategoryRequestPayload } from "@/features/categories/api/postSubcategory";
 
 export async function POST(req: NextRequest) {
   try {
-    if (!await isAdmin()) {
+    if (!(await isAdmin())) {
       return NextResponse.json("unauthorized", { status: 401 });
     }
 
@@ -22,25 +28,43 @@ export async function POST(req: NextRequest) {
     const validation = schema.validate(body);
 
     if (validation.error || !validation.value) {
-      return apiErrorResponse("Validation error: Invalid request", STATUS_BAD_REQUEST)
+      return apiErrorResponse(
+        "Validation error: Invalid request",
+        STATUS_BAD_REQUEST,
+      );
     }
-    const { categoryId } = validation.value;
+    const { categoryId, name } = validation.value;
 
-    const isCategoryIdValid = prisma.category.count({ where: { id: categoryId } });
+    // Check if if the provided subcategory name already exists for the requested parent category
+    const subcategoryAlreadyExists = await prisma.subCategory.count({
+      where: { id: categoryId, name },
+    });
 
-    if (!isCategoryIdValid) {
-      return apiErrorResponse("Validation error: Invalid category Id", STATUS_BAD_REQUEST)
+    if (subcategoryAlreadyExists > 0) {
+      return apiErrorResponse(
+        "A subcategory with this name already exists for the requested category",
+        STATUS_CONFLICT,
+      );
     }
 
-    const createdSubcategory: PostSubCategorySuccessResponsePayload = await prisma.subCategory.create({
-      data: validation.value
-    })
+    const createdSubcategory: PostSubCategorySuccessResponse =
+      await prisma.subCategory.create({
+        data: validation.value,
+      });
 
-    return NextResponse.json(createdSubcategory, { status: STATUS_CREATED })
+    return NextResponse.json<PostSubCategorySuccessResponse>(
+      createdSubcategory,
+      { status: STATUS_CREATED },
+    );
   } catch (error) {
-    console.error("Error saving category:", error)
-    return apiErrorResponse("Couln't save category")
+    if (isNotFoundPrismaError(error)) {
+      return apiErrorResponse(
+        "Validation error: Invalid category Id",
+        STATUS_BAD_REQUEST,
+      );
+    }
+
+    console.error("Error saving category:", error);
+    return apiErrorResponse("Couln't save category");
   }
-
 }
-

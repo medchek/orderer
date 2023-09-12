@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiErrorResponse, isNotFoundPrismaError, toNumber } from "@/lib/utils";
+import { apiErrorResponse, isNotFoundPrismaError, toNumber, toPositiveNumber } from "@/lib/utils";
 import { STATUS_BAD_REQUEST, STATUS_NOT_FOUND, STATUS_OK, STATUS_UNAUTHORIZED } from "@/lib/constants";
 import { isAdmin } from "../../auth/[...nextauth]/route";
 import { prisma } from "../../../../../prisma/db";
-import { PatchCategoryRequestPayload, PatchSubcategorySuccessResponsePayload } from "@/types/api";
 import Joi from "joi";
+import { PatchSubcategorySuccessResponse } from "@/features/categories/api/patchSubcategory";
+import { PatchCategoryRequestPayload } from "@/features/categories/api/patchCategory";
+
 
 
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
@@ -30,8 +32,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       return apiErrorResponse("Invalid request", STATUS_BAD_REQUEST)
     }
 
-    const patchedSubcategory: PatchSubcategorySuccessResponsePayload = await prisma.subCategory.update({
-      where: { id: toNumber(params.id) },
+    const patchedSubcategory: PatchSubcategorySuccessResponse = await prisma.subCategory.update({
+      where: { id: toPositiveNumber(params.id) },
       data: {
         name: validation.value.name
       },
@@ -63,11 +65,11 @@ export async function DELETE(_: NextRequest, { params }: { params: { id: string 
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
     }
 
-    if (!params.id || toNumber(params.id) === 0) {
+    if (!params.id || toPositiveNumber(params.id) === 0) {
       return apiErrorResponse("invalid param", STATUS_BAD_REQUEST);
     }
 
-    await prisma.subCategory.delete({ where: { id: toNumber(params.id) } })
+    await prisma.subCategory.delete({ where: { id: toPositiveNumber(params.id) } })
     return NextResponse.json("subcategory successfully deleted", { status: STATUS_OK })
   } catch (error) {
     console.error("Error deleting subcategory:", error)

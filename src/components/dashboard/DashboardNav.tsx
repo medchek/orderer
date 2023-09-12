@@ -14,12 +14,10 @@ type LinkType = {
   icon: React.ReactNode;
 };
 
-type Props = {};
-
-export default function DashboardNav({}: Props) {
+export default function DashboardNav() {
   const pathName = usePathname();
   const links: LinkType[] = [
-    { name: "Produits", href: "", icon: <TbBox /> },
+    { name: "Produits", href: "products", icon: <TbBox /> },
     { name: "Categories", href: "categories", icon: <TbCategory2 /> },
     { name: "Commandes", href: "orders", icon: <BsListNested /> },
     {

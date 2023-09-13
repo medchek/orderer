@@ -5,15 +5,24 @@ interface Props {
   className?: string;
   Icon: React.ReactNode;
   text: string;
-  subText: string;
+  subContent?: React.ReactNode | string;
 }
 
 export default function DashboardEmptyState({
   Icon,
-  subText,
+  subContent,
   text,
   className,
 }: Props) {
+  const subContentDisplay = () => {
+    if (subContent) {
+      if (typeof subContent === "string") {
+        return <p className="text-stone-400 text-sm">{subContent}</p>;
+      } else {
+        return subContent;
+      }
+    }
+  };
   return (
     <div
       className={cn(
@@ -24,7 +33,8 @@ export default function DashboardEmptyState({
       <div className="w-96 text-center flex flex-col items-center gap-1  text-stone-100">
         {Icon}
         <p>{text}</p>
-        <p className="text-stone-400 text-sm">{subText}</p>
+
+        {subContentDisplay()}
       </div>
     </div>
   );

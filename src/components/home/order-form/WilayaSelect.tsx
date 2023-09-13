@@ -4,10 +4,10 @@ import { RegisterOptions, UseFormRegister } from "react-hook-form";
 import { useState } from "react";
 import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
-import { useQuery } from "@tanstack/react-query";
-import { getWilayas } from "@/lib/clientApiHelpers";
 import SelectInput from "./SelectInput";
 import { OrderFormValues } from "./OrderForm";
+import { useGetWilayas } from "@/features/shipping-prices/api/getWilayas";
+
 
 interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
@@ -17,37 +17,17 @@ interface Props extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string;
 }
 
-export default function WilayaSelectInput({
-  label,
+export default function WilayaSelect({
   id,
   register,
-  registerRules,
-  error,
   ...props
 }: Props) {
   const { shippingType, setSelectedWilaya, confirmData } = useStore(
     (state) => state
   );
 
-  const { isFetching, data } = useQuery({
-    queryKey: ["wilayas"],
-    queryFn: getWilayas,
-  });
+  const { isFetching, data } = useGetWilayas();
 
-  const [shippingPrice, setShippingPrice] = useState<{
-    home: number;
-    office: number;
-  } | null>(null);
-
-  const displayShippingPrice = () => {
-    if (shippingPrice === null) return "";
-    const price =
-      shippingType === SHIPPING_TYPE.HOME
-        ? shippingPrice.home
-        : shippingPrice.office;
-    if (price === 0) return "Gratuit";
-    else return `+${price}DA`;
-  };
   // used to track and set the default input value.
   // Needed to display the default message (value=0) acting as a placeholder
   const [selectedValue, setSelectedValue] = useState(confirmData?.wilaya ?? 0);
@@ -64,11 +44,6 @@ export default function WilayaSelectInput({
     if (targetWilaya) {
       // save the selectedWilya in the store
       setSelectedWilaya(targetWilaya);
-
-      setShippingPrice({
-        home: targetWilaya.homePrice,
-        office: targetWilaya.officePrice,
-      });
     }
   };
 

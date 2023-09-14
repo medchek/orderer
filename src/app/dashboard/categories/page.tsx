@@ -3,37 +3,38 @@
 import ModalLoader from "@/components/ModalLoader";
 import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
-import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
-import DashboardCategoryCard from "@/components/dashboard/categories/DashboardCategoryCard";
-import DashboardCategoryPagination from "@/components/dashboard/categories/DashboardCategoryPagination";
-import DashboardCategoryToolbar from "@/components/dashboard/categories/DashboardCategoryToolbar";
-import DashboardUpdateCategory from "@/components/dashboard/categories/DashboardUpdateCategory";
-import { getCategories } from "@/lib/clientApiHelpers";
+import { useGetCategories } from "@/features/categories/api/getCategories";
+import DashboardCategoryCard from "@/features/categories/components/DashboardCategoryCard";
+import DashboardCategoryPagination from "@/features/categories/components/DashboardCategoryPagination";
+import DashboardCategoryToolbar from "@/features/categories/components/DashboardCategoryToolbar";
+
 import { useStore } from "@/store";
 import { CategoryDataOpen } from "@/store/dashboardSlice";
-import { useQuery } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { MdAdd, MdMoreVert } from "react-icons/md";
 import { TbCategory2 } from "react-icons/tb";
 
 const AddCategory = dynamic(
-  () => import("@/components/dashboard/categories/DashboardAddCategory"),
+  () => import("@/features/categories/components/DashboardAddCategory"),
   { loading: () => <ModalLoader /> }
 );
 
 const DashboardAddSubCategory = dynamic(
-  () => import("@/components/dashboard/categories/DashboardAddSubCategory"),
+  () => import("@/features/categories/components/DashboardAddSubCategory"),
   { loading: () => <ModalLoader /> }
 );
 const DashboardDeleteCategory = dynamic(
-  () => import("@/components/dashboard/categories/DashboardDeleteCategory"),
+  () => import("@/features/categories/components/DashboardDeleteCategory"),
   { loading: () => <ModalLoader /> }
 );
 
-type Props = {};
+const DashboardUpdateCategory = dynamic(
+  () => import("@/features/categories/components/DashboardUpdateCategory"),
+  { loading: () => <ModalLoader /> }
+);
 
-export default function Categories({}: Props) {
+export default function Categories() {
   const {
     deleteCategoryData,
     setDeleteCategoryData,
@@ -42,7 +43,6 @@ export default function Categories({}: Props) {
     categoryFilterTerm: filterTerm,
     categoryFilterType: filterType,
     categoryPerPage,
-    setCategoryPerPage,
   } = useStore();
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
 
@@ -57,9 +57,7 @@ export default function Categories({}: Props) {
   const closeDeleteConfirm = () => setDeleteCategoryData({ isOpen: false });
   const closeEdit = () => setEditCategoryData({ isOpen: false });
 
-  const { isFetching, data, refetch, isError, isSuccess } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
+  const { isFetching, data, refetch, isError, isSuccess } = useGetCategories({
     select: (data) => {
       if (filterTerm) {
         if (filterType === "category") {
@@ -97,7 +95,6 @@ export default function Categories({}: Props) {
       </div>
     );
   });
-
 
   // pagination
   const [itemOffset, setItemOffset] = useState(0);
@@ -140,7 +137,7 @@ export default function Categories({}: Props) {
             <div className="flex flex-col items-center gap-2 -translate-y-20">
               <TbCategory2 className="w-20 h-20" />
               <p>
-                {!!filterTerm
+                {filterTerm
                   ? `Aucune ${
                       filterType === "category" ? "catégorie" : "sous-catégorie"
                     } n'a été trouvée avec ce nom`

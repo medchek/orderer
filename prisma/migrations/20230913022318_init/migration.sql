@@ -103,7 +103,6 @@ CREATE TABLE "users" (
     "email" VARCHAR(255),
     "address" VARCHAR(255),
     "phone" VARCHAR(15),
-    "isBlackListed" BOOLEAN DEFAULT false,
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "wilaya_id" INTEGER,
@@ -112,6 +111,18 @@ CREATE TABLE "users" (
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "blacklist" (
+    "id" SERIAL NOT NULL,
+    "userPhone" VARCHAR(15),
+    "phone" VARCHAR(15) NOT NULL,
+    "reason" VARCHAR(255),
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "blacklist_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -180,6 +191,15 @@ CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
 CREATE UNIQUE INDEX "users_email_phone_key" ON "users"("email", "phone");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "blacklist_userPhone_key" ON "blacklist"("userPhone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "blacklist_phone_key" ON "blacklist"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "blacklist_phone_userPhone_key" ON "blacklist"("phone", "userPhone");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "accounts_provider_provider_account_id_key" ON "accounts"("provider", "provider_account_id");
 
 -- CreateIndex
@@ -226,6 +246,9 @@ ALTER TABLE "users" ADD CONSTRAINT "users_wilaya_id_fkey" FOREIGN KEY ("wilaya_i
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_town_id_fkey" FOREIGN KEY ("town_id") REFERENCES "towns"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "blacklist" ADD CONSTRAINT "blacklist_userPhone_fkey" FOREIGN KEY ("userPhone") REFERENCES "users"("phone") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,24 +1,19 @@
 import React, { useState } from "react";
-import SelectInput from "../home/order-form/SelectInput";
-import {
-  RegisterOptions,
-  UseFormRegister,
-  useFormState,
-} from "react-hook-form";
-import { getCategories } from "@/lib/clientApiHelpers";
-import { useQuery } from "@tanstack/react-query";
+import SelectInput from "../../../components/home/order-form/SelectInput";
+import { UseFormRegister } from "react-hook-form";
+
+import { useGetCategories } from "../api/getCategories";
+import { AddProductFormValues } from "@/features/products/components/dashboard/DashboardAddProduct.copy";
 
 interface Props {
-  register: UseFormRegister<any>;
+  register: UseFormRegister<AddProductFormValues>;
+  error?: string;
 }
 
-export default function ProductCategorySelect(props: Props) {
+export default function CategorySelect(props: Props) {
   const [categoryId, setCategoryId] = useState<string>("prompt");
 
-  const { isFetching, data } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategories,
-  });
+  const { isFetching, data } = useGetCategories();
 
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const v = e.target.value;
@@ -29,6 +24,7 @@ export default function ProductCategorySelect(props: Props) {
     <SelectInput
       label="Catégorie"
       name="category"
+      id="category-select"
       {...props}
       registerRules={{
         onChange: handleOnChange,
@@ -36,15 +32,17 @@ export default function ProductCategorySelect(props: Props) {
       placeholder="Categorie du produit"
       value={categoryId}
       isLoading={isFetching}
+      error={props.error}
     >
       <option disabled value="prompt" hidden>
         Selectionnez une catégorie
       </option>
-      <option value="none">Aucune</option>
+      <option value="">Aucune</option>
       {data &&
         data.map(({ name, id, subCategories }) => (
           <React.Fragment key={`Frag-${id}`}>
             <option
+              className="first-letter:capitalize"
               value={JSON.stringify({ categoryId: id })}
               key={`cat-${id}`}
             >
@@ -53,12 +51,12 @@ export default function ProductCategorySelect(props: Props) {
             {subCategories &&
               subCategories.map((subcat) => (
                 <option
-                  value={JSON.stringify({
+                  value={JSON.stringify(({
                     categoryId: id,
-                    subCategoryId: subcat.id,
-                  })}
+                    subcategoryId: subcat.id,
+                  }))}
                   key={`subcat-${subcat.id}`}
-                  className="pl-5 indent-10"
+                  className="pl-5 indent-10 first-letter:capitalize"
                 >
                   &nbsp; {subcat.name}
                 </option>

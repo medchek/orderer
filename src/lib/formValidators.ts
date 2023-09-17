@@ -44,7 +44,7 @@ export const orderFormValidators: OrderFormValidator = {
     const value = val.trim();
 
     if (!phoneRegex.test(value))
-      return "Le numero de téléphone n'est pas valide";
+      return "Le numéro de téléphone n'est pas valide";
   },
   email: (val) => {
     const value = val.trim();

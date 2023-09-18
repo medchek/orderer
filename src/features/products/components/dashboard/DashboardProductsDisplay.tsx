@@ -1,30 +1,32 @@
 "use client";
-import React, { Suspense, useEffect, useState } from "react";
+import { useState } from "react";
 import { useStore } from "@/store";
-import ProductCard from "../../ProductCard";
+
 import { MdAdd, MdDeleteOutline, MdEdit } from "react-icons/md";
 import ModalLoader from "@/components/ModalLoader";
 import ProductCardLoader from "@/components/ProductCardLoader";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteProduct, getProducts } from "@/lib/clientApiHelpers";
+
 import dynamic from "next/dynamic";
-import DashboardFetchError from "../DashboardFetchError";
+import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import { TbPackage } from "react-icons/tb";
+import { useDeleteProduct } from "../../api/deleteProduct";
+import { useGetProducts } from "../../api/getProducts";
+import ProductCard from "../ProductCard";
 
 const DashboardUpdateProduct = dynamic(
   () => import("./DashboardUpdateProduct"),
-  { loading: () => <ModalLoader /> }
+  // () => import("@/components/Modal"),
+  { loading: () => <ModalLoader /> },
 );
 const DashboardDeleteConfirm = dynamic(
-  () => import("../DashboardDeleteConfirm"),
-  { loading: () => <ModalLoader /> }
+  () => import("@/components/dashboard/DashboardDeleteConfirm"),
+  { loading: () => <ModalLoader /> },
 );
 
 export default function DashboardProductsDisplay() {
   const {
-    products,
     setIsAddProductOpen,
-    setProducts,
+
     deleteProduct: removePorductByCode,
     showSnackbar,
   } = useStore();
@@ -35,30 +37,23 @@ export default function DashboardProductsDisplay() {
     number | null
   >(null);
 
-  const { status, refetch, data, isFetching, isError } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-    onSuccess: (products) => {
-      // setProducts(products);
-    },
-  });
+  const { refetch, data, isFetching, isError } = useGetProducts();
 
-  const { mutate: deleteProductMutation, isLoading: isDeleting } = useMutation({
-    mutationKey: ["deleteProduct"],
-    mutationFn: deleteProduct,
-    onSuccess: (productCode: string) => {
-      removePorductByCode(productCode);
-      showSnackbar("Produit supprimé!", "success");
-      // close the modal
-      setProductToDelete(null);
-    },
-    onError: () => {
-      showSnackbar(
-        "Une Erreur est survenu lors la suppression du produit, veuillez réessayer!",
-        "error"
-      );
-    },
-  });
+  const { mutate: deleteProductMutation, isLoading: isDeleting } =
+    useDeleteProduct({
+      onSuccess: (productCode: string) => {
+        removePorductByCode(productCode);
+        showSnackbar("Produit supprimé!", "success");
+        // close the modal
+        setProductToDelete(null);
+      },
+      onError: () => {
+        showSnackbar(
+          "Une Erreur est survenu lors la suppression du produit, veuillez réessayer!",
+          "error",
+        );
+      },
+    });
 
   // old btn style :  bg-[#E9E9E9] text-sm font-semibold hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]
 
@@ -75,7 +70,7 @@ export default function DashboardProductsDisplay() {
     );
   } else if (isError) {
     return (
-      <div className="relative flex items-center justify-center w-full h-full">
+      <div className="relative flex h-full w-full items-center justify-center">
         <DashboardFetchError
           text="Une érreur est survenu lors de la recherche des produits"
           refetch={refetch}
@@ -84,16 +79,16 @@ export default function DashboardProductsDisplay() {
     );
   } else {
     return !data || !data.products.length ? (
-      <div className="grow flex items-center justify-center">
-        <div className="flex flex-col items-center gap-2 -translate-y-20 text-stone-50">
-          <TbPackage className="w-20 h-20" />
-          <p>Aucun produit n'a été encore ajouté</p>
+      <div className="flex grow items-center justify-center">
+        <div className="flex -translate-y-20 flex-col items-center gap-2 text-stone-50">
+          <TbPackage className="h-20 w-20" />
+          <p>Aucun produit n&apos;a été encore ajouté</p>
           <button
             type="button"
-            className="px-2 h-10  rounded-lg font-semibold dark:hover:bg-stone-900 dark:focus:bg-stone-900/70 transition-colors"
+            className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
             onClick={() => setIsAddProductOpen(true)}
           >
-            <MdAdd className="w-7 h-7" /> Ajouter un produit
+            <MdAdd className="h-7 w-7" /> Ajouter un produit
           </button>
         </div>
       </div>
@@ -103,7 +98,20 @@ export default function DashboardProductsDisplay() {
         className="mr-6 grid w-full grow gap-5 overflow-y-auto pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
       >
         {data.products.map(
-          ({ name, code, description, discount, images, price, stock }, i) => (
+          (
+            {
+              name,
+              code,
+              description,
+              discount,
+              images,
+              price,
+              stock,
+              category,
+              subCategory,
+            },
+            i,
+          ) => (
             <ProductCard
               name={name}
               description={description}
@@ -111,12 +119,14 @@ export default function DashboardProductsDisplay() {
               images={images}
               price={price}
               stock={stock}
+              category={category?.name}
+              subcategory={subCategory?.name}
               key={code}
             >
-              <div className="flex gap-2 dark:text-stone-50 text-sm font-semibold ">
+              <div className="flex gap-2 text-sm font-semibold dark:text-stone-50 ">
                 <button
                   type="button"
-                  className="h-8 grow  gap-1 rounded-md bg-[#E9E9E9] hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-stone-800  dark:hover:bg-stone-700 dark:focus:bg-stone-900 transition-colors"
+                  className="h-8 grow  gap-1 rounded-md bg-[#E9E9E9] transition-colors hover:bg-[#e0e0e0] focus:bg-[#cacaca]  dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
                   onClick={() => setProductToUpdateIndex(i)}
                 >
                   <MdEdit className="h-5 w-5" /> Modifier
@@ -130,7 +140,7 @@ export default function DashboardProductsDisplay() {
                 </button>
               </div>
             </ProductCard>
-          )
+          ),
         )}
 
         {productToDelete && (
@@ -146,8 +156,9 @@ export default function DashboardProductsDisplay() {
 
         {productToUpdateIndex !== null && (
           <DashboardUpdateProduct
-            productIndex={productToUpdateIndex}
+            // productIndex={productToUpdateIndex}
             closeModal={() => setProductToUpdateIndex(null)}
+            productIndex={productToUpdateIndex}
           />
         )}
       </section>

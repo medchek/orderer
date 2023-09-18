@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { MdAdd } from "react-icons/md";
 import dynamic from "next/dynamic";
-import ModalLoader from "../../ModalLoader";
-import DashboardSearchInput from "../DashboardSearchInput";
+
 import { useStore } from "@/store";
+import ModalLoader from "@/components/ModalLoader";
+import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 
 const DashboardAddProduct = dynamic(() => import("./DashboardAddProduct"), {
   loading: () => <ModalLoader />,

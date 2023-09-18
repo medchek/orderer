@@ -2,7 +2,9 @@ import React from "react";
 import { MdClear } from "react-icons/md";
 import Loader from "@/components/Loader";
 import { TbRefresh } from "react-icons/tb";
-import { UploadStatus } from "@/types/components";
+
+import Image from "next/image";
+import { UploadStatus } from "../../types";
 
 interface Props {
   removeImage: () => void;
@@ -19,13 +21,16 @@ export default function DashboardPreviewUploadedProduct({
 }: Props) {
   return (
     <div className="relative flex aspect-square h-full min-h-full w-56 min-w-[14rem] items-center justify-center  overflow-hidden rounded-xl">
-      <img
+      <Image
+        fill
         src={url}
         alt="Image produit"
         className={`h-full w-full object-cover ${
           uploadStatus !== "success" && "blur-sm "
         }`}
         loading="lazy"
+        referrerPolicy="no-referrer"
+        unoptimized
       />
       {/* Overlay */}
       {uploadStatus === "error" && (

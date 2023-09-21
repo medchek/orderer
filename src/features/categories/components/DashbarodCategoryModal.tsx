@@ -1,13 +1,10 @@
 import Input from "@/components/Input";
 import Modal from "@/components/Modal";
 import ModalActionButtons from "@/components/ModalActionButtons";
-import React, { FormEventHandler } from "react";
+import { FormEventHandler } from "react";
 import {
-  FieldErrors,
   FieldValues,
-  RegisterOptions,
-  UseFormHandleSubmit,
-  UseFormRegister,
+  RegisterOptions, UseFormRegister
 } from "react-hook-form";
 
 interface Props<T extends FieldValues> {

@@ -1,12 +1,13 @@
 "use client";
-import React from "react";
 import DashbarodCategoryModal from "./DashbarodCategoryModal";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postSubCategory } from "@/lib/clientApiHelpers";
+import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/store";
-import { GetCategoriesSuccessResponsePayload } from "@/types/api";
 import { klona } from "klona/json";
+import { usePostSubcategory } from "../api/postSubcategory";
+import { GetCategoriesSuccessResponse } from "../api/getCategories";
+import { queryKeys } from "@/lib/queryKeys";
+import { STATUS_CONFLICT } from "@/lib/constants";
 
 interface AddSubCategoryFieldValues {
   name: string;
@@ -36,30 +37,40 @@ export default function DashboardAddSubCategory({
     }
   };
 
-  const { isLoading, mutate } = useMutation({
-    mutationKey: ["subCategories", category.id],
-    mutationFn: postSubCategory,
-    onError: () => {
-      showSnackbar(
-        "Une érreur est survenu lors de la création de la sous-catégorie, veuillez reéssayer",
-        "error"
-      );
+  const { isLoading, mutate } = usePostSubcategory({
+    onError: (error, vars) => {
+      const status = error.response.status;
+
+      const categoryData =
+        queryClient.getQueryData<GetCategoriesSuccessResponse>(
+          queryKeys.categories.all.queryKey,
+        );
+      const categoryName =
+        categoryData?.find((cat) => cat.id === vars.categoryId)?.name ??
+        "sélectionnée";
+
+      let errorMsg =
+        "Une érreur est survenu lors de la création de la sous-catégorie, veuillez reéssayer";
+      if (status === STATUS_CONFLICT) {
+        errorMsg = `Une sous-catégorie avec çe nom exists déjà pour la catégorie ${categoryName}`;
+      }
+
+      showSnackbar(errorMsg, "error");
     },
     onSuccess: (data) => {
-      const categories =
-        queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
-          "categories",
-        ]);
+      const categories = queryClient.getQueryData<GetCategoriesSuccessResponse>(
+        queryKeys.categories.all.queryKey,
+      );
 
       if (categories) {
         const categoriesCopy = klona(categories);
         const categoryIndex = categoriesCopy.findIndex(
-          (cat) => cat.id === category.id
+          (cat) => cat.id === category.id,
         );
         if (categoryIndex !== -1) {
           // clone the sub categories for immutable modification
           const subcategories = klona(
-            categoriesCopy[categoryIndex].subCategories
+            categoriesCopy[categoryIndex].subCategories,
           );
           // if there are subcategories, just add the data to it, otherwise, create a new array with
           // the newly added subcategory in it
@@ -69,9 +80,9 @@ export default function DashboardAddSubCategory({
           // set the subcategories
           categoriesCopy[categoryIndex].subCategories = newSubcategories;
         }
-        queryClient.setQueryData<GetCategoriesSuccessResponsePayload>(
-          ["categories"],
-          categoriesCopy
+        queryClient.setQueryData<GetCategoriesSuccessResponse>(
+          queryKeys.categories.all.queryKey,
+          categoriesCopy,
         );
         showSnackbar("Sous-catégorie ajouté!", "default");
         closeModal();
@@ -83,10 +94,9 @@ export default function DashboardAddSubCategory({
     const { name } = data;
 
     // check if the subcategory name already exists
-    const categories =
-      queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
-        "categories",
-      ]);
+    const categories = queryClient.getQueryData<GetCategoriesSuccessResponse>(
+      queryKeys.categories.all.queryKey,
+    );
     if (categories) {
       const subcategories = categories.find((cat) => cat.id === category.id)
         ?.subCategories;
@@ -96,7 +106,7 @@ export default function DashboardAddSubCategory({
           if (subcat.name.toLowerCase() === name.toLowerCase()) {
             return showSnackbar(
               "Sous-catégorie déjà exists pour cette catégorie!",
-              "error"
+              "error",
             );
           }
         }

@@ -1,15 +1,14 @@
-import React from "react";
 import DashbarodCategoryModal from "./DashbarodCategoryModal";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/store";
 import { CategoryDataOpen } from "@/store/dashboardSlice";
-import {
-  GetCategoriesSuccessResponsePayload,
-  PatchCategorySuccessResponsePayload,
-} from "@/types/api";
-import { PatchSubcategory, patchCategory } from "@/lib/clientApiHelpers";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { klona } from "klona/json";
+import { GetCategoriesSuccessResponse } from "../api/getCategories";
+import { usePatchCategory } from "../api/patchCategory";
+import { queryKeys } from "@/lib/queryKeys";
+import { usePatchSubcategory } from "../api/patchSubcategory";
 
 type Props = {
   closeModal: () => void;
@@ -34,15 +33,13 @@ export default function DashboardUpdateCategory({
   } = useForm<UpdateCategoryFormValues>();
   // patch requests for categories api route
   const { isLoading: isCategoryLoading, mutate: patchCategoryMutation } =
-    useMutation({
-      mutationKey: ["categories", "patch", id],
-      mutationFn: patchCategory,
+    usePatchCategory({
       onSuccess: (data) => {
         const { id, name: newName } = data;
         const categories =
-          queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
-            "categories",
-          ]);
+          queryClient.getQueryData<GetCategoriesSuccessResponse>(
+            queryKeys.categories.all.queryKey
+          );
         if (!categories) return;
 
         const newCategories = klona(categories);
@@ -52,8 +49,8 @@ export default function DashboardUpdateCategory({
         if (catIndex > -1) {
           newCategories[catIndex].name = newName;
         }
-        queryClient.setQueryData<GetCategoriesSuccessResponsePayload>(
-          ["categories"],
+        queryClient.setQueryData<GetCategoriesSuccessResponse>(
+          queryKeys.categories.all.queryKey,
           newCategories
         );
         showSnackbar("Catégorie modifiée avec succès", "default");
@@ -69,14 +66,12 @@ export default function DashboardUpdateCategory({
   // patch requests for subcategories api route
 
   const { isLoading: isSubcategoryLoading, mutate: patchSubcategoryMutation } =
-    useMutation({
-      mutationKey: ["subcategories", "patch", id],
-      mutationFn: PatchSubcategory,
+    usePatchSubcategory({
       onSuccess: (data) => {
         const { id, name: newName, categoryId } = data;
         const categories =
-          queryClient.getQueryData<GetCategoriesSuccessResponsePayload>([
-            "categories",
+          queryClient.getQueryData<GetCategoriesSuccessResponse>([
+            queryKeys.categories.all.queryKey,
           ]);
         if (!categories) return;
 
@@ -98,8 +93,8 @@ export default function DashboardUpdateCategory({
           newCategories[categoryIndex].subCategories = newSubcategories;
         }
 
-        queryClient.setQueryData<GetCategoriesSuccessResponsePayload>(
-          ["categories"],
+        queryClient.setQueryData<GetCategoriesSuccessResponse>(
+          queryKeys.categories.all.queryKey,
           newCategories
         );
 

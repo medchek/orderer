@@ -1,10 +1,10 @@
-import { apiErrorResponse, sleep } from "@/lib/utils";
+import { apiErrorResponse } from "@/lib/utils";
 import { isAdmin } from "../../auth/[...nextauth]/route";
 import { type NextRequest, NextResponse } from "next/server";
 import { ORDER_CODE_LENGTH, STATUS_BAD_REQUEST, STATUS_OK, STATUS_UNAUTHORIZED } from "@/lib/constants";
 import { prisma } from "../../../../../prisma/db";
 import { Status } from "@prisma/client";
-import { PatchOrderRequestPayload } from "@/types/api";
+import { PatchOrderRequestPayload } from "@/features/orders/api/patchOrder";
 
 export async function DELETE(_: NextRequest, { params }: { params: { code: string } }
 ) {
@@ -52,7 +52,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { code: stri
 
     }
 
-    await sleep(2500)
+
     await prisma.order.update({
       where: {
         code: params.code

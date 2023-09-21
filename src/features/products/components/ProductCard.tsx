@@ -1,5 +1,6 @@
 import { getImageDirectUrl } from "@/lib/utils";
-import React, { Fragment, ReactNode, useState } from "react";
+import Image from "next/image";
+import { ReactNode } from "react";
 
 interface Props {
   name: string;
@@ -8,7 +9,8 @@ interface Props {
   discount: number;
   images: { id: string }[];
   stock: number | null;
-
+  category?: string | null;
+  subcategory?: string | null;
   children: ReactNode;
 }
 
@@ -19,6 +21,8 @@ export default function ProductCard({
   discount,
   images,
   stock,
+  category,
+  subcategory,
   children,
 }: Props) {
   const priceWidthDiscount =
@@ -30,13 +34,15 @@ export default function ProductCard({
 
   return (
     <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-stone-950">
-      <div className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800 ">
-        <img
+      <div className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800">
+        <Image
           src={displayImage[0]}
           className="h-full w-full object-cover object-center"
           alt="Product image"
           loading="lazy"
           referrerPolicy="no-referrer"
+          fill
+          unoptimized
         />
         {/* discount */}
         {discount > 0 && (
@@ -47,13 +53,22 @@ export default function ProductCard({
       </div>
       {/* text */}
       <section className="flex grow flex-col justify-between p-2 text-stone-50">
-        <div className="flex grow flex-col justify-between pb-2">
-          <section className="space-y-1">
-            <p className="line-clamp-2 h-12 font-semibold" title={name}>
+        <div className="flex grow flex-col justify-between overflow-hidden pb-2">
+          <section className="flex flex-col gap-2">
+            {/* previous height h-12 and gap-1*/}
+            <p className="line-clamp-2  text-sm font-semibold" title={name}>
               {name}
             </p>
+
+            <div className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-stone-900 text-sm text-stone-500" title="Catégorie">
+              <p className="first-letter:capitalize px-1 py-0.5">
+                {category ?? "Non catégorisé"}
+                {subcategory && ` / ${subcategory}`}
+              </p>
+            </div>
+
             <div
-              className="line-clamp-3 text-sm text-[#979797]"
+              className="line-clamp-3 text-sm text-stone-500"
               title={description ?? ""}
             >
               {description}

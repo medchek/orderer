@@ -1,18 +1,7 @@
+import { Product } from "@/features/products/types";
 import { STATUS_OK } from "@/lib/constants";
 import { PromiseStatus } from "@/types/api";
 import { StateCreator } from "zustand";
-export interface Product {
-  name: string;
-  description: string | null;
-  price: number;
-  code: string;
-  discount: number;
-  stock: number | null;
-  category: { name: string } | null;
-  subCategory: { name: string } | null;
-  images: { id: string }[];
-}
-
 
 export interface ProductSlice {
   selectedProducts: Product[];
@@ -22,7 +11,7 @@ export interface ProductSlice {
   /** Detects whether fetchProducts action has previously been fired or not
    */
   hasFetchedAllProducts: boolean;
-  productsFetchStatus: PromiseStatus,
+  productsFetchStatus: PromiseStatus;
   removeSelectedProduct: (index: number) => void;
   removeAllSelectedProducts: () => void;
   deleteProduct: (code: string) => void;
@@ -50,7 +39,7 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
     }));
   },
   removeAllSelectedProducts: () => {
-    set((state) => ({
+    set(() => ({
       selectedProducts: [],
     }));
   },
@@ -60,11 +49,10 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
     }));
   },
   fetchProducts: async () => {
-
     try {
       set(() => ({
-        productsFetchStatus: "fetching"
-      }))
+        productsFetchStatus: "fetching",
+      }));
       const response = await fetch("/api/products", {
         method: "GET",
       });
@@ -73,12 +61,12 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
       if (response.status === STATUS_OK) {
         set(() => ({
           products,
-          productsFetchStatus: "success"
+          productsFetchStatus: "success",
         }));
       } else {
         set(() => ({
-          productsFetchStatus: "error"
-        }))
+          productsFetchStatus: "error",
+        }));
       }
     } catch (e) {
       set(() => ({ productsFetchStatus: "error" }));
@@ -114,9 +102,9 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
     set((state) => ({
       products: state.products.map((product, i) => {
         if (i === productIndex) {
-          return updatedProduct
+          return updatedProduct;
         } else {
-          return product
+          return product;
         }
       }),
     }));

@@ -1,9 +1,12 @@
 import { customAlphabet } from "nanoid";
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Prisma } from "@prisma/client";
-import { PRISMA_NOT_FOUND_ERROR_CODE, PRISMA_UNIQUE_CONSTRAINT_ERROR_CODE } from "./constants";
+import {
+  PRISMA_NOT_FOUND_ERROR_CODE,
+  PRISMA_UNIQUE_CONSTRAINT_ERROR_CODE,
+} from "./constants";
 
 // import { prisma } from "../../prisma/db";
 
@@ -13,7 +16,7 @@ const randId = (max: number = 1000) => Math.ceil(Math.random() * max);
  * @param n single number i.e 0 to 9
  * @returns the number prefixed with 0
  */
-const zeroPrefix = (n: number) => n < 10 && n > -10 ? `0${n}` : n
+const zeroPrefix = (n: number) => (n < 10 && n > -10 ? `0${n}` : n);
 
 export const randInputId = (prefix: string = "input") =>
   `${prefix}-${randId()}`;
@@ -28,8 +31,8 @@ export const trucateString = (str: string, max: number): string => {
 };
 
 export const randomNumber = (max: number, min: number) => {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
 
 /**
  * Generates a unique random Id based on the the given length
@@ -38,16 +41,16 @@ export const randomNumber = (max: number, min: number) => {
  * @returns unique string id
  */
 export const uniqueId = (len = 20, uppercaseOnly = false): string => {
-  const initAlphabet =
-    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const initAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  const alphabet = initAlphabet.concat(!uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : "")
+  const alphabet = initAlphabet.concat(
+    !uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : ""
+  );
 
   const id = customAlphabet(alphabet, len);
 
   return id();
 };
-
 
 /**
  * Simulate network latency
@@ -69,6 +72,16 @@ export const toNumber = (n: string) => {
 };
 
 /**
+ * Converts a number string to a number, converting any negative number to 0
+ * @param n String number
+ * @returns Converted number. If the provided string was not valid or was a negative number, returns 0
+ */
+export const toPositiveNumber = (n: string) => {
+  const converted = toNumber(n);
+  return converted < 0 ? 0 : converted;
+};
+
+/**
  * Converts a number string to a number
  * @param n The string number
  * @returns returns the converted number, if a wrong number is supplied or "0" returns null
@@ -80,6 +93,11 @@ export const toNumberOrNull = (n: string): number | null => {
     : null;
 };
 
+/**
+ * Returns the absolute direct image url based on image id
+ * @param imageId the image id
+ * @returns full image url
+ */
 export const getImageDirectUrl = (imageId: string) =>
   `https://lh5.googleusercontent.com/d/${imageId}`;
 
@@ -100,8 +118,6 @@ export const toNullIfEmptyString = (
   return str;
 };
 
-
-
 /**
  * Adds the French partitive de or d' based on the name
  * @param name wilaya name
@@ -109,24 +125,29 @@ export const toNullIfEmptyString = (
  */
 export const addPartitive = (name: string) => {
   if (name) {
-    const startsWithVowel =
-      /^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ]/.test(name[0]);
+    const startsWithVowel = /^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ]/.test(
+      name[0]
+    );
     if (startsWithVowel) {
       return `d'${name}`;
-    } else
-      return `de ${name}`;
-  };
-}
+    } else return `de ${name}`;
+  }
+};
 /**
  * Calculates the discounted price
  * @param price the price
- * @param discountPercentage the discount percentage which is a number in the 0 to 100 range 
+ * @param discountPercentage the discount percentage which is a number in the 0 to 100 range
  * @returns the discounted price
  */
 export const discountedPrice = (price: number, discountPercentage: number) => {
-  if (discountPercentage === 0 || discountPercentage < 0 || discountPercentage > 100) return price
-  return price - (price * discountPercentage / 100)
-}
+  if (
+    discountPercentage === 0 ||
+    discountPercentage < 0 ||
+    discountPercentage > 100
+  )
+    return price;
+  return price - (price * discountPercentage) / 100;
+};
 
 /**
  * Formats a date object
@@ -134,22 +155,19 @@ export const discountedPrice = (price: number, discountPercentage: number) => {
  * @returns retuns DD/MM/YYYY HH:mm date string
  */
 export const formatDate = (rawDate: Date | string, noTime = false) => {
-  const date = typeof rawDate === "string" ? new Date(rawDate) : rawDate
+  const date = typeof rawDate === "string" ? new Date(rawDate) : rawDate;
   const year = date.getFullYear();
   const month = zeroPrefix(date.getMonth() + 1);
   const day = zeroPrefix(date.getDate());
   const hours = zeroPrefix(date.getHours());
   const minutes = zeroPrefix(date.getMinutes());
 
-  return `${day}/${month}/${year}` + (!noTime ? ` ${hours}:${(minutes)}` : "")
-}
-
-
+  return `${day}/${month}/${year}` + (!noTime ? ` ${hours}:${minutes}` : "");
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
 
 /**
  * Checks if the thrown error is a prisma exception and whether the expcetion code
@@ -160,11 +178,11 @@ export function cn(...inputs: ClassValue[]) {
 export const isNotFoundPrismaError = (error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === PRISMA_NOT_FOUND_ERROR_CODE) {
-      return true
+      return true;
     }
   }
-  return false
-}
+  return false;
+};
 /**
  * Checks if the thrown error is a prisma exception and whether the expcetion code
  * points to a disallowed duplicate field value
@@ -174,13 +192,11 @@ export const isNotFoundPrismaError = (error: unknown) => {
 export const isUniqueConstraintPrismaError = (error: unknown) => {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     if (error.code === PRISMA_UNIQUE_CONSTRAINT_ERROR_CODE) {
-      return true
+      return true;
     }
   }
-  return false
-}
-
-
+  return false;
+};
 
 /**
  * Sends a structured json response to the client.
@@ -189,12 +205,15 @@ export const isUniqueConstraintPrismaError = (error: unknown) => {
  * @returns NextResponse json response
  */
 export const apiErrorResponse = (message?: string, status?: number) => {
-  return NextResponse.json({
-    error: {
-      message: message ?? "Internal server error",
-      status: status ?? 500
+  return NextResponse.json(
+    {
+      error: {
+        message: message ?? "Internal server error",
+        status: status ?? 500,
+      },
+    },
+    {
+      status: status ?? 500,
     }
-  }, {
-    status: status ?? 500
-  })
-}
+  );
+};

@@ -1,5 +1,6 @@
 "use client";
-import React, { Suspense, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
+import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { MdClear } from "react-icons/md";
 
@@ -11,6 +12,7 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   centerModalContent?: boolean;
   hideHeader?: boolean;
   preventClose?: boolean;
+  transparent?: boolean;
 }
 
 export default function Modal({
@@ -21,6 +23,8 @@ export default function Modal({
   centerModalContent,
   hideHeader,
   preventClose,
+  transparent,
+  className,
   ...props
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -64,10 +68,23 @@ export default function Modal({
         centerModalContent && "flex items-center justify-center"
       }`}
     >
-      <div {...props} ref={ref}>
+      <div
+        className={cn(
+          "flex flex-col   dark:[color-scheme:dark]",
+          {
+            "rounded-lg  bg-[#F3F3F3] px-8 py-5 shadow-md dark:bg-[#040404]":
+              !transparent,
+          },
+          className,
+        )}
+        {...props}
+        ref={ref}
+      >
         {!hideHeader && (
           <div id="dialog-header" className="flex grow-0 justify-between px-2">
-            <h1 className="text-xl font-semibold dark:text-neutral-100">{label}</h1>
+            <h1 className="text-xl font-semibold dark:text-neutral-100">
+              {label}
+            </h1>
             <button
               onClick={closeModal}
               className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] disabled:cursor-not-allowed dark:focus:bg-neutral-950"
@@ -81,6 +98,6 @@ export default function Modal({
         {children}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

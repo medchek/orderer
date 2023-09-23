@@ -1,18 +1,13 @@
 "use client";
-import React from "react";
 import { MdAdd } from "react-icons/md";
-import dynamic from "next/dynamic";
 
 import { useStore } from "@/store";
-import ModalLoader from "@/components/ModalLoader";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 
-const DashboardAddProduct = dynamic(() => import("./DashboardAddProduct"), {
-  loading: () => <ModalLoader />,
-});
+
 
 export const DashboardProductsToolbar = () => {
-  const { isAddProductOpen, setIsAddProductOpen } = useStore();
+  const { setIsAddProductOpen } = useStore();
 
   return (
     <div
@@ -29,9 +24,7 @@ export const DashboardProductsToolbar = () => {
       </button>
 
       <DashboardSearchInput placeholder="Chercher un produit" />
-      {isAddProductOpen && (
-        <DashboardAddProduct closeModal={() => setIsAddProductOpen(false)} />
-      )}
+
     </div>
   );
 };

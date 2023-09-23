@@ -13,6 +13,10 @@ import { useDeleteProduct } from "../../api/deleteProduct";
 import { useGetProducts } from "../../api/getProducts";
 import ProductCard from "../ProductCard";
 
+const DashboardAddProduct = dynamic(() => import("./DashboardAddProduct"), {
+  loading: () => <ModalLoader />,
+});
+
 const DashboardUpdateProduct = dynamic(
   () => import("./DashboardUpdateProduct"),
   // () => import("@/components/Modal"),
@@ -29,8 +33,8 @@ const CopyClipboardModal = dynamic(
 );
 export default function DashboardProductsDisplay() {
   const {
+    isAddProductOpen,
     setIsAddProductOpen,
-
     deleteProduct: removePorductByCode,
     showSnackbar,
     clipboard,
@@ -150,6 +154,10 @@ export default function DashboardProductsDisplay() {
               </div>
             </ProductCard>
           ),
+        )}
+
+        {isAddProductOpen && (
+          <DashboardAddProduct closeModal={() => setIsAddProductOpen(false)} />
         )}
 
         {productToDelete && (

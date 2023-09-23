@@ -23,12 +23,18 @@ const DashboardDeleteConfirm = dynamic(
   { loading: () => <ModalLoader /> },
 );
 
+const CopyClipboardModal = dynamic(
+  () => import("@/components/CopyClipboardModal"),
+  { loading: () => <ModalLoader /> },
+);
 export default function DashboardProductsDisplay() {
   const {
     setIsAddProductOpen,
 
     deleteProduct: removePorductByCode,
     showSnackbar,
+    clipboard,
+    setClipboard,
   } = useStore();
 
   // product code to delete
@@ -121,6 +127,8 @@ export default function DashboardProductsDisplay() {
               stock={stock}
               category={category?.name}
               subcategory={subCategory?.name}
+              isDashboard={true}
+              code={code}
               key={code}
             >
               <div className="flex gap-2 text-sm font-semibold dark:text-stone-50 ">
@@ -131,6 +139,7 @@ export default function DashboardProductsDisplay() {
                 >
                   <MdEdit className="h-5 w-5" /> Modifier
                 </button>
+
                 <button
                   type="button"
                   className=" h-8 w-8  rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-red-600 "
@@ -159,6 +168,15 @@ export default function DashboardProductsDisplay() {
             // productIndex={productToUpdateIndex}
             closeModal={() => setProductToUpdateIndex(null)}
             productIndex={productToUpdateIndex}
+          />
+        )}
+
+        {clipboard.length && (
+          <CopyClipboardModal
+            closeModal={() => setClipboard("")}
+            label="Partager le produit"
+            text="Ce lien permet d'auto-sélectionner ce produit dans la page de
+            la commande"
           />
         )}
       </section>

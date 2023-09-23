@@ -1,6 +1,7 @@
 import { getImageDirectUrl } from "@/lib/utils";
 import Image from "next/image";
 import { ReactNode } from "react";
+import ProductCardDropdown from "./ProductCardDropdown";
 
 interface Props {
   name: string;
@@ -12,6 +13,9 @@ interface Props {
   category?: string | null;
   subcategory?: string | null;
   children: ReactNode;
+  /** Controls the display of copy sharing link button */
+  isDashboard?: boolean;
+  code: string;
 }
 
 export default function ProductCard({
@@ -23,6 +27,8 @@ export default function ProductCard({
   stock,
   category,
   subcategory,
+  code,
+  isDashboard,
   children,
 }: Props) {
   const priceWidthDiscount =
@@ -56,12 +62,18 @@ export default function ProductCard({
         <div className="flex grow flex-col justify-between overflow-hidden pb-2">
           <section className="flex flex-col gap-2">
             {/* previous height h-12 and gap-1*/}
-            <p className="line-clamp-2  text-sm font-semibold" title={name}>
-              {name}
-            </p>
+            <div className="flex justify-between">
+              <p className="h-7 line-clamp-2 font-semibold" title={name}>
+                {name}
+              </p>
+              {isDashboard && <ProductCardDropdown productCode={code} />}
+            </div>
 
-            <div className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-stone-900 text-sm text-stone-500" title="Catégorie">
-              <p className="first-letter:capitalize px-1 py-0.5">
+            <div
+              className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-stone-900 text-sm text-stone-500"
+              title="Catégorie"
+            >
+              <p className="px-1 py-0.5 first-letter:capitalize">
                 {category ?? "Non catégorisé"}
                 {subcategory && ` / ${subcategory}`}
               </p>
@@ -75,9 +87,9 @@ export default function ProductCard({
             </div>
           </section>
 
-          <section className="space-y-0.5">
+          <section className="space-y-0.5 text-sm">
             {stock && stock > 0 && (
-              <p className="text-sm text-secondary">Stock: {stock}</p>
+              <p className=" text-secondary">Stock: {stock}</p>
             )}
             <p className="font-semibold">Prix: {priceWidthDiscount}DA</p>
           </section>

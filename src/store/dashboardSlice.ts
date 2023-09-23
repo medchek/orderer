@@ -51,6 +51,10 @@ export interface DashboardSlice {
 
   blacklistedNumberIdToDelete: number | null;
   setBlacklistedNumberIdToDelete: (n: number | null) => void;
+
+  // copy to clipboard
+  clipboard: string;
+  setClipboard: (v: string) => void;
 }
 
 export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
@@ -59,6 +63,7 @@ export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
   setIsAddProductOpen: (v: boolean) => {
     set(() => ({ isAddProductOpen: v }));
   },
+
   isUploadingImage: false,
   setIsUploadingImage: (v) => {
     set(() => ({ isUploadingImage: v }));
@@ -108,5 +113,10 @@ export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
   blacklistedNumberIdToDelete: null,
   setBlacklistedNumberIdToDelete: (n) => {
     set(() => ({ blacklistedNumberIdToDelete: n }));
+  },
+
+  clipboard: "",
+  setClipboard: (v) => {
+    set(() => ({ clipboard: v }));
   },
 });

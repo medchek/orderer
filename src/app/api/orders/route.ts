@@ -1,4 +1,4 @@
-import { apiErrorResponse, toNumber, uniqueId } from "./../../../lib/utils";
+import { apiErrorResponse, toPositiveNumber, uniqueId } from "./../../../lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
 import {
@@ -156,7 +156,7 @@ export async function GET(req: NextRequest) {
 
     const pageString = req.nextUrl.searchParams.get("page");
 
-    const page = pageString ? toNumber(pageString) : 0;
+    const page = pageString ? toPositiveNumber(pageString) : 0;
     // edge case when the user sends a <= 0 page number
     const currentPage = page > 0 ? page : 0;
     const ordersPerPage = 10;
@@ -179,7 +179,7 @@ export async function GET(req: NextRequest) {
         ? (statusFilterParam as Status)
         : undefined;
     // wilaya
-    const wilayaFilterParam = toNumber(
+    const wilayaFilterParam = toPositiveNumber(
       req.nextUrl.searchParams.get("wilaya") ?? "0",
     );
     const wilayaCodeFilter =

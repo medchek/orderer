@@ -44,7 +44,7 @@ export const uniqueId = (len = 20, uppercaseOnly = false): string => {
   const initAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   const alphabet = initAlphabet.concat(
-    !uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : ""
+    !uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : "",
   );
 
   const id = customAlphabet(alphabet, len);
@@ -109,7 +109,7 @@ export const getImageDirectUrl = (imageId: string) =>
  */
 export const toNullIfEmptyString = (
   string: string | null,
-  includeZeroString = false
+  includeZeroString = false,
 ) => {
   if (string === null) return null;
   const str = string.trim();
@@ -126,7 +126,7 @@ export const toNullIfEmptyString = (
 export const addPartitive = (name: string) => {
   if (name) {
     const startsWithVowel = /^[aieouâêîôûäëïöüàéèùœAIEOUÂÊÎÔÛÄËÏÖÜÀÉÈÙŒ]/.test(
-      name[0]
+      name[0],
     );
     if (startsWithVowel) {
       return `d'${name}`;
@@ -168,6 +168,15 @@ export const formatDate = (rawDate: Date | string, noTime = false) => {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * Capitalize the first letter of a string
+ * @param str the string to process
+ * @returns The same string with the first letter capitalized
+ */
+export const capitalizeFirst = (str: string) => {
+  return str.trim()[0].toUpperCase() + str.slice(1);
+};
 
 /**
  * Checks if the thrown error is a prisma exception and whether the expcetion code
@@ -214,6 +223,6 @@ export const apiErrorResponse = (message?: string, status?: number) => {
     },
     {
       status: status ?? 500,
-    }
+    },
   );
 };

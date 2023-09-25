@@ -14,15 +14,14 @@ export const deleteBlacklist = async (id: number): Promise<void> => {
 type UseDleteBlacklistNumberOptions = MutationOptions<
   void, // return type
   unknown, // error type
-  number, // request data type
-  unknown // context
+  number // request data type
 >;
 /**
  * Mutation to blacklist a user by phone number
  * @param opts mutation config
  */
 export const useDeleteBlacklistedNumber = (
-  opts?: UseDleteBlacklistNumberOptions
+  opts?: UseDleteBlacklistNumberOptions,
 ) => {
   return useMutation({
     mutationFn: deleteBlacklist,

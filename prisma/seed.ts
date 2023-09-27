@@ -5,14 +5,14 @@ import { dummyProductData } from "./seeders/productsSeedData";
 import townsData from "./seeders/townsSeedData";
 import { dummyCategoriesdata } from "./seeders/categoriesSeedData";
 
-interface FakeProductData {
-  id: number;
-  title: string;
-  price: 109.95;
-  description: string;
-  category: string;
-  image: string;
-}
+// interface FakeProductData {
+//   id: number;
+//   title: string;
+//   price: 109.95;
+//   description: string;
+//   category: string;
+//   image: string;
+// }
 
 async function main() {
   const firstWilaya = await prisma.wilaya.count({ where: { id: 1 } });

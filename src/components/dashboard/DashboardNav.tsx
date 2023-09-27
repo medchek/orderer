@@ -69,7 +69,7 @@ export default function DashboardNav() {
       </section>
       <p
         id="nav-legal"
-        className="w-full text-center text-sm text-[#ffc0c0] dark:text-[#646479]"
+        className="w-full text-center text-sm text-[#ffc0c0] dark:text-stone-600"
       >
         Copyright © {new Date().getFullYear()} TRB Eshop
       </p>

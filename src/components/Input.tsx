@@ -1,13 +1,18 @@
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { InputHTMLAttributes } from "react";
-import { RegisterOptions, UseFormRegister } from "react-hook-form";
+import {
+  FieldValues,
+  Path,
+  RegisterOptions,
+  UseFormRegister,
+} from "react-hook-form";
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props<T extends FieldValues>
+  extends InputHTMLAttributes<HTMLInputElement> {
   label?: string | null;
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register?: UseFormRegister<any>;
+  name: Path<T>;
+  register?: UseFormRegister<T>;
   registerRules?: RegisterOptions;
   error?: string;
   id?: string;
@@ -15,7 +20,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   removeErrorHeight?: boolean;
 }
 
-export default function Input({
+export default function Input<T extends FieldValues>({
   label,
   id,
   name,
@@ -26,13 +31,13 @@ export default function Input({
   hidden,
   className,
   ...props
-}: Props) {
+}: Props<T>) {
   const inputId = id ? id : `${name}-input`;
   return (
     <div
       className={clsx(" flex w-full flex-col", {
         hidden: hidden,
-        "mb-1": !removeErrorHeight 
+        "mb-1": !removeErrorHeight,
       })}
     >
       {label && (
@@ -48,7 +53,10 @@ export default function Input({
         id={inputId}
         {...props}
         {...(register && register(name, registerRules))}
-        className={cn("h-12 rounded-lg bg-[#ECECEC] px-4 text-sm placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:text-stone-400 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base", className)}
+        className={cn(
+          "h-12 rounded-lg bg-[#ECECEC] px-4 text-sm placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:text-stone-400 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base",
+          className,
+        )}
       />
       <div
         className={`h-5 text-sm text-red-600 dark:text-red-500 ${

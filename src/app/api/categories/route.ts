@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
-import { apiErrorResponse, isUniqueConstraintPrismaError } from "@/lib/utils";
+import {
+  apiErrorResponse,
+  isUniqueConstraintPrismaError,
+  uniqueId,
+} from "@/lib/utils";
 
 import Joi from "joi";
 import {
+  CATEGORY_CODE_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CONFLICT,
   STATUS_CREATED,
@@ -37,12 +42,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const createdCategory: PostCategorySuccessReponse =
-      await prisma.category.create({
-        data: { name: validation.value.name },
-      });
+    const createdCategory = await prisma.category.create({
+      data: {
+        name: validation.value.name,
+        nameLowercase: validation.value.name.toLowerCase(),
+        code: uniqueId(CATEGORY_CODE_LENGTH),
+      },
+      select: {
+        name: true,
+        code: true,
+      },
+    });
 
-    return NextResponse.json(createdCategory, { status: STATUS_CREATED });
+    return NextResponse.json<PostCategorySuccessReponse>(createdCategory, {
+      status: STATUS_CREATED,
+    });
   } catch (error) {
     if (isUniqueConstraintPrismaError(error)) {
       return apiErrorResponse("category name already exists", STATUS_CONFLICT);
@@ -63,20 +77,19 @@ export async function GET(_: NextRequest) {
     const categories = await prisma.category.findMany({
       select: {
         name: true,
-        id: true,
+        code: true,
         subCategories: {
           select: {
             name: true,
-            id: true,
+            code: true,
           },
         },
       },
     });
 
-    return NextResponse.json(
-      categories as GetCategoriesSuccessResponse,
-      { status: STATUS_OK },
-    );
+    return NextResponse.json<GetCategoriesSuccessResponse>(categories, {
+      status: STATUS_OK,
+    });
   } catch (error) {
     console.error("Error getting categories:", error);
     return apiErrorResponse("Couln't get categories");

@@ -3,12 +3,14 @@ import { prisma } from "../../../../prisma/db";
 import {
   apiErrorResponse,
   isUniqueConstraintPrismaError,
+  toPositiveNumber,
   uniqueId,
 } from "@/lib/utils";
 import Joi from "joi";
 
 import { isAdmin } from "../auth/[...nextauth]/route";
 import {
+  CATEGORY_CODE_LENGTH,
   PRODUCT_CODE_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CONFLICT,
@@ -21,38 +23,136 @@ import {
   PostProductBodyPayload,
   PostProductSuccessResponse,
 } from "@/features/products/api/postProduct";
+import { Prisma } from "@prisma/client";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const count = await prisma.product.count();
+    /**
+     * FILTERS HANDLING
+     */
 
-    const products = await prisma.product.findMany({
-      select: {
-        name: true,
-        price: true,
-        description: true,
-        discount: true,
-        code: true,
-        stock: true,
-        images: {
-          select: {
-            id: true,
-          },
+    // product name
+    const nameParam = req.nextUrl.searchParams.get("name")?.trim();
+    const name = nameParam && nameParam.length >= 2 ? nameParam : undefined;
+    // price
+    const minPriceParam = req.nextUrl.searchParams.get("minPrice");
+    const minPrice = minPriceParam
+      ? toPositiveNumber(minPriceParam)
+      : undefined;
+
+    const maxPriceParam = req.nextUrl.searchParams.get("maxPrice");
+    const maxPrice = maxPriceParam
+      ? toPositiveNumber(maxPriceParam)
+      : undefined;
+    // stock
+    const minStockParam = req.nextUrl.searchParams.get("minStock");
+    const minStock = minStockParam
+      ? toPositiveNumber(minStockParam)
+      : undefined;
+
+    const maxStockParam = req.nextUrl.searchParams.get("maxStock");
+    const maxStock = maxStockParam
+      ? toPositiveNumber(maxStockParam)
+      : undefined;
+
+    // discount
+    const discountParam = req.nextUrl.searchParams.get("isDiscount");
+
+    const discount =
+      discountParam === "1" || discountParam === "0"
+        ? discountParam
+        : undefined;
+
+    // category
+    const categoryParam = req.nextUrl.searchParams.get("category")?.trim();
+    const category =
+      categoryParam && categoryParam.length === CATEGORY_CODE_LENGTH
+        ? categoryParam
+        : undefined;
+    const subcategoryParam = req.nextUrl.searchParams
+      .get("subcategory")
+      ?.trim();
+    const subcategory =
+      subcategoryParam && subcategoryParam.length === CATEGORY_CODE_LENGTH
+        ? subcategoryParam
+        : undefined;
+
+    /**
+     * PAGINATION
+     */
+
+    const pageString = req.nextUrl.searchParams.get("page");
+
+    const currentPage = pageString ? toPositiveNumber(pageString) : 0;
+    const productsPerPage = 10;
+
+    const conditions: Prisma.ProductFindManyArgs | Prisma.ProductCountArgs = {
+      where: {
+        name: {
+          contains: name,
+          mode: "insensitive",
         },
         category: {
-          select: { name: true },
+          code: category,
         },
         subCategory: {
-          select: { name: true },
+          code: subcategory,
+        },
+        price: {
+          gte: minPrice,
+          lte: maxPrice,
+        },
+        stock: {
+          gte: minStock,
+          lte: maxStock,
+        },
+        discount: {
+          // returns only the product are not on discount
+
+          gt: discount === "1" ? 1 : undefined,
+          // returns only the product whuch are not on discount, i.e. their discount value is 0 (which is the default as well)
+          equals: discount === "0" ? 0 : undefined,
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    };
 
-    await prisma.$disconnect();
-    return NextResponse.json<GetProductsSuccessResponse>({ count, products });
+    const products = await prisma.$transaction([
+      prisma.product.count({
+        where: conditions.where,
+      }),
+      prisma.product.findMany({
+        select: {
+          name: true,
+          price: true,
+          description: true,
+          discount: true,
+          code: true,
+          stock: true,
+          images: {
+            select: {
+              id: true,
+            },
+          },
+          category: {
+            select: { name: true, code: true },
+          },
+          subCategory: {
+            select: { name: true, code: true },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: productsPerPage,
+        skip: currentPage * productsPerPage,
+        where: conditions.where,
+      }),
+    ]);
+
+    return NextResponse.json<GetProductsSuccessResponse>({
+      count: products[0],
+      products: products[1],
+    });
   } catch (e) {
     console.error(e);
     return apiErrorResponse("Error fetching all products");
@@ -80,8 +180,14 @@ export async function POST(req: NextRequest) {
       description: Joi.string().allow(""),
       stock: Joi.number().strict().positive().min(1).precision(0).allow(null),
       category: Joi.object({
-        categoryId: Joi.number().strict().precision(0).positive().required(),
-        subcategoryId: Joi.number().strict().precision(0).positive().optional(),
+        categoryCode: Joi.string()
+          .strict()
+          .length(CATEGORY_CODE_LENGTH)
+          .required(),
+        subcategoryCode: Joi.string()
+          .strict()
+          .length(CATEGORY_CODE_LENGTH)
+          .optional(),
       })
         .strict()
         .allow(null)
@@ -127,9 +233,9 @@ export async function POST(req: NextRequest) {
         code,
         name: data.name,
         price: data.price,
-        categoryId: data.category?.categoryId ?? null,
-        subCategoryId: data.category?.subcategoryId ?? null,
-        description: data.description,
+        categoryCode: data.category?.categoryCode ?? null,
+        subCategoryCode: data.category?.subcategoryCode ?? null,
+        description: data.description.trim(),
         stock: data.stock,
         images: {
           connect: imageIds,
@@ -144,9 +250,11 @@ export async function POST(req: NextRequest) {
 
     const responsePayload: PostProductSuccessResponse = {
       code,
-      category: product.category ? { name: product.category.name } : null,
+      category: product.category
+        ? { name: product.category.name, code: product.category.code }
+        : null,
       subCategory: product.subCategory
-        ? { name: product.subCategory.name }
+        ? { name: product.subCategory.name, code: product.subCategory.code }
         : null,
       description: product.description,
       discount: product.discount,

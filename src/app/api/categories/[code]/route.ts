@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiErrorResponse, isNotFoundPrismaError, toPositiveNumber } from "@/lib/utils";
+import { apiErrorResponse, isNotFoundPrismaError } from "@/lib/utils";
 import {
+  CATEGORY_CODE_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
   STATUS_OK,
@@ -17,14 +18,14 @@ import {
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { code?: string } },
 ) {
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
     }
 
-    if (!params.id || toPositiveNumber(params.id) === 0) {
+    if (!params.code || params.code.length !== CATEGORY_CODE_LENGTH) {
       return apiErrorResponse("invalid param", STATUS_BAD_REQUEST);
     }
 
@@ -40,15 +41,21 @@ export async function PATCH(
       return apiErrorResponse("Invalid request", STATUS_BAD_REQUEST);
     }
 
-    const patchedCategory: PatchCategorySuccessResponse =
-      await prisma.category.update({
-        where: { id: toPositiveNumber(params.id) },
-        data: {
-          name: validation.value.name,
-        },
-      });
+    const patchedCategory = await prisma.category.update({
+      where: { code: params.code },
+      data: {
+        name: validation.value.name,
+        nameLowercase: validation.value.name.toLowerCase(),
+      },
+      select: {
+        name: true,
+        code: true,
+      },
+    });
 
-    return NextResponse.json(patchedCategory, { status: STATUS_OK });
+    return NextResponse.json<PatchCategorySuccessResponse>(patchedCategory, {
+      status: STATUS_OK,
+    });
   } catch (error) {
     if (isNotFoundPrismaError(error)) {
       return apiErrorResponse("category not found", STATUS_NOT_FOUND);
@@ -62,18 +69,20 @@ export async function PATCH(
 
 export async function DELETE(
   _: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: { code?: string } },
 ) {
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
     }
 
-    if (!params.id || toPositiveNumber(params.id) === 0) {
+    if (!params.code || params.code.length !== CATEGORY_CODE_LENGTH) {
       return apiErrorResponse("invalid param", STATUS_BAD_REQUEST);
     }
 
-    await prisma.category.delete({ where: { id: toPositiveNumber(params.id) } });
+    await prisma.category.delete({
+      where: { code: params.code },
+    });
     return NextResponse.json("category successfully deleted", {
       status: STATUS_OK,
     });

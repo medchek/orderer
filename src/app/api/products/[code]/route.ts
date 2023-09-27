@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "../../../../../prisma/db";
 import {
+  CATEGORY_CODE_LENGTH,
   PRODUCT_CODE_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_NOT_FOUND,
@@ -79,8 +80,14 @@ export async function PATCH(
         .max(1000000000000),
       description: Joi.string().allow(""),
       category: Joi.object({
-        categoryId: Joi.number().strict().precision(0).positive().required(),
-        subcategoryId: Joi.number().strict().precision(0).positive().optional(),
+        categoryCode: Joi.string()
+          .strict()
+          .length(CATEGORY_CODE_LENGTH)
+          .required(),
+        subcategoryCode: Joi.string()
+          .strict()
+          .length(CATEGORY_CODE_LENGTH)
+          .optional(),
       })
         .strict()
         .allow(null)
@@ -175,11 +182,9 @@ export async function PATCH(
           disconnect: images?.removed?.map((id) => ({ id })),
         },
 
-        categoryId: category ? category.categoryId : category,
-        subCategoryId:
-          category && category.subcategoryId
-            ? category?.subcategoryId
-            : null,
+        categoryCode: category ? category.categoryCode : category,
+        subCategoryCode:
+          category && category.subcategoryCode ? category?.subcategoryCode : null,
       },
       select: {
         category: {

@@ -1,10 +1,11 @@
 import { PostSubCategorySuccessResponse } from "./../../../features/categories/api/postSubcategory";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
-import { apiErrorResponse, isNotFoundPrismaError } from "@/lib/utils";
+import { apiErrorResponse, isNotFoundPrismaError, uniqueId } from "@/lib/utils";
 
 import Joi from "joi";
 import {
+  CATEGORY_CODE_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CONFLICT,
   STATUS_CREATED,
@@ -22,7 +23,10 @@ export async function POST(req: NextRequest) {
 
     const schema = Joi.object<PostSubCategoryRequestPayload>({
       name: Joi.string().min(3).max(200).required(),
-      categoryId: Joi.number().strict().min(1).max(58).required(),
+      categoryCode: Joi.string()
+        .strict()
+        .length(CATEGORY_CODE_LENGTH)
+        .required(),
     });
 
     const validation = schema.validate(body);
@@ -33,11 +37,11 @@ export async function POST(req: NextRequest) {
         STATUS_BAD_REQUEST,
       );
     }
-    const { categoryId, name } = validation.value;
+    const { categoryCode, name } = validation.value;
 
     // Check if if the provided subcategory name already exists for the requested parent category
     const subcategoryAlreadyExists = await prisma.subCategory.count({
-      where: { id: categoryId, name },
+      where: { categoryCode: categoryCode, nameLowercase: name.toLowerCase() },
     });
 
     if (subcategoryAlreadyExists > 0) {
@@ -49,7 +53,12 @@ export async function POST(req: NextRequest) {
 
     const createdSubcategory: PostSubCategorySuccessResponse =
       await prisma.subCategory.create({
-        data: validation.value,
+        data: {
+          name: name,
+          nameLowercase: name.toLowerCase(),
+          code: uniqueId(CATEGORY_CODE_LENGTH),
+          categoryCode,
+        },
       });
 
     return NextResponse.json<PostSubCategorySuccessResponse>(

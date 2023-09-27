@@ -19,11 +19,11 @@ model Product {
   stock       Int?
   code        String  @unique @db.VarChar(25)
 
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId Int?      @map("category_id")
+  category     Category? @relation(fields: [categoryCode], references: [code], onDelete: SetNull)
+  categoryCode String?   @map("category_code") @db.VarChar(25)
 
-  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: SetNull)
-  subCategoryId Int?         @map("sub_category_id")
+  subCategory     SubCategory? @relation(fields: [subCategoryCode], references: [code], onDelete: SetNull)
+  subCategoryCode String?      @map("sub_category_code") @db.VarChar(25)
 
   images Image[]
 
@@ -36,8 +36,11 @@ model Product {
 }
 
 model Category {
-  id   Int    @id @default(autoincrement())
-  name String @unique @db.VarChar(200)
+  id            Int    @id @default(autoincrement())
+  name          String @db.VarChar(200)
+  nameLowercase String @unique @map("name_lowercase") @db.VarChar(200)
+
+  code String @unique @db.VarChar(25)
 
   products Product[]
 
@@ -47,11 +50,14 @@ model Category {
 }
 
 model SubCategory {
-  id   Int    @id @default(autoincrement())
-  name String @unique @db.VarChar(200)
+  id            Int    @id @default(autoincrement())
+  name          String @db.VarChar(200)
+  nameLowercase String @unique @map("name_lowercase") @db.VarChar(200)
 
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId Int
+  category     Category @relation(fields: [categoryCode], references: [code], onDelete: Cascade)
+  categoryCode String   @map("category_code") @db.VarChar(25)
+
+  code String @unique @db.VarChar(25)
 
   products Product[]
 

@@ -10,8 +10,8 @@ CREATE TABLE "products" (
     "discount" SMALLINT NOT NULL DEFAULT 0,
     "stock" INTEGER,
     "code" VARCHAR(25) NOT NULL,
-    "category_id" INTEGER,
-    "sub_category_id" INTEGER,
+    "category_code" VARCHAR(25),
+    "sub_category_code" VARCHAR(25),
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
 
@@ -22,6 +22,8 @@ CREATE TABLE "products" (
 CREATE TABLE "categories" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(200) NOT NULL,
+    "name_lowercase" VARCHAR(200) NOT NULL,
+    "code" VARCHAR(25) NOT NULL,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
@@ -30,7 +32,9 @@ CREATE TABLE "categories" (
 CREATE TABLE "sub_categories" (
     "id" SERIAL NOT NULL,
     "name" VARCHAR(200) NOT NULL,
-    "categoryId" INTEGER NOT NULL,
+    "name_lowercase" VARCHAR(200) NOT NULL,
+    "category_code" VARCHAR(25) NOT NULL,
+    "code" VARCHAR(25) NOT NULL,
 
     CONSTRAINT "sub_categories_pkey" PRIMARY KEY ("id")
 );
@@ -167,7 +171,16 @@ CREATE UNIQUE INDEX "products_name_key" ON "products"("name");
 CREATE UNIQUE INDEX "products_code_key" ON "products"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
+CREATE UNIQUE INDEX "categories_name_lowercase_key" ON "categories"("name_lowercase");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "categories_code_key" ON "categories"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "sub_categories_name_lowercase_key" ON "sub_categories"("name_lowercase");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "sub_categories_code_key" ON "sub_categories"("code");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "images_id_key" ON "images"("id");
@@ -212,13 +225,13 @@ CREATE UNIQUE INDEX "verificationtokens_token_key" ON "verificationtokens"("toke
 CREATE UNIQUE INDEX "verificationtokens_identifier_token_key" ON "verificationtokens"("identifier", "token");
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_category_code_fkey" FOREIGN KEY ("category_code") REFERENCES "categories"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "products" ADD CONSTRAINT "products_sub_category_id_fkey" FOREIGN KEY ("sub_category_id") REFERENCES "sub_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "products" ADD CONSTRAINT "products_sub_category_code_fkey" FOREIGN KEY ("sub_category_code") REFERENCES "sub_categories"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sub_categories" ADD CONSTRAINT "sub_categories_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "sub_categories" ADD CONSTRAINT "sub_categories_category_code_fkey" FOREIGN KEY ("category_code") REFERENCES "categories"("code") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;

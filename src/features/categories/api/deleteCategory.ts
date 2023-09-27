@@ -4,26 +4,26 @@ import { useMutation } from "@tanstack/react-query";
 import ky from "ky";
 
 type DeleteCategoryFnArgs = {
-  id: number;
+  code: string;
   type: CategoryType;
 };
 
 /**
  * Delete request for categories and subcategories api routes
- * @param id The resource id
+ * @param code The resource code
  * @param type This affects the api route endpoint. either categories or subcategories
- * @returns the id and category type that were provided
+ * @returns the code and category type that were provided
  */
 export const deleteCategory = async ({
   type,
-  id,
+  code,
 }: DeleteCategoryFnArgs): Promise<DeleteCategoryFnArgs> => {
   await ky
     .delete(
-      `/api/${type === "category" ? "categories" : "subcategories"}/${id}`,
+      `/api/${type === "category" ? "categories" : "subcategories"}/${code}`,
     )
     .json();
-  return { id, type };
+  return { code, type };
 };
 
 type UseDeleteCategoryOptions = MutationOptions<

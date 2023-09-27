@@ -1,4 +1,5 @@
 import { GetOrdersQueryFilter } from "@/features/orders/api/getOrders";
+import { ProductsFilters as GetProductsQueryFilter } from "@/features/products/types";
 import { createQueryKeyStore } from "@lukemorales/query-key-factory";
 
 export const queryKeys = createQueryKeyStore({
@@ -20,7 +21,9 @@ export const queryKeys = createQueryKeyStore({
     all: null,
   },
   products: {
-    all: null,
+    all: (filters: GetProductsQueryFilter) => ({
+      queryKey: [{ filters }],
+    }),
     one: (code: string) => ({
       queryKey: [code],
     }),

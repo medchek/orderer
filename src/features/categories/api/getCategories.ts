@@ -3,9 +3,9 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import ky from "ky";
 
 export type GetCategoriesSuccessResponse = {
-  id: number;
+  code: string;
   name: string;
-  subCategories?: { id: number; name: string }[];
+  subCategories?: { code: string; name: string }[];
 }[];
 /**
  * Fetch all the categories from the api
@@ -25,4 +25,3 @@ export const useGetCategories = (options?: UseGetCategoriesOptions) => {
     ...options,
   });
 };
-

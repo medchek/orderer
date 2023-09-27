@@ -2,29 +2,29 @@ import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import ky, { HTTPError } from "ky";
 
 export interface PatchSubcategorySuccessResponse {
-  id: number;
+  code: string;
   /** Parent category id */
-  categoryId: number;
+  categoryCode: string;
   name: string;
 }
 
 type PatchCategoryFnArgs = {
-  id: number;
+  code: string;
   name: string;
 };
 
 /**
  * Patch request for subcategories api route
- * @param id The subcategory resource id
+ * @param code The subcategory resource code
  * @param name the new subcategory name
- * @returns the id, parent category id and the new name of the sub category
+ * @returns the code, parent category code and the new name of the sub category
  */
 export const patchSubcategory = async ({
-  id,
+  code,
   name,
 }: PatchCategoryFnArgs): Promise<PatchSubcategorySuccessResponse> => {
   const patchedData: PatchSubcategorySuccessResponse = await ky
-    .patch(`/api/subcategories/${id}`, {
+    .patch(`/api/subcategories/${code}`, {
       json: { name },
     })
     .json();

@@ -2,13 +2,14 @@ import ky from "ky";
 import { PostProductSuccessResponse } from "./postProduct";
 import { useMutation } from "@tanstack/react-query";
 import { MutationOptions } from "@/types/api";
+import { ProductCategoryPayload } from "../types";
 
 export interface PatchProductBodyPayload {
   name?: string;
   price?: number;
   description?: string;
   stock?: number | null;
-  category?: { categoryId: number; subcategoryId?: number } | null;
+  category?: ProductCategoryPayload | null;
   discount?: number;
   images?: {
     added: string[];

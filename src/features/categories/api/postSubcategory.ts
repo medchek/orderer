@@ -2,13 +2,13 @@ import { UseMutationOptions, useMutation } from "@tanstack/react-query";
 import ky, { HTTPError } from "ky";
 
 export interface PostSubCategoryRequestPayload {
-  categoryId: number;
+  categoryCode: string;
   name: string;
 }
 
 export interface PostSubCategorySuccessResponse
   extends PostSubCategoryRequestPayload {
-  id: number;
+  code: string;
 }
 
 export const postSubCategory = async (

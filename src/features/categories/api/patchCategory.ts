@@ -7,24 +7,24 @@ export interface PatchCategoryRequestPayload {
 
 export interface PatchCategorySuccessResponse
   extends PatchCategoryRequestPayload {
-  id: number;
+  code: string;
 }
 
 /**
  * Patch request for categories api route
- * @param id The category id
+ * @param code The category code
  * @param name the new category name
- * @returns the id and the new name of the category
+ * @returns the code and the new name of the category
  */
 export const patchCategory = async ({
-  id,
+  code,
   name,
 }: {
-  id: number;
+  code: string;
   name: string;
 }): Promise<PatchCategorySuccessResponse> => {
   const patchedData: PatchCategorySuccessResponse = await ky
-    .patch(`/api/categories/${id}`, {
+    .patch(`/api/categories/${code}`, {
       json: { name },
     })
     .json();

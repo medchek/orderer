@@ -2,14 +2,14 @@ import { MutationOptions } from "@/types/api";
 
 import { useMutation } from "@tanstack/react-query";
 import ky from "ky";
-import { Product } from "../types";
+import { Product, ProductCategoryPayload } from "../types";
 
 export interface PostProductBodyPayload {
   name: string;
   price: number;
   description: string;
   stock: number | null;
-  category: { categoryId: number; subcategoryId?: number } | null;
+  category: ProductCategoryPayload | null;
   discount: number;
   images: string[]; // string of image ids
 }

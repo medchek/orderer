@@ -6,7 +6,7 @@ export interface PostCategoryRequestPayload {
 }
 
 export interface PostCategorySuccessReponse {
-  id: number;
+  code: string;
   name: string;
 }
 

@@ -7,8 +7,8 @@ export interface Product {
   code: string;
   discount: number;
   stock: number | null;
-  category: { name: string } | null;
-  subCategory: { name: string } | null;
+  category: { name: string; code: string } | null;
+  subCategory: { name: string; code: string } | null;
   images: { id: string }[];
 }
 
@@ -21,6 +21,12 @@ export interface FileMetaData {
   url: string;
 }
 
+// used for product post and patch requests
+export type ProductCategoryPayload = {
+  categoryCode: string;
+  subcategoryCode?: string;
+};
+
 export interface ProductFormValues {
   name: string;
   price: string;
@@ -32,3 +38,17 @@ export interface ProductFormValues {
 }
 
 export interface ProductFormSuccessSubmitData extends PostProductBodyPayload {}
+
+interface ProductsFiltersParams {
+  currentPage: number;
+  name?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  minStock?: string;
+  maxStock?: string;
+  isDiscount?: "0" | "1";
+  category?: string;
+  subcategory?: string;
+}
+
+export type ProductsFilters = ProductsFiltersParams;

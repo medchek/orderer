@@ -53,9 +53,9 @@ export const getUpdatedFields = (
       if (productToUpdateCategory) {
         // in case of a different, set the new data to be updated
         if (
-          formValues.category.categoryId !== productToUpdateCategory.id ||
-          formValues.category.subcategoryId !==
-            formValues.category.subcategoryId
+          formValues.category.categoryCode !== productToUpdateCategory.id ||
+          formValues.category.subcategoryCode !==
+            formValues.category.subcategoryCode
         ) {
           patchRequestBody.category = formValues.category;
         }

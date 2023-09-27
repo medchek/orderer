@@ -21,7 +21,7 @@ interface UpdateCategoryFormValues {
 
 export default function DashboardUpdateCategory({
   closeModal,
-  editData: { id, name: currentName, type },
+  editData: { code, name: currentName, type },
 }: Props) {
   const queryClient = useQueryClient();
   const { showSnackbar } = useStore();
@@ -35,23 +35,23 @@ export default function DashboardUpdateCategory({
   const { isLoading: isCategoryLoading, mutate: patchCategoryMutation } =
     usePatchCategory({
       onSuccess: (data) => {
-        const { id, name: newName } = data;
+        const { code, name: newName } = data;
         const categories =
           queryClient.getQueryData<GetCategoriesSuccessResponse>(
-            queryKeys.categories.all.queryKey
+            queryKeys.categories.all.queryKey,
           );
         if (!categories) return;
 
         const newCategories = klona(categories);
 
-        const catIndex = newCategories.findIndex((c) => c.id === id);
+        const catIndex = newCategories.findIndex((c) => c.code === code);
 
         if (catIndex > -1) {
           newCategories[catIndex].name = newName;
         }
         queryClient.setQueryData<GetCategoriesSuccessResponse>(
           queryKeys.categories.all.queryKey,
-          newCategories
+          newCategories,
         );
         showSnackbar("Catégorie modifiée avec succès", "default");
         closeModal();
@@ -59,7 +59,7 @@ export default function DashboardUpdateCategory({
       onError: () => {
         showSnackbar(
           `Une érreur est survenu lors la suppression de la categorie`,
-          "error"
+          "error",
         );
       },
     });
@@ -68,7 +68,7 @@ export default function DashboardUpdateCategory({
   const { isLoading: isSubcategoryLoading, mutate: patchSubcategoryMutation } =
     usePatchSubcategory({
       onSuccess: (data) => {
-        const { id, name: newName, categoryId } = data;
+        const { code: id, name: newName, categoryCode: categoryId } = data;
         const categories =
           queryClient.getQueryData<GetCategoriesSuccessResponse>([
             queryKeys.categories.all.queryKey,
@@ -78,13 +78,13 @@ export default function DashboardUpdateCategory({
         const newCategories = klona(categories);
 
         const categoryIndex = newCategories.findIndex(
-          (c) => c.id === categoryId
+          (c) => c.code === categoryId,
         );
         if (categoryIndex > -1) {
           const newSubcategories =
             klona(newCategories[categoryIndex].subCategories) ?? [];
           const subcategoryIndex = newSubcategories.findIndex(
-            (subcat) => subcat.id === id
+            (subcat) => subcat.code === id,
           );
 
           if (subcategoryIndex > -1) {
@@ -95,7 +95,7 @@ export default function DashboardUpdateCategory({
 
         queryClient.setQueryData<GetCategoriesSuccessResponse>(
           queryKeys.categories.all.queryKey,
-          newCategories
+          newCategories,
         );
 
         showSnackbar("Sous-catégorie modifiée avec succès", "default");
@@ -104,7 +104,7 @@ export default function DashboardUpdateCategory({
       onError: () => {
         showSnackbar(
           `Une érreur est survenu lors la suppression de la sous-catégorie`,
-          "error"
+          "error",
         );
       },
     });
@@ -124,7 +124,7 @@ export default function DashboardUpdateCategory({
 
   const onFormSubmit: SubmitHandler<UpdateCategoryFormValues> = (data) => {
     const body = {
-      id,
+      code,
       name: data.name,
     };
     if (type === "category") {

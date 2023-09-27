@@ -15,14 +15,14 @@ type Props = {
 
 export default function DashboardDeleteCategory({
   closeModal,
-  deleteData: { id, name, type },
+  deleteData: { code: id, name, type },
 }: Props) {
   const queryClient = useQueryClient();
   const { showSnackbar } = useStore();
   // delete requests
   const { isLoading, mutate: deleteCategoryMutation } = useDeleteCategory({
     onSuccess: (data) => {
-      const { id, type } = data;
+      const { code, type } = data;
       const categories =
         queryClient.getQueryData<GetCategoriesSuccessResponse>(
           queryKeys.categories.all.queryKey
@@ -32,7 +32,7 @@ export default function DashboardDeleteCategory({
         if (type === "category") {
           // remove the deleted category
 
-          const newCategories = categories.filter((cat) => cat.id !== id);
+          const newCategories = categories.filter((cat) => cat.code !== code);
           queryClient.setQueryData<GetCategoriesSuccessResponse>(
             queryKeys.categories.all.queryKey,
             newCategories
@@ -46,7 +46,7 @@ export default function DashboardDeleteCategory({
               const subcategories = category.subCategories;
               // if the subcategories contain the id returned by onSuccess
               const idIndex = subcategories.findIndex(
-                (subcat) => subcat.id === id
+                (subcat) => subcat.code === code
               );
 
               if (idIndex > -1) {
@@ -89,7 +89,7 @@ export default function DashboardDeleteCategory({
       closeModal={closeModal}
       onConfirm={() =>
         deleteCategoryMutation({
-          id: id,
+          code: id,
           type: type,
         })
       }

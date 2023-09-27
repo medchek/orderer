@@ -17,21 +17,21 @@ import { TbCategory2 } from "react-icons/tb";
 
 const AddCategory = dynamic(
   () => import("@/features/categories/components/DashboardAddCategory"),
-  { loading: () => <ModalLoader /> }
+  { loading: () => <ModalLoader /> },
 );
 
 const DashboardAddSubCategory = dynamic(
   () => import("@/features/categories/components/DashboardAddSubCategory"),
-  { loading: () => <ModalLoader /> }
+  { loading: () => <ModalLoader /> },
 );
 const DashboardDeleteCategory = dynamic(
   () => import("@/features/categories/components/DashboardDeleteCategory"),
-  { loading: () => <ModalLoader /> }
+  { loading: () => <ModalLoader /> },
 );
 
 const DashboardUpdateCategory = dynamic(
   () => import("@/features/categories/components/DashboardUpdateCategory"),
-  { loading: () => <ModalLoader /> }
+  { loading: () => <ModalLoader /> },
 );
 
 export default function Categories() {
@@ -48,7 +48,7 @@ export default function Categories() {
 
   // holds the wilaya id which the sub-category should be connected to
   const [isAddSubCategoryOpen, setIsAddSubCategoryOpen] = useState<{
-    id: number;
+    code: string;
     name: string;
   } | null>(null);
 
@@ -62,7 +62,7 @@ export default function Categories() {
       if (filterTerm) {
         if (filterType === "category") {
           return data.filter((cat) =>
-            cat.name.toLowerCase().includes(filterTerm)
+            cat.name.toLowerCase().includes(filterTerm),
           );
         } else {
           return data.filter((cat) => {
@@ -85,11 +85,11 @@ export default function Categories() {
   const loadingSkeleton = Array.from({ length: 12 }, (_, i) => {
     return (
       <div
-        className="h-14 flex items-center bg-stone-950 rounded-lg px-4 justify-between animate-pulse"
+        className="flex h-14 animate-pulse items-center justify-between rounded-lg bg-stone-950 px-4"
         key={i}
       >
-        <div className="h-6 bg-stone-700 w-1/6 rounded-md"></div>
-        <div className="text-stone-700 transition-colors h-8 w-8 rounded-lg">
+        <div className="h-6 w-1/6 rounded-md bg-stone-700"></div>
+        <div className="h-8 w-8 rounded-lg text-stone-700 transition-colors">
           <MdMoreVert className="h-7 w-7" />
         </div>
       </div>
@@ -133,9 +133,9 @@ export default function Categories() {
     if (isSuccess) {
       if (data.length === 0) {
         return (
-          <div className="grow flex items-center justify-center">
-            <div className="flex flex-col items-center gap-2 -translate-y-20">
-              <TbCategory2 className="w-20 h-20" />
+          <div className="flex grow items-center justify-center">
+            <div className="flex -translate-y-20 flex-col items-center gap-2">
+              <TbCategory2 className="h-20 w-20" />
               <p>
                 {filterTerm
                   ? `Aucune ${
@@ -145,35 +145,37 @@ export default function Categories() {
               </p>
               <button
                 type="button"
-                className="px-2 h-10  rounded-lg text-stone-50 font-semibold dark:hover:bg-stone-900 dark:focus:bg-stone-900/70 transition-colors"
+                className="h-10 rounded-lg  px-2 font-semibold text-stone-50 transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
                 onClick={() => setIsAddCategoryOpen(true)}
               >
-                <MdAdd className="w-7 h-7" /> Ajouter une catégorie
+                <MdAdd className="h-7 w-7" /> Ajouter une catégorie
               </button>
             </div>
           </div>
         );
       } else {
         return currentItems?.map(
-          ({ id, name, subCategories: subCategroies }) => {
+          ({ code, name, subCategories: subCategroies }) => {
             const categoryData: CategoryDataOpen = {
               isOpen: true,
-              id,
+              code,
               name,
               type: "category",
             };
             return (
               <DashboardCategoryCard
                 categoryName={name}
-                categoryId={id}
-                key={id}
+                categoryCode={code}
+                key={code}
                 subCategories={subCategroies}
-                openAddSubCategory={() => setIsAddSubCategoryOpen({ name, id })}
+                openAddSubCategory={() =>
+                  setIsAddSubCategoryOpen({ name, code })
+                }
                 onDeleteClick={() => setDeleteCategoryData(categoryData)}
                 onEditClick={() => setEditCategoryData(categoryData)}
               />
             );
-          }
+          },
         );
       }
     }
@@ -191,14 +193,14 @@ export default function Categories() {
   return (
     <div
       id="Catégories"
-      className="flex w-full grow flex-col overflow-y-hidden px-5 pt-3 justify-between dark:[color-scheme:dark]"
+      className="flex w-full grow flex-col justify-between overflow-y-hidden px-5 pt-3 dark:[color-scheme:dark]"
     >
-      <div className="flex flex-col w-full grow overflow-y-hidden px-1">
+      <div className="flex w-full grow flex-col overflow-y-hidden px-1">
         <DashboardHeader label="Categories" noPadding />
         <DashboardCategoryToolbar
           openAddCategory={() => setIsAddCategoryOpen(true)}
         />
-        <section className="relative flex flex-col w-full grow text-stone-50 gap-4 overflow-y-auto">
+        <section className="relative flex w-full grow flex-col gap-4 overflow-y-auto text-stone-50">
           {displayData()}
         </section>
       </div>

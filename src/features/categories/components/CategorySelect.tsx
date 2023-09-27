@@ -1,64 +1,108 @@
 import React, { useState } from "react";
 import SelectInput from "../../../components/home/order-form/SelectInput";
-import { UseFormRegister } from "react-hook-form";
+import { FieldValues, UseFormRegister } from "react-hook-form";
 
 import { useGetCategories } from "../api/getCategories";
-import { AddProductFormValues } from "@/features/products/components/dashboard/DashboardAddProduct.copy";
+import { capitalizeFirst } from "@/lib/utils";
+import { ProductCategoryPayload } from "@/features/products/types";
+import { generateCategoryOptionValue } from "../utils/generateCategoryOptionValue";
+import { parseCategoryOptionValue } from "../utils/parseCategoryOptionValue";
+// import { ProductFormValues } from "@/features/products/types";
 
-interface Props {
-  register: UseFormRegister<AddProductFormValues>;
+type CategorySelectElementProps = Omit<
+  React.SelectHTMLAttributes<HTMLSelectElement>,
+  "onChange"
+>;
+interface Props<T extends FieldValues> extends CategorySelectElementProps {
+  /** Disable the label on top of the input */
+  noLabel?: boolean;
+  register?: UseFormRegister<T>;
   error?: string;
+  /** Disable the prompt option */
+  disablePrompt?: boolean;
+  /** Text to display for option with an empty value. Default: "Aucune"*/
+  emptyValueText?: string;
+  /** Makes the chevron, loader, and text smaller */
+  small?: boolean;
+  defaultValue?: string;
+  onChange?: (data: ProductCategoryPayload | null) => void;
 }
 
-export default function CategorySelect(props: Props) {
-  const [categoryId, setCategoryId] = useState<string>("prompt");
+export default function CategorySelect<T extends FieldValues>({
+  error,
+  noLabel,
+  disablePrompt,
+  emptyValueText,
+  small,
+  defaultValue,
+  onChange,
+
+  ...props
+}: Props<T>) {
+  // if the prompt is disabled, the default value is set to empty
+  const [categoryCode, setCategoryCode] = useState<string>(
+    defaultValue !== undefined ? defaultValue : disablePrompt ? "" : "prompt",
+  );
 
   const { isFetching, data } = useGetCategories();
 
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const v = e.target.value;
-    setCategoryId(v);
+    const parsedValue = parseCategoryOptionValue(v);
+
+    if (onChange) onChange(parsedValue);
+    setCategoryCode(v);
   };
 
   return (
     <SelectInput
-      label="Catégorie"
+      label={!noLabel ? "Catégorie" : undefined}
+      removeErrorSpace={noLabel}
       name="category"
       id="category-select"
       {...props}
-      registerRules={{
-        onChange: handleOnChange,
-      }}
+      // if the onChange is not provided, allow select to
+      // react react-hook-form events
+      // otherwise, the regular onChange is invoked
+      registerRules={
+        !onChange
+          ? {
+              onChange: handleOnChange,
+            }
+          : undefined
+      }
+      onChange={onChange ? handleOnChange : undefined}
       placeholder="Categorie du produit"
-      value={categoryId}
+      value={categoryCode}
       isLoading={isFetching}
-      error={props.error}
+      small={small}
+      error={error}
     >
       <option disabled value="prompt" hidden>
         Selectionnez une catégorie
       </option>
-      <option value="">Aucune</option>
+      <option value="">{emptyValueText ?? "Aucune"}</option>
       {data &&
-        data.map(({ name, id, subCategories }) => (
-          <React.Fragment key={`Frag-${id}`}>
+        data.map(({ name, code: categoryCode, subCategories }) => (
+          <React.Fragment key={`Frag-${categoryCode}`}>
             <option
               className="first-letter:capitalize"
-              value={JSON.stringify({ categoryId: id })}
-              key={`cat-${id}`}
+              value={generateCategoryOptionValue(categoryCode)}
+              key={`cat-${categoryCode}`}
             >
-              {name}
+              {capitalizeFirst(name)}
             </option>
             {subCategories &&
-              subCategories.map((subcat) => (
+              subCategories.map((subcategory) => (
                 <option
-                  value={JSON.stringify(({
-                    categoryId: id,
-                    subcategoryId: subcat.id,
-                  }))}
-                  key={`subcat-${subcat.id}`}
+                  value={generateCategoryOptionValue(
+                    categoryCode,
+                    subcategory.code,
+                  )}
+                  key={`subcat-${subcategory.code}`}
                   className="pl-5 indent-10 first-letter:capitalize"
                 >
-                  &nbsp; {subcat.name}
+                  &nbsp; {capitalizeFirst(subcategory.name)}
                 </option>
               ))}
           </React.Fragment>

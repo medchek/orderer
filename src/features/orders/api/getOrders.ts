@@ -54,7 +54,7 @@ type UseFetchOrdersOptions = {
   config?: UseQueryOptions<GetOrdersSuccessResponse>;
 };
 
-export const useFetchOrders = ({ filters, config }: UseFetchOrdersOptions) => {
+export const useGetOrders = ({ filters, config }: UseFetchOrdersOptions) => {
   return useQuery({
     queryKey: queryKeys.orders.all(filters).queryKey,
     queryFn: () => getOrders(filters),

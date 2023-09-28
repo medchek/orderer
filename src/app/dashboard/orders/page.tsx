@@ -14,7 +14,7 @@ import DashboardPagination from "@/components/dashboard/DashboardPagination";
 import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
 import DashboardOrdersBlockUser from "@/features/orders/components/DashboardOrdersBlockUser";
 import DashboardOrdersToolbar from "@/features/orders/components/DashboardOrdersToolbar";
-import { useFetchOrders } from "@/features/orders/api/getOrders";
+import { useGetOrders } from "@/features/orders/api/getOrders";
 import { useDeleteOrder } from "@/features/orders/api/deleteOrder";
 import { usePatchOrder } from "@/features/orders/api/patchOrder";
 import { queryKeys } from "@/lib/queryKeys";
@@ -43,7 +43,7 @@ export default function Orders() {
     isError: isFetchingOrderError,
     data: ordersData,
     refetch,
-  } = useFetchOrders({
+  } = useGetOrders({
     filters: ordersQueryFilters,
   });
 

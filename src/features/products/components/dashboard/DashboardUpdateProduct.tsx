@@ -3,7 +3,7 @@ import { useStore } from "@/store";
 import DashboardProductFormModal from "./DashboardProductFormModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
-import { GetProductsSuccessResponse } from "../../api/getProducts";
+import { useGetProducts } from "../../api/getProducts";
 import { ProductFormSuccessSubmitData } from "../../types";
 import { getUpdatedFields } from "../../utils/getUpdatedProductFields";
 import { usePatchProduct } from "../../api/patchProduct";
@@ -19,15 +19,16 @@ export default function DashboardUpdateProduct({
   productIndex,
 }: Props) {
   const queryClient = useQueryClient();
-  const { showSnackbar } = useStore();
+  const { showSnackbar, productsFilters } = useStore();
 
   const { mutate, isLoading } = usePatchProduct({
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.products.all.queryKey,
+        queryKey: queryKeys.products.all(productsFilters).queryKey,
       });
+
       showSnackbar("Produit modifié avec succès", "success");
-      closeModal()
+      closeModal();
     },
     onError: () => {
       showSnackbar(
@@ -37,14 +38,13 @@ export default function DashboardUpdateProduct({
     },
   });
 
-  const products = queryClient.getQueryData<GetProductsSuccessResponse>(
-    queryKeys.products.all.queryKey,
-  );
+  const { data: products } = useGetProducts(productsFilters);
 
   const productToUpdate = products?.products[productIndex];
 
   const onFormSubmit = async (data: ProductFormSuccessSubmitData) => {
     if (!productToUpdate) return;
+
     const apiPayload = getUpdatedFields(productToUpdate, data);
 
     console.log("updated product form data", data);

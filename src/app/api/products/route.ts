@@ -24,6 +24,7 @@ import {
   PostProductSuccessResponse,
 } from "@/features/products/api/postProduct";
 import { Prisma } from "@prisma/client";
+import { imageIdRegex } from "@/lib/patterns";
 
 export async function GET(req: NextRequest) {
   try {
@@ -203,12 +204,16 @@ export async function POST(req: NextRequest) {
         .min(1)
         .max(5)
         .required()
-        .items(Joi.string().pattern(/^[a-zA-Z0-9_-]+$/)),
+        .items(Joi.string().pattern(imageIdRegex)),
     });
 
     // validate the request json object
     const validation = schema.validate(body);
     if (validation.error || !validation.value) {
+      console.error(
+        "Invalid post product request with error",
+        validation.error,
+      );
       return apiErrorResponse("Invalid request", STATUS_BAD_REQUEST);
     }
     // validated data

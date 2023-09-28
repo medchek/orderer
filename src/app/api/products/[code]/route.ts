@@ -15,6 +15,7 @@ import {
   PatchProductBodyPayload,
   PatchProductSuccessResponse,
 } from "@/features/products/api/patchProduct";
+import { imageIdRegex } from "@/lib/patterns";
 
 export async function GET(
   _: NextRequest,
@@ -104,11 +105,11 @@ export async function PATCH(
         added: Joi.array()
           .min(0)
           .max(5)
-          .items(Joi.string().pattern(/^[a-zA-Z0-9_-]+$/)),
+          .items(Joi.string().pattern(imageIdRegex)),
         removed: Joi.array()
           .min(0)
           .max(5)
-          .items(Joi.string().pattern(/^[a-zA-Z0-9_-]+$/)),
+          .items(Joi.string().pattern(imageIdRegex)),
       }).optional(),
     });
 
@@ -184,17 +185,21 @@ export async function PATCH(
 
         categoryCode: category ? category.categoryCode : category,
         subCategoryCode:
-          category && category.subcategoryCode ? category?.subcategoryCode : null,
+          category && category.subcategoryCode
+            ? category?.subcategoryCode
+            : null,
       },
       select: {
         category: {
           select: {
             name: true,
+            code: true,
           },
         },
         subCategory: {
           select: {
             name: true,
+            code: true,
           },
         },
         code: true,

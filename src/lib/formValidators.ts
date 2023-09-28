@@ -1,8 +1,8 @@
+import { emailRegex, phoneRegex } from "./patterns";
+
 type validationFunction = (value: string) => string | undefined;
 
-export const phoneRegex = /^0[756]{1}[0-9]{8}$/i;
 // export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
-export const emailRegex = /^[a-z0-9._-]+@[a-z0-9-]+\.[a-z]{2,5}$/i;
 
 interface OrderFormValidator {
   name: validationFunction;

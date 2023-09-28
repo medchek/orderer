@@ -5,16 +5,26 @@ import { useStore } from "@/store";
 import { usePostProduct } from "../../api/postProduct";
 import { ProductFormSuccessSubmitData } from "../../types";
 import DashboardProductFormModal from "./DashboardProductFormModal";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/queryKeys";
 
 interface Props {
   closeModal: () => void;
 }
 
 export default function DashboardAddProduct({ closeModal }: Props) {
-  const { showSnackbar } = useStore();
+  const { showSnackbar, productsFilters } = useStore();
+  const queryClinet = useQueryClient();
 
   const { isLoading: isPostingProduct, mutate: productMutation } =
     usePostProduct({
+      onSuccess: () => {
+        queryClinet.invalidateQueries({
+          queryKey: queryKeys.products.all(productsFilters).queryKey,
+        });
+        showSnackbar("Produit ajouté avec succès");
+        closeModal();
+      },
       onError: (error) => {
         const status = error.response.status;
         let errorMsg =

@@ -9,7 +9,7 @@ export interface CategoryDataOpen {
   type: CategoryType;
   isOpen: true;
   name: string;
-  id: number;
+  code: string;
 }
 export interface DashboardSlice {
   // products

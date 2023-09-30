@@ -13,7 +13,7 @@ interface AddSubCategoryFieldValues {
   name: string;
 }
 interface Props {
-  category: { id: number; name: string };
+  category: { code: string; name: string };
   closeModal: () => void;
 }
 
@@ -46,7 +46,7 @@ export default function DashboardAddSubCategory({
           queryKeys.categories.all.queryKey,
         );
       const categoryName =
-        categoryData?.find((cat) => cat.id === vars.categoryId)?.name ??
+        categoryData?.find((cat) => cat.code === vars.categoryCode)?.name ??
         "sélectionnée";
 
       let errorMsg =
@@ -65,7 +65,7 @@ export default function DashboardAddSubCategory({
       if (categories) {
         const categoriesCopy = klona(categories);
         const categoryIndex = categoriesCopy.findIndex(
-          (cat) => cat.id === category.id,
+          (cat) => cat.code === category.code,
         );
         if (categoryIndex !== -1) {
           // clone the sub categories for immutable modification
@@ -98,7 +98,7 @@ export default function DashboardAddSubCategory({
       queryKeys.categories.all.queryKey,
     );
     if (categories) {
-      const subcategories = categories.find((cat) => cat.id === category.id)
+      const subcategories = categories.find((cat) => cat.code === category.code)
         ?.subCategories;
 
       if (subcategories) {
@@ -113,7 +113,7 @@ export default function DashboardAddSubCategory({
       }
     }
 
-    mutate({ categoryId: category.id, name });
+    mutate({ categoryCode: category.code, name });
   };
 
   return (

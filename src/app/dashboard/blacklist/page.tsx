@@ -4,6 +4,7 @@ import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
 import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
+import DashboardToolbarAddButton from "@/components/dashboard/DashboardToolbarAddButton";
 import { useDeleteBlacklistedNumber } from "@/features/blacklist/api/deleteBlacklist";
 import { useFetchBlacklist } from "@/features/blacklist/api/getBlacklist";
 import DashboardBlacklistedUserCard from "@/features/blacklist/components/DashboardBlacklistedUserCard";
@@ -14,14 +15,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 
 const DashboardOrdersBlockUser = dynamic(
-  () =>
-    import("@/features/orders/components/DashboardOrdersBlockUser"),
-  { loading: () => <ModalLoader /> }
+  () => import("@/features/orders/components/DashboardOrdersBlockUser"),
+  { loading: () => <ModalLoader /> },
 );
 
 const DeleteBlacklistedNumberConfirm = dynamic(
   () => import("@/components/dashboard/DashboardDeleteConfirm"),
-  { loading: () => <ModalLoader /> }
+  { loading: () => <ModalLoader /> },
 );
 
 import React, { useState } from "react";
@@ -57,7 +57,7 @@ export default function Blacklist() {
       onError: () => {
         showSnackbar(
           "Une érreur est survenu lors la suppression, veuillez reéssayer",
-          "error"
+          "error",
         );
       },
     });
@@ -69,18 +69,18 @@ export default function Blacklist() {
       if (!data.length) {
         return (
           <DashboardEmptyState
-            className="absolute top-0 left-0"
+            className="absolute left-0 top-0"
             text="Aucun numéro n'a encore été ajouté à la liste noire."
             subContent={
               <button
                 type="button"
-                className="text-stone-400 hover:text-stone-100 h-10 px-2"
+                className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
                 onClick={openAddNumberToBlock}
               >
-                <MdAdd className="w-7 h-7" /> Ajouter un numéro
+                <MdAdd className="h-7 w-7" /> Ajouter un numéro
               </button>
             }
-            Icon={<BsPersonSlash className="w-12 h-12" />}
+            Icon={<BsPersonSlash className="h-12 w-12" />}
           />
         );
       } else {
@@ -94,9 +94,9 @@ export default function Blacklist() {
         if (!filteredData.length) {
           return (
             <DashboardEmptyState
-              Icon={<BsPersonSlash className="w-12 h-12" />}
+              Icon={<BsPersonSlash className="h-12 w-12" />}
               text="Aucun numéro ne correspond à votre recherche"
-              className="absolute top-0 left-0"
+              className="absolute left-0 top-0"
             />
           );
         } else {
@@ -118,13 +118,11 @@ export default function Blacklist() {
         id="blacklist-toolbar"
         className="flex h-16 min-h-[4rem] w-full items-center justify-between "
       >
-        <button
-          type="button"
-          className="px-2 h-10 bg-blue-600 rounded-lg text-stone-50 font-semibold hover:bg-secondary focus:bg-blue-700 transition-colors text-sm"
+        <DashboardToolbarAddButton
           onClick={openAddNumberToBlock}
-        >
-          <MdAdd className="w-7 h-7" /> Ajouter un numéro
-        </button>
+          text="Ajouter un numéro"
+        />
+
         <DashboardSearchInput
           placeholder="Chercher un numéro"
           onChange={(e) => {
@@ -134,8 +132,8 @@ export default function Blacklist() {
         />
       </div>
 
-      <section className="relative w-full text-stone-50 grow overflow-y-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+      <section className="relative w-full grow overflow-y-auto text-stone-50">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {isError && (
             <DashboardFetchError
               refetch={refetch}
@@ -147,14 +145,14 @@ export default function Blacklist() {
             Array.from({ length: 20 }).map((_, i) => (
               <div
                 key={i}
-                className="bg-stone-950 rounded-lg p-4 h-28 flex justify-between animate-pulse grid-flow-row-dense"
+                className="flex h-28 animate-pulse grid-flow-row-dense justify-between rounded-lg bg-stone-950 p-4"
               >
-                <div className="flex flex-col gap-2 [&>div]:bg-stone-800 w-10/12 [&>div]:rounded-md">
+                <div className="flex w-10/12 flex-col gap-2 [&>div]:rounded-md [&>div]:bg-stone-800">
                   <div className="h-6 w-full"></div>
                   <div className="h-5 w-1/4"></div>
                   <div className="h-5 w-3/5"></div>
                 </div>
-                <div className="h-8 w-8 bg-stone-800 rounded-md"></div>
+                <div className="h-8 w-8 rounded-md bg-stone-800"></div>
               </div>
             ))}
 

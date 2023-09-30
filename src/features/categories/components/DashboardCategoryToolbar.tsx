@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  MdAdd,
-  MdCheck, MdOutlineManageSearch
-} from "react-icons/md";
+import { MdCheck, MdOutlineManageSearch } from "react-icons/md";
 
 import {
   DropdownMenu,
@@ -14,6 +11,7 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { useStore } from "@/store";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
+import DashboardToolbarAddButton from "@/components/dashboard/DashboardToolbarAddButton";
 
 interface Props {
   openAddCategory: () => void;
@@ -37,18 +35,16 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
       id="categories-toolbar"
       className="flex h-16 min-h-[4rem] w-full items-center justify-between "
     >
-      <button
-        type="button"
-        className="px-2 h-10 bg-blue-600 rounded-lg text-stone-50 font-semibold hover:bg-secondary focus:bg-blue-700 transition-colors"
+      <DashboardToolbarAddButton
         onClick={openAddCategory}
-      >
-        <MdAdd className="w-7 h-7" /> Ajouter une catégorie
-      </button>
-      <div className="flex gap-2 h-10">
+        text="Ajouter une catégorie"
+      />
+
+      <div className="flex h-10 gap-2">
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             title="Filtrer par"
-            className="dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950  transition-colors h-10 w-10 rounded-lg outline-none shadow-md text-stone-400 flex items-center justify-center"
+            className="flex h-10 w-10  items-center justify-center rounded-lg text-stone-400 shadow-md outline-none transition-colors dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950"
           >
             {/* <MdOutlineFilterList className="h-7 w-7" /> */}
             <MdOutlineManageSearch className="h-7 w-7" />
@@ -57,28 +53,28 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
             avoidCollisions
             sideOffset={10}
             align="end"
-            className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm text-neutral-200"
+            className="z-10 flex flex-col gap-1 rounded-lg border border-neutral-800 bg-neutral-900 p-2 px-2 text-sm text-neutral-200 outline-none"
           >
             <DropdownMenuLabel className="px-2 text-stone-500">
               Chercher par
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="h-8 hover:bg-neutral-800 flex items-center gap-1.5 px-2 rounded-md hover:outline-none cursor-pointer"
+              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-800 hover:outline-none"
               onClick={() => setCategoryFilterType("category")}
             >
               <span className="w-28">Catégorie</span>{" "}
               {categoryFilterType === "category" && (
-                <MdCheck className="w-5 h-5" />
+                <MdCheck className="h-5 w-5" />
               )}
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="h-8 hover:bg-neutral-800 flex items-center gap-1.5 px-2 rounded-md hover:outline-none cursor-pointer"
+              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-800 hover:outline-none"
               onClick={() => setCategoryFilterType("subcategory")}
             >
               <span className="w-28">Sous-catégorie</span>
               {categoryFilterType === "subcategory" && (
-                <MdCheck className="w-5 h-5" />
+                <MdCheck className="h-5 w-5" />
               )}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -90,7 +86,6 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
           onChange={handleOnChange}
           value={categoryFilterTerm}
         />
-
       </div>
     </div>
   );

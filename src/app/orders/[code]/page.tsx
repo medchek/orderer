@@ -1,8 +1,8 @@
 import Footer from "@/components/Footer";
 import HomeHeader from "@/components/home/HomeHeader";
 import SelectedProductDetails from "@/components/home/order-form/SelectedProductDetails";
-import OrderInfoSegment from "@/components/orders/OrderInfoSegment";
-import OrderStatusBadge from "@/components/orders/OrderStatusBadge";
+import OrderInfoSegment from "@/features/orders/components/OrderInfoSegment";
+
 import React, { Fragment } from "react";
 import { prisma } from "../../../../prisma/db";
 
@@ -10,6 +10,7 @@ import { BsCartX } from "react-icons/bs";
 import { IoMdArrowBack } from "react-icons/io";
 import { addPartitive, discountedPrice, formatDate } from "@/lib/utils";
 import Link from "next/link";
+import DashboardOrdersStatusBadge from "@/features/orders/components/DashboardOrdersStatusBadge";
 
 type StringOrEmpty = string | null | undefined;
 
@@ -57,14 +58,14 @@ export default async function Orders({ params }: Props) {
           prevPrice
         );
       },
-      0
+      0,
     );
 
     return allProductsPrice + shippingPrice;
   };
 
-  const handleEmptyValue = (v: string | undefined | null) =>
-    !v ? "Non mentioné" : v;
+  // const handleEmptyValue = (v: string | undefined | null) =>
+  //   !v ? "Non mentioné" : v;
 
   const fullName = (name: StringOrEmpty, lastName: StringOrEmpty) => {
     if (!name && !lastName) return "Non mentioné";
@@ -73,24 +74,24 @@ export default async function Orders({ params }: Props) {
   };
 
   return (
-    <main className="flex min-h-screen flex-col px-10 2xl:px-56 dark:text-stone-50">
+    <main className="flex min-h-screen flex-col px-10 dark:text-stone-50 2xl:px-56">
       <HomeHeader />
 
       {!data ? (
-        <div className="w-full h-full flex flex-col justify-center items-center grow text-stone-500 gap-2">
+        <div className="flex h-full w-full grow flex-col items-center justify-center gap-2 text-stone-500">
           <p>Aucune commande ne correspond au code fourni</p>
-          <BsCartX className="w-16 h-16" />
+          <BsCartX className="h-16 w-16" />
         </div>
       ) : (
         <Fragment>
-          <div className="h-11 flex items-center gap-2">
+          <div className="flex h-11 items-center gap-2">
             <Link href="/." title="Acceuil">
-              <IoMdArrowBack className="w-8 h-8" />
+              <IoMdArrowBack className="h-8 w-8" />
             </Link>
             <h1 className="text-xl font-semibold">Votre commande</h1>
           </div>
           <div className="flex w-full grow gap-4">
-            <section className="flex flex-col gap-10 grow w-auto bg-stone-950 rounded-xl py-6 px-6">
+            <section className="flex w-auto grow flex-col gap-10 rounded-xl bg-stone-950 px-6 py-6">
               {/* {data.map(({ title, data }) => {
             return <OrderInfoSegment title={title} data={data} />;
           })} */}
@@ -123,7 +124,7 @@ export default async function Orders({ params }: Props) {
                     content: data.isHome
                       ? data.address
                       : `Bureau de livraison de la wilaya ${addPartitive(
-                          data.wilaya.name
+                          data.wilaya.name,
                         )}`,
                   },
                 ]}
@@ -138,7 +139,9 @@ export default async function Orders({ params }: Props) {
                   },
                   {
                     label: "Statut",
-                    content: <OrderStatusBadge text="Non confirmé" />,
+                    content: (
+                      <DashboardOrdersStatusBadge status={data.status} />
+                    ),
                   },
                   {
                     label: "Nombre de produits",
@@ -147,11 +150,11 @@ export default async function Orders({ params }: Props) {
                 ]}
               />
             </section>
-            <section className="flex flex-col w-[390px] bg-stone-950 rounded-xl pt-6 overflow-hidden">
-              <h3 className="font-bold text-lg text-stone-200 pl-4">
+            <section className="flex w-[390px] flex-col overflow-hidden rounded-xl bg-stone-950 pt-6">
+              <h3 className="pl-4 text-lg font-bold text-stone-200">
                 Produits
               </h3>
-              <div className="px-2 grow">
+              <div className="grow px-2">
                 {data.orderProducts.map(({ product }) => (
                   <SelectedProductDetails
                     key={product.code}
@@ -168,7 +171,7 @@ export default async function Orders({ params }: Props) {
                   />
                 ))}
               </div>
-              <div className="flex items-center bg-stone-900 h-40 px-4">
+              <div className="flex h-40 items-center bg-stone-900 px-4">
                 <OrderInfoSegment
                   justifyBetween
                   title="Prix"
@@ -183,7 +186,7 @@ export default async function Orders({ params }: Props) {
                     {
                       label: "Prix total à payer",
                       content: (
-                        <span className="text-secondary font-semibold">
+                        <span className="font-semibold text-secondary">
                           {totalPrice()}DA
                         </span>
                       ),

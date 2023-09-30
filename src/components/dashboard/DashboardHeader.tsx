@@ -6,11 +6,13 @@ interface Props {
   label: string;
   noPadding?: boolean;
   className?: string;
+  description?: string;
 }
 
 export default function DashboardHeader({
   label,
   noPadding,
+  description,
   className,
 }: Props) {
   return (
@@ -19,10 +21,15 @@ export default function DashboardHeader({
       className={cn(
         "flex h-14 min-h-[3.5rem] w-full justify-between",
         { "pr-6": !noPadding },
-        className
+        className,
       )}
     >
-      <h1 className="text-xl font-bold dark:text-white">{label}</h1>
+      <section>
+        <h1 className="text-xl font-semibold dark:text-white">{label}</h1>
+        {description?.trim().length !== 0 && (
+          <p className="text-sm text-neutral-500">{description}</p>
+        )}
+      </section>
       <AccountActions />
     </div>
   );

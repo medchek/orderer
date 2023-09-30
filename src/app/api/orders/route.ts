@@ -1,4 +1,8 @@
-import { apiErrorResponse, toPositiveNumber, uniqueId } from "./../../../lib/utils";
+import {
+  apiErrorResponse,
+  toPositiveNumber,
+  uniqueId,
+} from "./../../../lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
 import {
@@ -10,11 +14,15 @@ import {
 } from "@/lib/constants";
 
 import Joi from "joi";
-import { emailRegex, phoneRegex } from "@/lib/formValidators";
+
 import { prisma } from "../../../../prisma/db";
 import { Prisma, Status } from "@prisma/client";
-import { PostOrderRequestPayload, PostOrderSuccessResponse } from "@/features/orders/api/postOrder";
+import {
+  PostOrderRequestPayload,
+  PostOrderSuccessResponse,
+} from "@/features/orders/api/postOrder";
 import { GetOrdersSuccessResponse } from "@/features/orders/api/getOrders";
+import { emailRegex, phoneRegex } from "@/lib/patterns";
 
 // TODO: Implement Rate limiting for all API routes
 

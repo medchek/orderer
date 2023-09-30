@@ -6,7 +6,7 @@ import React from "react";
 
 export default async function Products() {
   return (
-    <div id="dashboard-products" className="flex grow flex-col py-3 pl-6">
+    <div id="dashboard-products" className="flex grow flex-col pt-3 pl-6">
       <DashboardHeader label="Produits" />
       <DashboardProductsToolbar />
       <DashboardProductsDisplay />

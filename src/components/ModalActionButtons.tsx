@@ -1,18 +1,7 @@
-import React, { type DOMAttributes, type ButtonHTMLAttributes } from "react";
+import { type DOMAttributes } from "react";
 import Loader from "./Loader";
 import { cn } from "@/lib/utils";
 
-interface Props {
-  id?: string;
-  isLoading?: boolean;
-  disabledSubmit?: boolean;
-  cancelText?: string;
-  confirmText: string;
-  disableCancel?: boolean;
-  confirmButtonType?: "button" | "submit";
-  onConfirm?: DOMAttributes<HTMLButtonElement>["onClick"];
-  onCancel: () => void;
-}
 
 interface BaseProps {
   className?: string;
@@ -53,7 +42,7 @@ export default function ModalActionButtons({
     >
       <button
         type="button"
-        className="h-10 w-36 rounded-md font-bold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
+        className="h-10 w-36 rounded-md font-bold transition-colors dark:bg-neutral-900 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950"
         onClick={onCancel}
         disabled={disableCancel}
       >

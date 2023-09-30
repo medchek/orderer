@@ -20,6 +20,9 @@ import {
 } from "@/lib/utils";
 import ModalActionButtons from "@/components/ModalActionButtons";
 import { useStore } from "@/store";
+import { parseCategoryOptionValue } from "@/features/categories/utils/parseCategoryOptionValue";
+import { generateCategoryOptionValue } from "@/features/categories/utils/generateCategoryOptionValue";
+import { useGetCategories } from "@/features/categories/api/getCategories";
 
 interface Props {
   closeModal: () => void;
@@ -49,6 +52,7 @@ export default function DashboardProductFormModal({
   } = methods;
 
   const { isUploadingImage } = useStore();
+  const { isLoading: isCategoriesFetching } = useGetCategories();
 
   const [uploadState, setUploadState] = useState<(FileMetaData | null)[]>([
     null,
@@ -116,10 +120,7 @@ export default function DashboardProductFormModal({
       })
       .map((data) => data.imageId as string);
     const formData: ProductFormSuccessSubmitData = {
-      category:
-        // if the selected value was none or the user has not touched the select category input,
-        // convert it to null. otherwise parse the value object string
-        !category || category === "prompt" ? null : JSON.parse(category),
+      category: parseCategoryOptionValue(category),
       description: description.trim(),
       discount: toPositiveNumber(discount),
       name: name.trim(),
@@ -179,9 +180,13 @@ export default function DashboardProductFormModal({
                   error={errors.price?.message}
                   defaultValue={productData?.price}
                 />
-                <CategorySelect
+                <CategorySelect<ProductFormValues>
                   register={register}
                   error={errors.category?.message}
+                  defaultValue={generateCategoryOptionValue(
+                    productData?.category?.code,
+                    productData?.subCategory?.code,
+                  )}
                 />
               </div>
               <Textarea
@@ -236,11 +241,13 @@ export default function DashboardProductFormModal({
           <ModalActionButtons
             id="form-buttons"
             className="mt-2 flex h-12 min-h-[3rem] items-center justify-end gap-4"
-            confirmText="Ajouter"
+            confirmText={productData ? "Modifier": "Ajouter"}
             onCancel={closeModal}
             confirmButtonType="submit"
             disableCancel={isUploadingImage || isLoading}
-            disabledSubmit={isUploadingImage || isLoading}
+            disabledSubmit={
+              isUploadingImage || isLoading || isCategoriesFetching
+            }
             isLoading={isLoading}
           />
         </form>

@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 
-import { MdAdd, MdDeleteOutline, MdEdit } from "react-icons/md";
+import { MdAdd, MdDeleteOutline, MdEdit, MdOutlineFilterAltOff } from "react-icons/md";
 import ModalLoader from "@/components/ModalLoader";
 import ProductCardLoader from "@/components/ProductCardLoader";
 
@@ -12,6 +12,8 @@ import { TbPackage } from "react-icons/tb";
 import { useDeleteProduct } from "../../api/deleteProduct";
 import { useGetProducts } from "../../api/getProducts";
 import ProductCard from "../ProductCard";
+import DashboardPagination from "@/components/dashboard/DashboardPagination";
+import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
 
 const DashboardAddProduct = dynamic(() => import("./DashboardAddProduct"), {
   loading: () => <ModalLoader />,
@@ -39,7 +41,17 @@ export default function DashboardProductsDisplay() {
     showSnackbar,
     clipboard,
     setClipboard,
+    productsFilters,
+    resetProductsFilters,
+    setProductsCurrentPage,
   } = useStore();
+
+  const [hasFilters, setHasFilters] = useState<boolean>(false);
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { currentPage: _, ...rest } = productsFilters;
+    setHasFilters(!!Object.keys(rest).length);
+  }, [productsFilters]);
 
   // product code to delete
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
@@ -47,8 +59,7 @@ export default function DashboardProductsDisplay() {
     number | null
   >(null);
 
-  const { refetch, data, isFetching, isError } = useGetProducts();
-
+  const { refetch, data, status } = useGetProducts(productsFilters);
   const { mutate: deleteProductMutation, isLoading: isDeleting } =
     useDeleteProduct({
       onSuccess: (productCode: string) => {
@@ -67,127 +78,163 @@ export default function DashboardProductsDisplay() {
 
   // old btn style :  bg-[#E9E9E9] text-sm font-semibold hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]
 
-  if (isFetching) {
-    return (
-      <section
-        id="product-display"
-        className="mr-6 grid w-full grow gap-5 overflow-hidden pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
-      >
-        {Array.from({ length: 8 }, (_, i) => (
-          <ProductCardLoader key={i} />
-        ))}
-      </section>
-    );
-  } else if (isError) {
-    return (
-      <div className="relative flex h-full w-full items-center justify-center">
-        <DashboardFetchError
-          text="Une érreur est survenu lors de la recherche des produits"
-          refetch={refetch}
-        />
-      </div>
-    );
-  } else {
-    return !data || !data.products.length ? (
-      <div className="flex grow items-center justify-center">
-        <div className="flex -translate-y-20 flex-col items-center gap-2 text-stone-50">
-          <TbPackage className="h-20 w-20" />
-          <p>Aucun produit n&apos;a été encore ajouté</p>
-          <button
-            type="button"
-            className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
-            onClick={() => setIsAddProductOpen(true)}
-          >
-            <MdAdd className="h-7 w-7" /> Ajouter un produit
-          </button>
-        </div>
-      </div>
-    ) : (
-      <section
-        id="product-display"
-        className="mr-6 grid w-full grow gap-5 overflow-y-auto pr-6 dark:[color-scheme:dark] lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5"
-      >
-        {data.products.map(
-          (
-            {
-              name,
-              code,
-              description,
-              discount,
-              images,
-              price,
-              stock,
-              category,
-              subCategory,
-            },
-            i,
-          ) => (
-            <ProductCard
-              name={name}
-              description={description}
-              discount={discount}
-              images={images}
-              price={price}
-              stock={stock}
-              category={category?.name}
-              subcategory={subCategory?.name}
-              isDashboard={true}
-              code={code}
-              key={code}
-            >
-              <div className="flex gap-2 text-sm font-semibold dark:text-stone-50 ">
-                <button
-                  type="button"
-                  className="h-8 grow  gap-1 rounded-md bg-[#E9E9E9] transition-colors hover:bg-[#e0e0e0] focus:bg-[#cacaca]  dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
-                  onClick={() => setProductToUpdateIndex(i)}
-                >
-                  <MdEdit className="h-5 w-5" /> Modifier
-                </button>
+  const productsPerPage = 10;
+  const pageCount = Math.ceil((data?.count ?? 0) / productsPerPage);
 
-                <button
-                  type="button"
-                  className=" h-8 w-8  rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-red-600 "
-                  onClick={() => setProductToDelete(code)}
-                >
-                  <MdDeleteOutline className="h-5 w-5" />
-                </button>
-              </div>
-            </ProductCard>
-          ),
-        )}
+  const handlePageChange = (event: { selected: number }) => {
+    const selected = event.selected;
+    const currentPage = productsFilters.currentPage;
+    if (selected === currentPage) return;
+    setProductsCurrentPage(selected);
+  };
 
-        {isAddProductOpen && (
-          <DashboardAddProduct closeModal={() => setIsAddProductOpen(false)} />
-        )}
-
-        {productToDelete && (
-          <DashboardDeleteConfirm
-            // productCode={productToDelete}
-            closeModal={() => setProductToDelete(null)}
-            label="Supprimer un produit"
-            text="Êtes-vous sûr de vouloir supprimer ce produit?"
-            onConfirm={() => deleteProductMutation(productToDelete)}
-            isLoading={isDeleting}
+  return (
+    <div className="relative flex h-full w-full grow flex-col justify-between overflow-hidden">
+      <div className="mr-6 grid w-full gap-2 overflow-y-auto pr-6 dark:[color-scheme:dark] lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
+        {/* ERROR  */}
+        {status === "error" && (
+          <DashboardFetchError
+            text="Une érreur est survenu lors de la recherche des produits"
+            refetch={refetch}
           />
         )}
-
-        {productToUpdateIndex !== null && (
-          <DashboardUpdateProduct
-            // productIndex={productToUpdateIndex}
-            closeModal={() => setProductToUpdateIndex(null)}
-            productIndex={productToUpdateIndex}
-          />
+        {/* LOADING */}
+        {status === "loading" && (
+          <>
+            {Array.from({ length: 8 }, (_, i) => (
+              <ProductCardLoader key={i} />
+            ))}
+          </>
         )}
+        {/* SUCCESS */}
+        {status === "success" &&
+          (!data || !data.products.length ? (
+            //
 
-        {clipboard.length && (
-          <CopyClipboardModal
-            closeModal={() => setClipboard("")}
-            label="Partager le produit"
-            text="Ce lien permet d'auto-sélectionner ce produit dans la page de
+            <DashboardEmptyState
+              className="absolute"
+              Icon={<TbPackage className="h-20 w-20" />}
+              text={
+                hasFilters
+                  ? "Aucun produit ne correspond aux filtres appliqués"
+                  : "Aucun produit n'a été encore ajouté"
+              }
+              subContent={
+                <button
+                  type="button"
+                  className="flex justify-center items-center gap-1 h-10 rounded-lg px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
+                  onClick={() => {
+                    if (hasFilters) {
+                      resetProductsFilters();
+                    } else {
+                      setIsAddProductOpen(true);
+                    }
+                  }}
+                >
+                  {hasFilters ? (
+                    <MdOutlineFilterAltOff className="h-6 w-6" />
+                  ) : (
+                    <MdAdd className="h-7 w-7" />
+                  )}
+                  {hasFilters
+                    ? "Réinitialiser les filtres"
+                    : "Ajouter un produit"}
+                </button>
+              }
+            />
+          ) : (
+            // empty data check end
+            <>
+              {data.products.map(
+                (
+                  {
+                    name,
+                    code,
+                    description,
+                    discount,
+                    images,
+                    price,
+                    stock,
+                    category,
+                    subCategory,
+                  },
+                  i,
+                ) => (
+                  <ProductCard
+                    name={name}
+                    description={description}
+                    discount={discount}
+                    images={images}
+                    price={price}
+                    stock={stock}
+                    category={category?.name}
+                    subcategory={subCategory?.name}
+                    isDashboard={true}
+                    code={code}
+                    key={code}
+                  >
+                    <div className="flex gap-2 text-sm font-semibold dark:text-stone-50 ">
+                      <button
+                        type="button"
+                        className="h-8 grow  gap-1 rounded-md bg-[#E9E9E9] transition-colors hover:bg-[#e0e0e0] focus:bg-[#cacaca]  dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
+                        onClick={() => setProductToUpdateIndex(i)}
+                      >
+                        <MdEdit className="h-5 w-5" /> Modifier
+                      </button>
+
+                      <button
+                        type="button"
+                        className=" h-8 w-8  rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-red-600 "
+                        onClick={() => setProductToDelete(code)}
+                      >
+                        <MdDeleteOutline className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </ProductCard>
+                ),
+              )}
+
+              {productToDelete !== null && (
+                <DashboardDeleteConfirm
+                  // productCode={productToDelete}
+                  closeModal={() => setProductToDelete(null)}
+                  label="Supprimer un produit"
+                  text="Êtes-vous sûr de vouloir supprimer ce produit?"
+                  onConfirm={() => deleteProductMutation(productToDelete)}
+                  isLoading={isDeleting}
+                />
+              )}
+
+              {productToUpdateIndex !== null && (
+                <DashboardUpdateProduct
+                  // productIndex={productToUpdateIndex}
+                  closeModal={() => setProductToUpdateIndex(null)}
+                  productIndex={productToUpdateIndex}
+                />
+              )}
+
+              {clipboard !== "" && (
+                <CopyClipboardModal
+                  closeModal={() => setClipboard("")}
+                  label="Partager le produit"
+                  text="Ce lien permet d'auto-sélectionner ce produit dans la page de
             la commande"
-          />
-        )}
-      </section>
-    );
-  }
+                />
+              )}
+            </>
+          ))}
+      </div>
+
+      {/* out of condition renders */}
+      {isAddProductOpen && (
+        <DashboardAddProduct closeModal={() => setIsAddProductOpen(false)} />
+      )}
+      {data && data.products.length > 0 && (
+        <DashboardPagination
+          pageCount={pageCount}
+          onPageChange={handlePageChange}
+        />
+      )}
+    </div>
+  );
 }

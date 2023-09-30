@@ -1,7 +1,6 @@
-import { getImageDirectUrl } from "@/lib/utils";
-import Image from "next/image";
 import { ReactNode } from "react";
 import ProductCardDropdown from "./ProductCardDropdown";
+import ImageCarousel from "@/features/images/components/ImageCarousel";
 
 interface Props {
   name: string;
@@ -34,36 +33,41 @@ export default function ProductCard({
   const priceWidthDiscount =
     discount === 0 ? price : price - (price * discount) / 100;
 
-  const displayImage = images.map((img) => {
-    return getImageDirectUrl(img.id);
-  });
+  // const displayImage = images.map((img) => {
+  //   return getImageDirectUrl(img.id);
+  // });
 
   return (
     <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-stone-950">
-      <div className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800">
+      {/* <div
+        className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800"
+        aria-description="product-images-display"
+      >
         <Image
           src={displayImage[0]}
           className="h-full w-full object-cover object-center"
           alt="Product image"
           loading="lazy"
-          referrerPolicy="no-referrer"
+          referrerPolicy="no-referrer"ss
           fill
           unoptimized
-        />
-        {/* discount */}
-        {discount > 0 && (
+        /> */}
+
+      <ImageCarousel imageIds={images} discount={discount} />
+      {/* discount */}
+      {/* {discount > 0 && (
           <span className="absolute bottom-2 right-3 flex h-6 w-16 items-center justify-center rounded-sm bg-secondary font-semibold text-white">
             -{discount}%
           </span>
         )}
-      </div>
+      </div> */}
       {/* text */}
       <section className="flex grow flex-col justify-between p-2 text-stone-50">
         <div className="flex grow flex-col justify-between overflow-hidden pb-2">
           <section className="flex flex-col gap-2">
             {/* previous height h-12 and gap-1*/}
             <div className="flex justify-between">
-              <p className="h-7 line-clamp-2 font-semibold" title={name}>
+              <p className="line-clamp-2 h-7 font-semibold" title={name}>
                 {name}
               </p>
               {isDashboard && <ProductCardDropdown productCode={code} />}

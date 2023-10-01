@@ -17,7 +17,7 @@ export default function ProductCardDropdown({ productCode }: Props) {
   const host = window.location.host;
   const protocol = window.location.protocol;
   const openCopyCode = () => {
-    setClipboard(`${protocol}://${host}/?productCode=${productCode}`);
+    setClipboard(`${protocol}://${host}/?product=${productCode}`);
   };
   return (
     <DropdownMenu modal={false}>

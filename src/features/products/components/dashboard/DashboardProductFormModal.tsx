@@ -30,8 +30,6 @@ interface Props {
   productData?: Product;
 
   isLoading: boolean;
-
-  // eslint-disable-next-line no-unused-vars
   onSubmit: (data: ProductFormSuccessSubmitData) => void;
 }
 

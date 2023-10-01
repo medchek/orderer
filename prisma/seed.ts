@@ -1,9 +1,9 @@
-
 import { prisma } from "./db";
 import wilayasData from "./seeders/wilayasSeedData";
 import { dummyProductData } from "./seeders/productsSeedData";
 import townsData from "./seeders/townsSeedData";
-import { dummyCategoriesdata } from "./seeders/categoriesSeedData";
+import { dummyCategoriesData } from "./seeders/categoriesSeedData";
+import { dummyLocationsData } from "./seeders/locationsSeedData";
 
 // interface FakeProductData {
 //   id: number;
@@ -40,7 +40,7 @@ async function main() {
             code,
             wilayaCode: wilayCode,
           },
-        })
+        });
       }
     }
   }
@@ -59,8 +59,12 @@ async function main() {
   }
 
   await prisma.category.createMany({
-    data: dummyCategoriesdata,
-  })
+    data: dummyCategoriesData,
+  });
+
+  await prisma.locations.createMany({
+    data: dummyLocationsData,
+  });
 }
 
 main()

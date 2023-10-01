@@ -2,7 +2,7 @@ import { CATEGORY_CODE_LENGTH } from "../../src/lib/constants";
 import { uniqueId } from "../../src/lib/utils";
 import { Prisma } from "@prisma/client";
 
-export const dummyCategoriesdata: Prisma.CategoryUncheckedCreateInput[] = [
+export const dummyCategoriesData: Prisma.CategoryUncheckedCreateInput[] = [
   {
     name: "ordinateurs",
     code: uniqueId(CATEGORY_CODE_LENGTH),

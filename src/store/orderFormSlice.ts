@@ -22,10 +22,10 @@ export interface OrderFormSlice {
   setIsConfirming: (v: boolean) => void;
 
   selectedWilaya: Wilaya | null;
-  setSelectedWilaya: (selectedWilaya: Wilaya) => void;
+  setSelectedWilaya: (selectedWilaya: Wilaya | null) => void;
 
   selectedTown: Town | null,
-  setSelectedTown: (town: Town) => void;
+  setSelectedTown: (town: Town | null) => void;
 
 
 }

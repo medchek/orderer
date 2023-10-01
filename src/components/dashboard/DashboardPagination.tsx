@@ -1,4 +1,4 @@
-import { toNumber } from "@/lib/utils";
+import { cn, toNumber } from "@/lib/utils";
 import React from "react";
 import { MdChevronRight } from "react-icons/md";
 import ReactPaginate, { type ReactPaginateProps } from "react-paginate";
@@ -11,23 +11,33 @@ interface Props extends ReactPaginateProps {
   };
 }
 
-export default function DashboardPagination({ perPageCount, ...props }: Props) {
-  const perPageOptions = [5, , 7, 9, 10, 15, 20, 25];
+export default function DashboardPagination({
+  perPageCount,
+  className,
+  ...props
+}: Props) {
+  const perPageOptions = [5, 7, 9, 10, 15, 20, 25];
   const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if(!perPageCount) return
+    if (!perPageCount) return;
     const value = toNumber(e.target.value);
     perPageCount.setPerPageCount(value);
   };
 
   return (
-    <div className="relative h-14 min-h-[3.5rem] w-full flex items-center justify-center">
+    <div
+      className={cn(
+        "relative flex h-14 min-h-[3.5rem] w-full items-center justify-center",
+        className,
+      )}
+      id="dashboard-pagination"
+    >
       <div>
         <ReactPaginate
           {...props}
-          className="w-full flex gap-2 text-stone-50"
+          className="flex w-full gap-2 text-stone-50"
           breakLabel="..."
-          nextLabel={<MdChevronRight className="w-7 h-7" />}
-          previousLabel={<MdChevronRight className="w-7 h-7 rotate-180 " />}
+          nextLabel={<MdChevronRight className="h-7 w-7" />}
+          previousLabel={<MdChevronRight className="h-7 w-7 rotate-180 " />}
           nextLinkClassName="flex justify-center items-center w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md"
           previousLinkClassName="flex justify-center items-center w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md"
           breakLinkClassName="flex font-bold justify-center items-center w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md"
@@ -43,10 +53,10 @@ export default function DashboardPagination({ perPageCount, ...props }: Props) {
         />
       </div>
       {perPageCount && (
-        <div className="absolute text-sm text-stone-400 h-10 right-0 flex items-center gap-2">
+        <div className="absolute right-0 flex h-10 items-center gap-2 text-sm text-stone-400">
           <span>Afficher</span>
           <select
-            className="bg-neutral-900 h-10 px-1 text-stone-200 rounded-md flex items-center justify-center text-base"
+            className="flex h-10 items-center justify-center rounded-md bg-neutral-900 px-1 text-base text-stone-200"
             value={perPageCount.count}
             onChange={handleOnChange}
           >

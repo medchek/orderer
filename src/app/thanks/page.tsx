@@ -13,7 +13,6 @@ import { RedirectType } from "next/dist/client/components/redirect";
 
 // search param
 interface Props {
-  params: {};
   searchParams: { code: string };
 }
 
@@ -37,13 +36,13 @@ export default async function ThankYouPage({ searchParams }: Props) {
   // }
 
   return (
-    <main className="relative flex min-h-screen flex-col px-10 2xl:px-56 dark:text-stone-50">
+    <main className="relative flex min-h-screen flex-col px-10 dark:text-stone-50 2xl:px-56">
       <HomeHeader />
 
-      <section className="flex flex-col items-center grow justify-center -translate-y-20">
+      <section className="flex grow -translate-y-20 flex-col items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <TbShoppingBag className="h-20 w-20" />
-          <div className="flex flex-col gap-1 items-center">
+          <div className="flex flex-col items-center gap-1">
             <p className="text-5xl font-semibold">Merci</p>
             <p className="font-semibold">
               Votre commande a été enregister avec succès
@@ -51,19 +50,19 @@ export default async function ThankYouPage({ searchParams }: Props) {
             <p>
               Vous recevrez un appel au numéro fourni pour confirmer la commande
             </p>
-            <div className="flex items-center h-10">
+            <div className="flex h-10 items-center">
               <hr className="w-20 border-stone-800"></hr>
             </div>
             <p className="text-stone-300">
               Vous pouvez à tout moment suivre le statut de la commande en
               visitant le lien
             </p>
-            <div className="text-secondary px-4 dark:bg-stone-900 dark:hover:bg-stone-800/90 h-8 flex items-center rounded-md transition-colors">
+            <div className="flex h-8 items-center rounded-md px-4 text-secondary transition-colors dark:bg-stone-900 dark:hover:bg-stone-800/90">
               <Link
                 href={orderStatusLink}
-                className="flex items-center gap-2 group"
+                className="group flex items-center gap-2"
               >
-                <FiLink2 className="w-6 h-6" />
+                <FiLink2 className="h-6 w-6" />
                 <span className="group-hover:underline">{orderStatusLink}</span>
               </Link>
             </div>
@@ -71,9 +70,9 @@ export default async function ThankYouPage({ searchParams }: Props) {
           <Link
             href="/."
             title="Acceuil"
-            className="text-stone-700 flex items-center gap-1 mt-6"
+            className="mt-6 flex items-center gap-1 text-stone-700"
           >
-            <IoMdArrowBack className="w-7 h-7" />
+            <IoMdArrowBack className="h-7 w-7" />
             <span>Acceuil</span>
           </Link>
         </div>

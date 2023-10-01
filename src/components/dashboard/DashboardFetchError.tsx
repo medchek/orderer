@@ -1,10 +1,9 @@
 import React from "react";
-import { BsListNested } from "react-icons/bs";
 
 type Props = {
   className?: string;
   refetch: () => void;
-  text: string;
+  text?: string;
 };
 
 export default function DashboardFetchError({
@@ -17,17 +16,19 @@ export default function DashboardFetchError({
       className={
         className
           ? className
-          : "absolute flex w-full flex-col items-center h-full justify-center"
+          : "absolute flex h-full w-full flex-col items-center justify-center"
       }
     >
-      <div className="flex flex-col items-center justify-center gap-2 -translate-y-20">
-        <div className="flex items-center justify-center rounded-full border-4 w-10 h-10 text-xl font-bold text-red-500 border-red-500">
+      <div className="flex -translate-y-20 flex-col items-center justify-center gap-2">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full border-4 border-red-500 text-xl font-bold text-red-500">
           !
         </div>
-        <p className="mt-2 text-stone-300 text-sm">{text}</p>
+        <p className="mt-2 text-sm text-stone-300">
+          {text ?? "Une érreur est survenu, veuillez reéssayer"}
+        </p>
         <button
           type="button"
-          className="h-9 px-4 rounded-lg text-sm font-semibold text-stone-100 transition-colors dark:bg-red-900/70 dark:hover:bg-red-900/80  dark:focus:bg-red-900/50"
+          className="h-9 rounded-lg px-4 text-sm font-semibold text-stone-100 transition-colors dark:bg-red-900/70 dark:hover:bg-red-900/80  dark:focus:bg-red-900/50"
           onClick={refetch}
         >
           Réessayer

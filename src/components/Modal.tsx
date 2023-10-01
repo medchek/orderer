@@ -70,7 +70,7 @@ export default function Modal({
     >
       <div
         className={cn(
-          "flex flex-col   dark:[color-scheme:dark]",
+          "flex flex-col dark:[color-scheme:dark]",
           {
             "rounded-lg  bg-[#F3F3F3] px-8 py-5 shadow-md dark:bg-[#040404]":
               !transparent,

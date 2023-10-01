@@ -46,6 +46,9 @@ model Category {
 
   subCategories SubCategory[]
 
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
   @@map("categories")
 }
 
@@ -60,6 +63,9 @@ model SubCategory {
   code String @unique @db.VarChar(25)
 
   products Product[]
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@map("sub_categories")
 }
@@ -88,9 +94,10 @@ model Wilaya {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  orders Order[]
-  User   User[]
-  Town   Town[]
+  orders    Order[]
+  User      User[]
+  Town      Town[]
+  Locations Locations[]
 
   @@map("wilayas")
 }
@@ -104,9 +111,10 @@ model Town {
   wilaya     Wilaya @relation(fields: [wilayaCode], references: [code], onDelete: Cascade)
   wilayaCode Int    @map("wilaya_code")
 
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
   User      User[]
   Order     Order[]
+  Locations Locations[]
 
   @@map("towns")
 }
@@ -148,6 +156,21 @@ model OrdersProducts {
 
   @@id([productCode, orderId])
   @@map("orders_products")
+}
+
+model Locations {
+  id              String  @unique @db.VarChar(25)
+  name            String  @db.VarChar(150)
+  coordinates     String? @db.VarChar(255)
+  additionalCosts Int?    @default(0) @map("additional_costs")
+
+  town       Town   @relation(fields: [townCode], references: [code])
+  townCode   Int    @map("town_code") @db.Integer
+  wilaya     Wilaya @relation(fields: [wilayaCode], references: [code])
+  wilayaCode Int    @map("wilaya_code") @db.Integer
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 }
 
 model User {

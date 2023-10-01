@@ -24,6 +24,8 @@ CREATE TABLE "categories" (
     "name" VARCHAR(200) NOT NULL,
     "name_lowercase" VARCHAR(200) NOT NULL,
     "code" VARCHAR(25) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
@@ -35,6 +37,8 @@ CREATE TABLE "sub_categories" (
     "name_lowercase" VARCHAR(200) NOT NULL,
     "category_code" VARCHAR(25) NOT NULL,
     "code" VARCHAR(25) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "sub_categories_pkey" PRIMARY KEY ("id")
 );
@@ -97,6 +101,18 @@ CREATE TABLE "orders_products" (
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "orders_products_pkey" PRIMARY KEY ("productCode","orderId")
+);
+
+-- CreateTable
+CREATE TABLE "Locations" (
+    "id" VARCHAR(25) NOT NULL,
+    "name" VARCHAR(150) NOT NULL,
+    "coordinates" VARCHAR(255),
+    "additional_costs" INTEGER DEFAULT 0,
+    "town_code" INTEGER NOT NULL,
+    "wilaya_code" INTEGER NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL
 );
 
 -- CreateTable
@@ -195,6 +211,9 @@ CREATE UNIQUE INDEX "towns_code_key" ON "towns"("code");
 CREATE UNIQUE INDEX "orders_code_key" ON "orders"("code");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Locations_id_key" ON "Locations"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
@@ -253,6 +272,12 @@ ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_productCode_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Locations" ADD CONSTRAINT "Locations_town_code_fkey" FOREIGN KEY ("town_code") REFERENCES "towns"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Locations" ADD CONSTRAINT "Locations_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_wilaya_id_fkey" FOREIGN KEY ("wilaya_id") REFERENCES "wilayas"("id") ON DELETE SET NULL ON UPDATE CASCADE;

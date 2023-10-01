@@ -1,20 +1,24 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth";
+import { NextApiRequest } from "next";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions, isAdmin } from "../auth/[...nextauth]/route";
-import { apiErrorResponse, sleep, uniqueId } from "@/lib/utils";
+import { isAdmin } from "../auth/[...nextauth]/route";
+import { apiErrorResponse, uniqueId } from "@/lib/utils";
 
 import sharp from "sharp";
 import { getAllFiles, uploadFile } from "@/lib/drive";
 import { prisma } from "../../../../prisma/db";
-import { cache } from "@/lib/cache";
-import { PostImageSuccessResponsePayload } from "@/types/api";
-import { MAX_UPLOAD_FILE_SIZE } from "@/lib/constants";
+import {
+  MAX_UPLOAD_FILE_SIZE,
+  STATUS_CONTENT_TOO_LARGE,
+  STATUS_UNAUTHORIZED,
+  STATUS_UNSUPPORTED_MEDIA_TYPE,
+} from "@/lib/constants";
+import { PostImageSuccessResponse } from "@/features/images/api/postImage";
+import { cloudinary } from "@/lib/cloudinary";
 
 export async function POST(req: NextRequest) {
   try {
-    if (!await isAdmin()) {
-      return NextResponse.json("unauthorized", { status: 401 });
+    if (!(await isAdmin())) {
+      return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
     }
 
     const formData = await req.formData();
@@ -37,56 +41,57 @@ export async function POST(req: NextRequest) {
         "image/tiff",
       ];
       if (acceptedFileTypes.indexOf(file.type) === -1) {
-        return NextResponse.json("unsupported file type/format", {
-          status: 415,
-        });
+        return apiErrorResponse(
+          "unsupported file type/format",
+          STATUS_UNSUPPORTED_MEDIA_TYPE,
+        );
       }
       // if the file size exceeds 8 mb
       if (file.size > MAX_UPLOAD_FILE_SIZE) {
-        return NextResponse.json("file too large (8mb max)", {
-          status: 413,
-        });
+        return apiErrorResponse(
+          "file too large (8mb max)",
+          STATUS_CONTENT_TOO_LARGE,
+        );
       }
-
       // await sleep(2400);
-      // const fileName = `${uniqueId(24)}.jpg`;
-      // cache the image id that was generated
-      // const uploadedImages = cache.get("uploadedImageIds") as
-      //   | string[]
-      //   | undefined;
-
-      // if (uploadedImages) {
-      //   cache.set(
-      //     "uploadedImageIds",
-      //     [...(uploadedImages && uploadedImages), fileName],
-      //     { ttl: 3600 * 1000 }
-      //   );
-      // } else {
-      //   cache.set("uploadedImageIds", [fileName], { ttl: 3600 * 1000 });
-      // }
-      // console.log(uploadedImages);
-
-      // return NextResponse.json<PostImageSuccessResponsePayload>(
-      //   {
-      //     id: uniqueId(24),
-      //     originalName: file.name,
-      //     originalSize: file.size,
-      //   },
-      //   {
-      //     status: 201,
-      //     headers: {
-      //       "Content-Type": "application/json ",
-      //     },
-      //   }
-      // );
-
       const processedImage = await sharp(await file.arrayBuffer())
         .resize({
           fit: sharp.fit.contain,
           width: 600,
         })
-        .jpeg({ quality: 80 })
+        .webp({ quality: 60 })
         .toBuffer();
+
+      const imageUrl =
+        "data:image/webp;base64," + processedImage.toString("base64");
+
+      const imageUploadRes = await cloudinary.uploader.upload(imageUrl, {
+        resource_type: "image",
+        allowed_formats: ["webp"],
+        folder: "orderer",
+      });
+
+      const imgId = imageUploadRes.public_id;
+
+      await prisma.image.create({
+        data: {
+          id: imgId,
+        },
+      });
+
+      return NextResponse.json<PostImageSuccessResponse>(
+        {
+          id: imgId,
+          originalName: file.name,
+          originalSize: file.size,
+        },
+        {
+          status: 201,
+          headers: {
+            "Content-Type": "application/json ",
+          },
+        },
+      );
 
       const fileName = `${uniqueId(24)}.jpg`;
 
@@ -110,7 +115,7 @@ export async function POST(req: NextRequest) {
         },
         {
           status: 201,
-        }
+        },
       );
       // return NextResponse.json("ok");
     }
@@ -118,30 +123,27 @@ export async function POST(req: NextRequest) {
     // return NextResponse.json("OK");
   } catch (e) {
     console.error("Error handing images api POST request", e);
-    return NextResponse.json(e, { status: 500 });
+    return apiErrorResponse();
   }
 }
 
-export async function GET(req: NextApiRequest) {
+export async function GET(_: NextApiRequest) {
   // https://lh3.googleusercontent.com/d/FILE_ID
   const response = await getAllFiles();
 
   return NextResponse.json(response.data.files);
 }
 
-
 export async function DELETE() {
   try {
-
     const results = await prisma.image.findMany({
       where: {
-        productId: { equals: null }
-      }
-    })
+        productId: { equals: null },
+      },
+    });
 
-    return NextResponse.json(results)
+    return NextResponse.json(results);
   } catch (error) {
-
-    return apiErrorResponse("error deleting unused files")
+    return apiErrorResponse("error deleting unused files");
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import ModalLoader from "@/components/ModalLoader";
+import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
 import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import { useGetCategories } from "@/features/categories/api/getCategories";
@@ -133,16 +134,16 @@ export default function Categories() {
     if (isSuccess) {
       if (data.length === 0) {
         return (
-          <div className="flex grow items-center justify-center">
-            <div className="flex -translate-y-20 flex-col items-center gap-2">
-              <TbCategory2 className="h-20 w-20" />
-              <p>
-                {filterTerm
-                  ? `Aucune ${
-                      filterType === "category" ? "catégorie" : "sous-catégorie"
-                    } n'a été trouvée avec ce nom`
-                  : "Aucune catégorie n'a encore été ajoutée"}
-              </p>
+          <DashboardEmptyState
+            Icon={<TbCategory2 className="h-20 w-20" />}
+            text={
+              filterTerm
+                ? `Aucune ${
+                    filterType === "category" ? "catégorie" : "sous-catégorie"
+                  } n'a été trouvée avec ce nom`
+                : "Aucune catégorie n'a encore été ajoutée"
+            }
+            subContent={
               <button
                 type="button"
                 className="h-10 rounded-lg  px-2 font-semibold text-stone-50 transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
@@ -150,8 +151,8 @@ export default function Categories() {
               >
                 <MdAdd className="h-7 w-7" /> Ajouter une catégorie
               </button>
-            </div>
-          </div>
+            }
+          />
         );
       } else {
         return currentItems?.map(

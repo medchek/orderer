@@ -4,9 +4,8 @@ import React from "react";
 import AccountActions from "../AccountActions";
 import Link from "next/link";
 
-type Props = {};
 
-export default function HomeHeader({}: Props) {
+export default function HomeHeader() {
   return (
     <header className="relative flex h-20 w-full items-start justify-between pt-2">
       {/* absolute content */}

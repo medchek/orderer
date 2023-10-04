@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
 
 import Joi from "joi";
-import { phoneRegex } from "@/lib/formValidators";
+
 import { apiErrorResponse } from "@/lib/utils";
 import {
   STATUS_BAD_REQUEST,
@@ -13,6 +13,7 @@ import {
 import { prisma } from "../../../../prisma/db";
 import { GetBlacklistSuccessResponse } from "@/features/blacklist/api/getBlacklist";
 import { PostBlacklistRequestPayload } from "@/features/blacklist/api/postBlacklist";
+import { phoneRegex } from "@/lib/patterns";
 
 
 export async function GET() {

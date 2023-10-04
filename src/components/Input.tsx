@@ -16,6 +16,8 @@ interface Props<T extends FieldValues>
   registerRules?: RegisterOptions;
   error?: string;
   id?: string;
+  /** Displays information underneath the input */
+  info?: string;
   /** Removes the space occupied by the error message that is always present even if the error is not empty */
   removeErrorHeight?: boolean;
 }
@@ -29,6 +31,7 @@ export default function Input<T extends FieldValues>({
   error,
   removeErrorHeight,
   hidden,
+  info,
   className,
   ...props
 }: Props<T>) {
@@ -59,11 +62,15 @@ export default function Input<T extends FieldValues>({
         )}
       />
       <div
-        className={`h-5 text-sm text-red-600 dark:text-red-500 ${
-          removeErrorHeight && "hidden"
-        }`}
+        className={clsx(
+          "h-5 text-sm",
+          removeErrorHeight && "hidden",
+          info && !error
+            ? "text-neutral-600"
+            : "text-red-600 dark:text-red-500",
+        )}
       >
-        {error && error}
+        {(error && info) || error ? error : info}
       </div>
     </div>
   );

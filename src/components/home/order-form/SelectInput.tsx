@@ -62,6 +62,8 @@ export default function SelectInput({
             className,
           )}
         >
+          {isLoading && <option value="" disabled>Chargement...</option>}
+
           {children}
         </select>
 

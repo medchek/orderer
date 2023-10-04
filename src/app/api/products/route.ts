@@ -34,7 +34,10 @@ export async function GET(req: NextRequest) {
 
     // product name
     const nameParam = req.nextUrl.searchParams.get("name")?.trim();
-    const name = nameParam && nameParam.length >= 2 ? nameParam : undefined;
+    const name =
+      nameParam && nameParam.length >= 2 && nameParam.length <= 200
+        ? nameParam
+        : undefined;
     // price
     const minPriceParam = req.nextUrl.searchParams.get("minPrice");
     const minPrice = minPriceParam
@@ -82,9 +85,9 @@ export async function GET(req: NextRequest) {
      * PAGINATION
      */
 
-    const pageString = req.nextUrl.searchParams.get("page");
+    const pageParam = req.nextUrl.searchParams.get("page");
 
-    const currentPage = pageString ? toPositiveNumber(pageString) : 0;
+    const currentPage = pageParam ? toPositiveNumber(pageParam) : 0;
     const productsPerPage = 10;
 
     const conditions: Prisma.ProductFindManyArgs | Prisma.ProductCountArgs = {
@@ -155,7 +158,7 @@ export async function GET(req: NextRequest) {
       products: products[1],
     });
   } catch (e) {
-    console.error(e);
+    console.error("Error fetching all products", e);
     return apiErrorResponse("Error fetching all products");
   }
 }

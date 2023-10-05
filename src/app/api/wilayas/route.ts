@@ -68,8 +68,8 @@ export async function PATCH(req: NextRequest) {
         .max(58)
         .items(Joi.number().strict().required().min(1).max(58))
         .required(),
-      homePrice: Joi.number().strict().min(0).positive().precision(2),
-      officePrice: Joi.number().strict().min(0).positive().precision(2),
+      homePrice: Joi.number().strict().min(0).positive().allow(0).precision(2),
+      officePrice: Joi.number().strict().min(0).positive().allow(0).precision(2),
       availableHome: Joi.boolean().strict(),
       availableOffice: Joi.boolean().strict(),
     });

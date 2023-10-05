@@ -1,97 +1,62 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
-import React, { useRef, useState } from "react";
-import { IoLogInOutline, IoLogOutOutline } from "react-icons/io5";
+import { useSession, signOut } from "next-auth/react";
+import { IoLogOutOutline } from "react-icons/io5";
 import Loader from "./Loader";
-import { useOnClickOutside } from "usehooks-ts";
+import Image from "next/image";
+import { DropdownMenu } from "./ui/Dropdown";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { BiUser } from "react-icons/bi";
 import Link from "next/link";
 
-interface Props {
-  className?: string;
-}
-
-export default function AccountActions({ className }: Props) {
+export default function AccountActions() {
   const { data, status } = useSession();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const menuRef = useRef(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const handleClickOutside = (e: MouseEvent) => {
-    if (
-      buttonRef.current !== null &&
-      !buttonRef.current.contains(e.target as Node)
-    ) {
-      setIsOpen(false);
-    }
-  };
-  useOnClickOutside(menuRef, handleClickOutside);
-
-  const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setIsOpen(!isOpen);
-  };
-
-  const buttonContent = () => {
-    if (status === "loading") {
-      return (
-        <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full dark:bg-card-dark">
-          <Loader className="h-6 w-6" />
-        </div>
-      );
-    } else if (status === "unauthenticated") {
-      return (
-        <Link
-          type="button"
-          className="relative z-10 flex h-9 w-auto items-center justify-center rounded-lg px-2 text-[#535663] transition-colors dark:bg-[#101016]  dark:hover:bg-[#14151b] dark:focus:bg-[#0b0b0e]"
-          href="/login"
-          title="Se connecter"
-        >
-          <span>connexion</span>
-          {/* <IoLogInOutline className="h-7 w-7" /> */}
-        </Link>
-      );
-    } else {
-      return (
-        <button
-          type="button"
-          className="h-11 w-11 overflow-hidden rounded-full dark:bg-card-dark dark:hover:bg-[#262638]"
-          onClick={handleOpenMenu}
-          disabled={status !== "authenticated"}
-          ref={buttonRef}
-        >
-          <img
-            src={data?.user?.image!}
-            className="h-9 w-9 rounded-full"
-            alt="profile-image"
-            loading="lazy"
-            referrerPolicy="no-referrer"
-          />
-        </button>
-      );
-    }
-  };
 
   return (
-    <div
-      id="account-actions"
-      className={`relative z-10 h-10 w-auto ${className && className}`}
-    >
-      {buttonContent()}
-
-      {isOpen && (
-        <div
-          className="absolute right-0 mt-2 w-48 rounded-lg bg-card-dark p-2 text-white shadow-lg"
-          ref={menuRef}
-        >
-          <button
-            type="button"
-            className="h-10 w-full justify-start gap-2 rounded-md pl-4 transition-colors hover:bg-white/5"
-            onClick={() => signOut()}
-          >
-            <IoLogOutOutline className="h-7 w-7" /> <span>Logout</span>
-          </button>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger
+        className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full dark:bg-stone-900 dark:hover:bg-stone-800"
+        disabled={status !== "authenticated"}
+      >
+        <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
+          {status === "loading" && <Loader className="h-6 w-6" />}
+          {status === "authenticated" && (
+            <Image
+              unoptimized
+              fill
+              src={
+                data?.user?.image ??
+                "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+              }
+              className="relative rounded-full object-cover object-center"
+              alt="profile image"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
+          )}
+          {status === "unauthenticated" && (
+            <Link href="/login" className="w-full h-full flex items-center justify-center">
+              <BiUser className="h-6 w-6 text-stone-400" />
+            </Link>
+          )}
         </div>
-      )}
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        avoidCollisions
+        sideOffset={4}
+        align="end"
+        className="z-10 flex flex-col gap-1 rounded-md border border-stone-800 bg-stone-900 p-1 text-sm text-stone-400 outline-none"
+      >
+        <DropdownMenuItem
+          className="flex h-8 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-stone-800 hover:outline-none"
+          onClick={() => signOut()}
+        >
+          <IoLogOutOutline className="h-6 w-6" /> <span>Se déconncter</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

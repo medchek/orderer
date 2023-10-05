@@ -3,15 +3,15 @@ import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardUpdateShippingPrices, {
-  WilayaSelection,
   SelectedWilaya,
 } from "@/features/shipping-prices/components/DashboardUpdateShippingPrices";
 import { useGetWilayas } from "@/features/shipping-prices/api/getWilayas";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import DashboardWilayaCard from "@/features/shipping-prices/components/DashboardWilayaCard";
+import { WilayasSelection } from "@/features/shipping-prices/types";
 
 export default function ShippingPrices() {
   // filtered wilayas list
@@ -20,7 +20,7 @@ export default function ShippingPrices() {
    * State of all wilayas selection data created upon component mounting
    */
   const [selectedWilayasList, setSelectedWilayasList] =
-    useState<WilayaSelection>([]);
+    useState<WilayasSelection>([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -33,11 +33,13 @@ export default function ShippingPrices() {
   /**
    * State to modify multiple wilayas at once
    */
-  const [multipleSelected, setMultipleSelected] = useState<WilayaSelection>([]);
+  const [multipleSelected, setMultipleSelected] = useState<WilayasSelection>(
+    [],
+  );
   useEffect(() => {
     if (selectedWilayasList.length) {
       setMultipleSelected(
-        selectedWilayasList.filter((w) => w.selected === true)
+        selectedWilayasList.filter((w) => w.selected === true),
       );
     }
   }, [selectedWilayasList]);
@@ -57,17 +59,6 @@ export default function ShippingPrices() {
     setIsModalOpen(true);
   };
 
-  const initSelectedWilayaList = () => {
-    if (wilayaData?.length) {
-      setSelectedWilayasList(
-        wilayaData.map((w, index) => ({
-          ...w,
-          selected: false,
-          index,
-        }))
-      );
-    }
-  };
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,12 +87,24 @@ export default function ShippingPrices() {
     },
   });
 
-  useEffect(() => {
-    // if the wilayas are already present, just populate the selected state
-    if (wilayaData?.length) {
-      initSelectedWilayaList();
+  const initSelectedWilayaList = useCallback(() => {
+    if (wilayaData && wilayaData.length > 0) {
+      setSelectedWilayasList(
+        wilayaData.map((w, index) => ({
+          ...w,
+          selected: false,
+          index,
+        })),
+      );
     }
   }, [wilayaData]);
+
+  useEffect(() => {
+    // if the wilayas are already present, just populate the selected state
+    if (wilayaData && wilayaData.length > 0) {
+      initSelectedWilayaList();
+    }
+  }, [wilayaData, initSelectedWilayaList]);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedWilayasList(
@@ -109,7 +112,7 @@ export default function ShippingPrices() {
         ...w,
         selected: e.target.checked,
         index,
-      }))
+      })),
     );
   };
 
@@ -124,8 +127,8 @@ export default function ShippingPrices() {
       return (
         <DashboardEmptyState
           text="Aucune wilaya ne corresponds à votre recherche"
-          className="absolute top-0 left-0"
-          Icon={<LiaShippingFastSolid className="w-12 h-12" />}
+          className="absolute left-0 top-0"
+          Icon={<LiaShippingFastSolid className="h-12 w-12" />}
         />
       );
     } else
@@ -154,7 +157,7 @@ export default function ShippingPrices() {
         <div className="flex gap-2">
           <label
             htmlFor="wilaya-select-all-checkbox"
-            className="w-10 h-10 dark:bg-stone-950 dark:hover:bg-stone-900 rounded-md flex items-center justify-center"
+            className="flex h-10 w-10 items-center justify-center rounded-md dark:bg-stone-950 dark:hover:bg-stone-900"
             title="Tout sélectionner"
           >
             <input
@@ -187,13 +190,13 @@ export default function ShippingPrices() {
       {/* ----------------------------------------------------------- */}
 
       {/* new Body  */}
-      <div className="w-full h-full grow overflow-x-hidden">
-        <section className="relative w-full pr-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2 p-2">
+      <div className="h-full w-full grow overflow-x-hidden">
+        <section className="relative grid w-full grid-cols-1 gap-2 p-2 pr-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {isFetching &&
             Array.from({ length: 18 }, (_, i) => (
               <div
                 key={i}
-                className="w-full animate-pulse bg-stone-950 h-48 p-4 [&>div]:bg-stone-800 flex flex-col justify-between"
+                className="flex h-48 w-full animate-pulse flex-col justify-between bg-stone-950 p-4 [&>div]:bg-stone-800"
               >
                 <div className="h-5 rounded-md"></div>
                 <div className="h-4 w-1/2 rounded-md"></div>

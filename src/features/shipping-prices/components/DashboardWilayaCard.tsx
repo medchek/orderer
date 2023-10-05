@@ -5,7 +5,7 @@ import { MdEdit } from "react-icons/md";
 
 interface Props {
   wilaya: Wilaya;
-  isSelected: boolean;
+  isSelected?: boolean;
   handleSelectClick: () => void;
   handleEditClick: () => void;
 }
@@ -26,8 +26,8 @@ export default function DashboardWilayaCard({
   return (
     <div
       className={clsx(
-        "w-auto h-[13.5rem] rounded-lg bg-stone-950 px-4 py-3 flex flex-col text-stone-100 gap-2 max-h-[13.5rem]",
-        { "ring-2": isSelected }
+        "flex h-[13.5rem] max-h-[13.5rem] w-auto flex-col gap-2 rounded-lg bg-stone-950 px-4 py-3 text-stone-100",
+        { "ring-2": isSelected },
       )}
       key={code}
     >
@@ -36,7 +36,7 @@ export default function DashboardWilayaCard({
           type="checkbox"
           className="h-5 w-5"
           id={`wilaya-${code}-checkbox`}
-          checked={isSelected}
+          checked={!!isSelected}
           onChange={handleSelectClick}
         />
         <label htmlFor={`wilaya-${code}-checkbox`} className="w-full">
@@ -45,15 +45,15 @@ export default function DashboardWilayaCard({
       </div>
       <hr className="border-stone-900" />
       <section className="text-sm">
-        <p className="text-stone-600 mb-1">Livraison à domicile</p>
+        <p className="mb-1 text-stone-600">Livraison à domicile</p>
         <div className="flex items-center justify-between">
-          <p>{homePrice}DA</p>
+          <p>{homePrice > 0 ? `${homePrice}DA` : "Gratuite"}</p>
           <div
             className={clsx(
-              "px-2 rounded-md h-7 flex items-center justify-center",
+              "flex h-7 items-center justify-center rounded-md px-2",
               availableHome
                 ? "bg-zinc-900 text-blue-400"
-                : "bg-red-950/25 text-red-400"
+                : "bg-red-950/25 text-red-400",
             )}
           >
             {availableHome ? "Disponible" : "Non disponible"}
@@ -61,15 +61,16 @@ export default function DashboardWilayaCard({
         </div>
       </section>
       <section className="text-sm">
-        <p className="text-stone-600 mb-1">Livraison au bureau</p>
+        <p className="mb-1 text-stone-600">Livraison au bureau</p>
         <div className="flex items-center justify-between">
-          <p>{officePrice}DA</p>
+          <p>{officePrice > 0 ? `${officePrice}DA` : "Gratuite"}</p>
+
           <div
             className={clsx(
-              "px-2 rounded-md h-7 flex items-center justify-center",
+              "flex h-7 items-center justify-center rounded-md px-2",
               availableOffice
                 ? "bg-zinc-900 text-blue-400"
-                : "bg-red-950/25 text-red-400"
+                : "bg-red-950/25 text-red-400",
             )}
           >
             {availableOffice ? "Disponible" : "Non disponible"}
@@ -78,7 +79,7 @@ export default function DashboardWilayaCard({
       </section>
       <button
         type="button"
-        className="gap-1 dark:bg-stone-900 h-8 rounded-md dark:hover:bg-stone-800 dark:focus:bg-stone-900/50 text-sm"
+        className="h-8 gap-1 rounded-md text-sm dark:bg-stone-900 dark:hover:bg-stone-800 dark:focus:bg-stone-900/50"
         onClick={handleEditClick}
       >
         <MdEdit className="h-5 w-5" />

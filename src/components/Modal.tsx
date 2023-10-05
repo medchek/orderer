@@ -13,6 +13,8 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
   hideHeader?: boolean;
   preventClose?: boolean;
   transparent?: boolean;
+
+  overlayClassName?: string;
 }
 
 export default function Modal({
@@ -25,6 +27,7 @@ export default function Modal({
   preventClose,
   transparent,
   className,
+  overlayClassName,
   ...props
 }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -64,9 +67,11 @@ export default function Modal({
   return createPortal(
     <div
       id="dialog"
-      className={`absolute left-0 top-0 z-10 h-screen w-screen bg-gray-950 bg-opacity-50 px-10 py-10 dark:bg-stone-950 dark:bg-opacity-80 2xl:px-72 ${
-        centerModalContent && "flex items-center justify-center"
-      }`}
+      className={cn(
+        "absolute left-0 top-0 z-10 h-screen w-screen bg-gray-950 bg-opacity-50 px-10 py-10 dark:bg-stone-950 dark:bg-opacity-80 2xl:px-72",
+        centerModalContent ? "flex items-center justify-center" : "",
+        overlayClassName,
+      )}
     >
       <div
         className={cn(

@@ -1,3 +1,22 @@
 {
-    "plugins": ["prettier-plugin-tailwindcss"]
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindFunctions": ["clsx", "cn"],
+  "tailwindAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "overlayClassName",
+    "nextClassName",
+    "nextLinkClassName",
+    "pageClassName",
+    "pageLinkClassName",
+    "previousClassName",
+    "previousLinkClassName",
+    "activeClassName",
+    "activeLinkClassName",
+    "disabledLinkClassName",
+    "disabledClassName",
+    "breakClassName",
+    "breakLinkClassName"
+  ]
 }

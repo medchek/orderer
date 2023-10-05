@@ -2,7 +2,7 @@
 import { useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
-import { addPartitive, toNumber } from "@/lib/utils";
+import { addPartitive, toPositiveNumber } from "@/lib/utils";
 import { useStore } from "@/store";
 
 import SwitchButton from "@/components/SwitchButton";
@@ -18,14 +18,7 @@ import Modal from "@/components/Modal";
 import Input from "@/components/Input";
 import Loader from "@/components/Loader";
 import { useEffectOnce } from "usehooks-ts";
-
-export type WilayaSelection = {
-  code: number;
-  selected: boolean;
-  availableHome: boolean;
-  availableOffice: boolean;
-  index: number;
-}[];
+import { WilayasSelection } from "../types";
 
 export interface SelectedWilaya extends Wilaya {
   index: number;
@@ -40,7 +33,7 @@ interface Props {
   /**
    * A list of selected wilayas to be updated
    */
-  selectedMultiple: WilayaSelection;
+  selectedMultiple: WilayasSelection;
   // selectedWilayaIndex: number | null;
 }
 
@@ -157,60 +150,50 @@ Props) {
       wilayas: [],
     };
     if (selectedWilaya) {
-      const updatedValues = {
-        // add the property if it's not empty and the new value is not equal to the current one
-        ...(data.homePrice &&
-          toNumber(data.homePrice) !== selectedWilaya.homePrice && {
-            homePrice: toNumber(data.homePrice),
-          }),
-        ...(data.officePrice &&
-          toNumber(data.officePrice) !== selectedWilaya.officePrice && {
-            officePrice: toNumber(data.officePrice),
-          }),
-        ...(isAvailableHome !== selectedWilaya.availableHome && {
-          availableHome: isAvailableHome,
-        }),
-        ...(isAvailableOffice !== selectedWilaya.availableOffice && {
-          availableOffice: isAvailableOffice,
-        }),
-      };
+      if (toPositiveNumber(data.homePrice) != selectedWilaya.homePrice) {
+        requestBody.homePrice = toPositiveNumber(data.homePrice);
+      }
 
+      if (toPositiveNumber(data.officePrice) != selectedWilaya.officePrice) {
+        requestBody.officePrice = toPositiveNumber(data.officePrice);
+      }
+      if (isAvailableHome != selectedWilaya.availableHome) {
+        requestBody.availableHome = isAvailableHome;
+      }
+      if (isAvailableOffice != selectedWilaya.availableOffice) {
+        requestBody.availableOffice = isAvailableOffice;
+      }
       // if there is nothing to update show info snack
-      if (!Object.keys(updatedValues).length) {
+      if (Object.keys(requestBody).length === 1) {
         return showSnackbar("Aucune modification n'a été apportée", "default");
       }
 
       requestBody.wilayas = [selectedWilaya.code];
-      Object.assign(requestBody, updatedValues);
-      console.log("request body =>", requestBody);
+      // Object.assign(requestBody, updatedValues);
+      // console.log("request body =>", requestBody);
     } else {
       // Mutliple wilaya handling
       const { homePrice: rawHomePrice, officePrice: rawOfficePrice } = data;
       const homePrice = rawHomePrice.trim();
       const officePrice = rawOfficePrice.trim();
       // if all the available state isn't the same as when the component got created
-      const isAvailableHomeChanged = selectedMultiple.every(
+      const isAvailableHomeChanged = selectedMultiple.some(
         (w) => w.availableHome !== isAvailableHome,
       );
-      const isAvailableOfficeChanged = selectedMultiple.every(
+      const isAvailableOfficeChanged = selectedMultiple.some(
         (w) => w.availableOffice !== isAvailableOffice,
       );
-      if (
-        !homePrice &&
-        !officePrice &&
-        !isAvailableHomeChanged &&
-        isAvailableOfficeChanged
-      ) {
+      if (!isAvailableHomeChanged && !isAvailableOfficeChanged) {
         return showSnackbar("Aucune modification n'a été apportée", "default");
       }
       requestBody.wilayas = selectedMultiple.map(({ code }) => code);
-      if (homePrice.length) requestBody.homePrice = toNumber(homePrice);
-      if (officePrice.length) requestBody.officePrice = toNumber(officePrice);
+      if (homePrice) requestBody.homePrice = toPositiveNumber(homePrice);
+      if (officePrice) requestBody.officePrice = toPositiveNumber(officePrice);
       if (isAvailableHomeChanged) requestBody.availableHome = isAvailableHome;
       if (isAvailableOfficeChanged)
         requestBody.availableOffice = isAvailableOffice;
 
-      console.log("Multiple request body", requestBody);
+      // console.log("Multiple request body", requestBody);
     }
     patchWilaya(requestBody);
   };

@@ -7,40 +7,57 @@ import { TbBox, TbCategory2 } from "react-icons/tb";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { MdOutlineLocationOn } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
 
 type LinkType = {
   name: string;
   href: string;
-  icon: React.ReactNode;
+  Icon: React.ReactNode;
+  selfEnd?: boolean;
 };
 
 export default function DashboardNav() {
   const pathName = usePathname();
   const links: LinkType[] = [
-    { name: "Produits", href: "products", icon: <TbBox /> },
-    { name: "Categories", href: "categories", icon: <TbCategory2 /> },
-    { name: "Commandes", href: "orders", icon: <BsListNested /> },
+    { name: "Produits", href: "products", Icon: <TbBox /> },
+    { name: "Categories", href: "categories", Icon: <TbCategory2 /> },
+    { name: "Commandes", href: "orders", Icon: <BsListNested /> },
     {
       name: "Prix de livraisons",
       href: "shipping-prices",
-      icon: <LiaShippingFastSolid />,
+      Icon: <LiaShippingFastSolid />,
     },
-    { name: "Liste noire", href: "blacklist", icon: <BsPersonSlash /> },
+    {
+      name: "Points de livraisons",
+      href: "shipping-locations",
+      Icon: <MdOutlineLocationOn />,
+    },
+    { name: "Liste noire", href: "blacklist", Icon: <BsPersonSlash /> },
+    {
+      name: "Paramètres",
+      href: "settings",
+      Icon: <IoSettingsOutline />,
+      selfEnd: true,
+    },
   ];
 
-  const LinkList = links.map(({ href, name, icon }) => (
+  const LinkList = links.map(({ href, name, Icon, selfEnd }) => (
     // old dark link: dark:bg-[#22233f] dark:hover:bg-[#2f325f] dark:focus:bg-[#070714]
     <Link
       className={clsx(
-        "flex h-12 w-full items-center text-sm rounded-lg  pl-5  font-semibold dark:text-stone-200 transition-colors first-letter:capitalize [&>svg]:w-6 [&>svg]:h-6 gap-4",
+        "flex h-12 w-full items-center gap-4 rounded-lg  pl-5  text-sm font-semibold transition-colors first-letter:capitalize dark:text-stone-200 [&>svg]:h-6 [&>svg]:w-6",
         pathName === `/dashboard/${href}`
           ? "dark:bg-black/50"
-          : "dark:bg-stone-900 hover:bg-[#ff4545] bg-[#EC2A2A] focus:bg-[#da2020] dark:hover:bg-stone-800 focus:dark:bg-stone-900/50 "
+          : "bg-[#EC2A2A] hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-stone-900 dark:hover:bg-stone-800 focus:dark:bg-stone-900/50 ",
+        {
+          "self-end mt-auto mb-2": !!selfEnd,
+        },
       )}
       key={href}
       href={`/dashboard/${href}`}
     >
-      {icon} <span>{name}</span>
+      {Icon} <span>{name}</span>
     </Link>
   ));
   return (
@@ -52,7 +69,7 @@ export default function DashboardNav() {
       <section className="flex grow  flex-col">
         <div
           id="nav-logo"
-          className="relative flex w-10 h-10 flex-col items-center"
+          className="relative flex h-10 w-10 flex-col items-center"
         >
           <Image
             className="relative"

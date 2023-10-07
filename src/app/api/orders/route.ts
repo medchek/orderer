@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
 import {
   ORDER_CODE_LENGTH,
+  SHIPPING_LOCATION_ID_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CREATED,
   STATUS_OK,
@@ -23,11 +24,27 @@ import {
 } from "@/features/orders/api/postOrder";
 import { GetOrdersSuccessResponse } from "@/features/orders/api/getOrders";
 import { emailRegex, phoneRegex } from "@/lib/patterns";
+import { headers } from "next/headers";
+import { verifyCaptcha } from "@/features/recaptcha/api/verifyCaptcha";
 
 // TODO: Implement Rate limiting for all API routes
 
 export async function POST(req: NextRequest) {
   try {
+    // verify captcha
+    const headersList = headers();
+
+    const recaptchaToken = headersList.get("X-Recaptcha-Token");
+
+    const isValidRecaptchaToken = await verifyCaptcha(recaptchaToken);
+
+    if (!isValidRecaptchaToken.success) {
+      return apiErrorResponse(
+        "Authorization error: Invalid captcha token",
+        STATUS_UNAUTHORIZED,
+      );
+    }
+
     const body: PostOrderRequestPayload = await req.json();
 
     const schema = Joi.object<PostOrderRequestPayload>({
@@ -36,11 +53,19 @@ export async function POST(req: NextRequest) {
       address: Joi.string()
         .when("isHome", {
           is: true,
-          then: Joi.required(),
+          then: Joi.string().max(150).required(),
           otherwise: Joi.optional().empty(),
         })
         .min(10)
         .max(200),
+      locationId: Joi.string().when("isHome", {
+        is: false,
+        then: Joi.string()
+          .length(SHIPPING_LOCATION_ID_LENGTH)
+          .allow("")
+          .required(),
+        otherwise: Joi.optional().empty(),
+      }),
       lastName: Joi.string().min(3).max(40).optional(),
       name: Joi.string().min(3).max(40).optional(),
       email: Joi.string().regex(emailRegex).optional(),

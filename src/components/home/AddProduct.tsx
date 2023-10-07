@@ -1,38 +1,40 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { MdChevronRight } from "react-icons/md";
-import ProductCard from "../ProductCard";
 import { useStore } from "@/store";
-import Loader from "../Loader";
 import Modal from "../Modal";
-import { Product } from "@/store/productSlice";
+import { useGetProducts } from "@/features/products/api/getProducts";
+import ProductCard from "@/features/products/components/ProductCard";
+import { Product } from "@/features/products/types";
+import DashboardProductsFilter from "@/features/products/components/dashboard/DashboardProductsFilter";
+import DashboardFetchError from "../dashboard/DashboardFetchError";
+import ProductCardLoader from "../ProductCardLoader";
+import DashboardPagination from "../dashboard/DashboardPagination";
 
 interface Props {
   closeModal: () => void;
 }
 
 export default function AddProduct({ closeModal }: Props) {
-  const { products, fetchProducts, addSelectedProduct } = useStore();
+  const { addSelectedProduct, productsFilters, setProductsCurrentPage } = useStore();
 
-  const [isFetching, setIsFetching] = useState(false);
-
-  useEffect(() => {
-    if (products.length === 0) {
-      setIsFetching(true);
-      fetchProducts()
-        .catch((err) => console.log(err))
-        .finally(() => {
-          setIsFetching(false);
-        });
-    }
-  }, []);
+  const { data, isFetching, isSuccess, isError, refetch } =
+    useGetProducts(productsFilters);
 
   const handleAddProduct = (product: Product) => {
     addSelectedProduct(product);
     closeModal();
   };
 
-  const productList = products.map((product) => {
+  const productsPerPage = 10;
+  const pageCount = Math.ceil((data?.count ?? 0) / productsPerPage);
+
+  const handlePageChange = (event: { selected: number }) => {
+    const selected = event.selected;
+    const currentPage = productsFilters.currentPage;
+    if (selected === currentPage) return;
+    setProductsCurrentPage(selected);
+  };
+
+  const productList = data?.products.map((product) => {
     const { code, description, name, price, discount, images, stock } = product;
     return (
       <ProductCard
@@ -43,10 +45,12 @@ export default function AddProduct({ closeModal }: Props) {
         discount={discount}
         images={images}
         stock={stock}
+        isDashboard={false}
+        code={code}
       >
         <button
           className="flex h-8 w-full items-center justify-center rounded-md bg-[#E9E9E9] font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary 
-          focus:text-white dark:bg-[#292934] dark:text-white dark:hover:bg-[#3a3a49] dark:focus:bg-[#0e0e15]"
+          focus:text-white dark:bg-stone-800 dark:text-stone-50 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
           onClick={() => handleAddProduct(product)}
         >
           Ajouter
@@ -56,57 +60,31 @@ export default function AddProduct({ closeModal }: Props) {
   });
   return (
     <Modal
-      className="flex h-full flex-col rounded-lg bg-[#F3F3F3]  px-10 py-5 shadow-md dark:bg-[#040404]"
+      className="flex h-full flex-col rounded-lg bg-[#F3F3F3] pb-0 pt-4 shadow-md dark:bg-[#040404]"
       closeModal={closeModal}
       label="Ajouter un Produit"
       closeOnClickOutside
+      overlayClassName="py-3"
     >
-      {/* <div id="dialog-header" className="flex grow-0 justify-between">
-        <h1 className="text-xl font-semibold dark:text-white">
-          Ajouter un Produit
-        </h1>
-        <button
-          onClick={closeModal}
-          className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] dark:focus:bg-white/10"
-        >
-          <MdClear className="h-6 w-6 dark:text-gray-500" />
-        </button>
-      </div> */}
-
       <div
         id="select-category-container"
-        className="relative my-5 flex h-12 max-h-12 min-h-[3rem] grow items-center"
+        className="relative my-5 flex h-12 max-h-12 min-h-[3rem] grow items-center justify-end"
       >
-        <select
-          name="category"
-          id="category-selector"
-          className="h-full w-full appearance-none rounded-lg pl-4 pr-4 outline-none ring-secondary focus:ring-2 dark:bg-[#17181D] dark:text-[#979797]"
-          defaultValue={"prompt"}
-        >
-          <option value="prompt" hidden disabled>
-            Selectionner une categorie
-          </option>
-          {/* temp */}
-
-          <option value="1">Tout Afficher</option>
-          <option value="2">Montres</option>
-          <option value="3">Cameras</option>
-        </select>
-        <MdChevronRight className="pointer-events-none absolute right-4 h-7 w-7 rotate-90 text-stone-800 dark:text-[#979797]" />
+        <DashboardProductsFilter disabled={isFetching || isError} />
       </div>
-
-      {isFetching ? (
-        <div className="flex h-full w-full items-center justify-center">
-          <Loader className="h-8 w-8 border-4 border-stone-400" />
-        </div>
-      ) : (
-        <section
+      <section className="h-full grow flex-col overflow-y-auto">
+        <div
           id="product-search-result"
-          className="grid grow grid-cols-4 justify-end gap-8 overflow-y-auto dark:[color-scheme:dark]"
+          className="relative grid grow grid-cols-4 2xl:grid-cols-5 justify-end gap-2 dark:[color-scheme:dark]"
         >
-          {productList}
-        </section>
-      )}
+          {isError && !isFetching && <DashboardFetchError refetch={refetch} />}
+          {isFetching &&
+            Array.from({ length: 5 }, (_, i) => <ProductCardLoader key={i} />)}
+
+          {isSuccess && !isFetching && productList}
+        </div>
+      </section>
+      <DashboardPagination pageCount={pageCount} className="m-0 p-0" onPageChange={handlePageChange} />
     </Modal>
   );
 }

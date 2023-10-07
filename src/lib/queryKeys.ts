@@ -1,5 +1,6 @@
 import { GetOrdersQueryFilter } from "@/features/orders/api/getOrders";
 import { ProductsFilters as GetProductsQueryFilter } from "@/features/products/types";
+import { ShippingLocationsQueryFilter } from "@/features/shipping-locations/api/getLocations";
 import { createQueryKeyStore } from "@lukemorales/query-key-factory";
 
 export const queryKeys = createQueryKeyStore({
@@ -26,6 +27,14 @@ export const queryKeys = createQueryKeyStore({
     }),
     one: (code: string) => ({
       queryKey: [code],
+    }),
+  },
+  locations: {
+    all: (filters: ShippingLocationsQueryFilter) => ({
+      queryKey: [{ filters }],
+    }),
+    wilayaSpecific: (wilayaCode: number) => ({
+      queryKey: [{ wilayaCode }],
     }),
   },
   images: {

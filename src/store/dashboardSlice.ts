@@ -1,4 +1,5 @@
 import { GetOrdersQueryFilter } from "@/features/orders/api/getOrders";
+import { ShippingLocationsQueryFilter } from "@/features/shipping-locations/api/getLocations";
 import { StateCreator } from "zustand";
 
 export type CategoryType = "category" | "subcategory";
@@ -55,6 +56,17 @@ export interface DashboardSlice {
   // copy to clipboard
   clipboard: string;
   setClipboard: (v: string) => void;
+
+  // shipping locations
+  isShippingLocationModalOpen: boolean;
+  setIsShippingLocationModalOpen: (v: boolean) => void;
+
+  shippingLocationsQueryFilters: ShippingLocationsQueryFilter;
+  setShippingLocationsQueryFilters: (
+    filter: ShippingLocationsQueryFilter,
+  ) => void;
+
+  setShippingLocationsCurrentPage: (page: number) => void;
 }
 
 export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
@@ -118,5 +130,26 @@ export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
   clipboard: "",
   setClipboard: (v) => {
     set(() => ({ clipboard: v }));
+  },
+
+  isShippingLocationModalOpen: false,
+  setIsShippingLocationModalOpen: (v) => {
+    set(() => ({ isShippingLocationModalOpen: v }));
+  },
+  shippingLocationsQueryFilters: {
+    currentPage: 0,
+  },
+  setShippingLocationsQueryFilters: (filters) => {
+    set(() => ({ shippingLocationsQueryFilters: filters }));
+  },
+  setShippingLocationsCurrentPage: (page) => {
+    set((state) => {
+      return {
+        shippingLocationsQueryFilters: {
+          ...state.shippingLocationsQueryFilters,
+          currentPage: page,
+        },
+      };
+    });
   },
 });

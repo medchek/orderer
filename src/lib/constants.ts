@@ -2,6 +2,8 @@ export const PRODUCT_CODE_LENGTH = 20;
 export const ORDER_CODE_LENGTH = 14;
 export const CATEGORY_CODE_LENGTH = 23;
 
+export const SHIPPING_LOCATION_ID_LENGTH = 25;
+
 export const MAX_UPLOAD_FILE_SIZE = 8388608;
 
 export const STATUS_CREATED = 201;

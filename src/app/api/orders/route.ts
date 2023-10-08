@@ -99,6 +99,7 @@ export async function POST(req: NextRequest) {
       name,
       email,
       townCode,
+      locationId,
     } = data;
 
     // check if the products exist
@@ -157,6 +158,11 @@ export async function POST(req: NextRequest) {
             },
           }),
         },
+        location: {
+          connect: {
+            id: locationId && locationId.length > 0 ? locationId : undefined,
+          },
+        },
         orderProducts: {
           createMany: {
             // allow duplicates if the user wants to order the same product twice or more
@@ -164,11 +170,11 @@ export async function POST(req: NextRequest) {
           },
         },
       },
-      include: {
-        user: true,
-        wilaya: true,
-        orderProducts: true,
-      },
+      // include: {
+      //   user: true,
+      //   wilaya: true,
+      //   orderProducts: true,
+      // },
     });
 
     return NextResponse.json<PostOrderSuccessResponse>(

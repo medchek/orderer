@@ -43,9 +43,8 @@ export const randomNumber = (max: number, min: number) => {
 export const uniqueId = (len = 20, uppercaseOnly = false): string => {
   const initAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  const alphabet = initAlphabet.concat(
-    !uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : "",
-  );
+  const alphabet =
+    initAlphabet + (!uppercaseOnly ? "abcdefghijklmnopqrstuvwxyz" : "");
 
   const id = customAlphabet(alphabet, len);
 
@@ -98,8 +97,12 @@ export const toNumberOrNull = (n: string): number | null => {
  * @param imageId the image id
  * @returns full image url
  */
-export const getImageDirectUrl = (imageId: string) =>
-  `https://lh5.googleusercontent.com/d/${imageId}`;
+// export const getImageDirectUrl = (imageId: string) =>
+//   `https://lh5.googleusercontent.com/d/${imageId}`;
+
+export const getImageDirectUrl = (imageId: string): string => {
+  return `//wsrv.nl/?url=https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${imageId}`;
+};
 
 /**
  * converts an empty string to null value otherwise returns the string
@@ -176,6 +179,23 @@ export function cn(...inputs: ClassValue[]) {
  */
 export const capitalizeFirst = (str: string) => {
   return str.trim()[0].toUpperCase() + str.slice(1);
+};
+
+/**
+ * Converts an object containing query filters to url params
+ * @param o Object containing the filters
+ * @returns The url params string as keys being the params names and the value being the params values
+ */
+export const convertObjectToQueryParams = (o: { [key: string]: unknown }) => {
+  const filterParams = Object.entries(o)
+    // filter out any value that is empty
+    .filter(([_, value]) => !!value)
+    // join key value pairs by = which results in an array of string url params
+    .map((rule) => rule.join("="))
+    // join all params by &
+    .join("&");
+
+  return filterParams;
 };
 
 /**

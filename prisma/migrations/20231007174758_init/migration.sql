@@ -88,6 +88,7 @@ CREATE TABLE "orders" (
     "wilaya_id" INTEGER NOT NULL,
     "town_id" INTEGER NOT NULL,
     "address" VARCHAR(255),
+    "locationId" VARCHAR(25),
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -266,6 +267,9 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_id_fkey" FOREIGN KEY ("wilaya
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_town_id_fkey" FOREIGN KEY ("town_id") REFERENCES "towns"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Locations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_productCode_fkey" FOREIGN KEY ("productCode") REFERENCES "products"("code") ON DELETE CASCADE ON UPDATE CASCADE;

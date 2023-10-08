@@ -111,15 +111,24 @@ export default function OrderForm() {
       setIsConfirming(true);
     } else {
       // if the user confirms the data
-      const { address, email, isHome, lastName, name, phone, wilaya, town } =
-        data;
+      const {
+        address,
+        email,
+        isHome,
+        lastName,
+        name,
+        phone,
+        wilaya,
+        town,
+        locationId,
+      } = data;
 
       if (!selectedProducts.length) {
         return showSnackbar("Aucune produit n'a été sélectioné", "error");
       }
 
       const recaptchaToken = await recaptchaRef.current?.executeAsync();
-
+      
       if (!recaptchaToken) return;
 
       const requestData: PostOrderFormData = {
@@ -134,6 +143,7 @@ export default function OrderForm() {
           ...(name && { name }),
           ...(lastName && { lastName }),
           ...(isHome && { address }),
+          ...(locationId && { locationId }),
         },
       };
 

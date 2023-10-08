@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import TypeSelectorButton from "./TypeSelectorButton";
 import Input from "../../Input";
 import { orderFormValidators } from "@/lib/formValidators";
@@ -9,6 +9,7 @@ import { useStore } from "@/store";
 import { SHIPPING_TYPE } from "@/store/orderFormSlice";
 import { addPartitive } from "@/lib/utils";
 import { OrderFormValues } from "./OrderForm";
+import ShippingLocationsSelect from "@/features/shipping-locations/components/ShippingLocationsSelect";
 
 export default function ShippingTypeSelector() {
   const { shippingType, setShippingType, selectedWilaya, confirmData } =
@@ -33,14 +34,14 @@ export default function ShippingTypeSelector() {
         "address",
         `Bureau de livraison de la wilaya ${
           !selectedWilaya ? "sélectionnée" : addPartitive(selectedWilaya.name)
-        }`
+        }`,
       );
     } else {
       setValue("address", confirmData?.address ?? "");
     }
-  }, [shippingType, selectedWilaya]);
+  }, [shippingType, selectedWilaya, confirmData]);
 
-  const handleSelectShippingTye = (type: SHIPPING_TYPE) => {
+  const handleSelectShippingType = (type: SHIPPING_TYPE) => {
     if (type === shippingType) return;
     // unregister the address field from the form if the isHome != true
     if (type === SHIPPING_TYPE.OFFICE) {
@@ -55,52 +56,47 @@ export default function ShippingTypeSelector() {
   return (
     <div className="flex w-full gap-4 2xl:gap-7">
       <div className="flex w-1/2 flex-col gap-1">
-        <p className="2xl:text-lg font-semibold dark:text-white">
+        <p className="font-semibold dark:text-white 2xl:text-lg">
           Type de Livraison
         </p>
         <div className="flex h-12 gap-2 2xl:gap-4">
           <TypeSelectorButton
             text="À Domicile"
             isSelected={shippingType === SHIPPING_TYPE.HOME}
-            onClick={() => handleSelectShippingTye(SHIPPING_TYPE.HOME)}
+            onClick={() => handleSelectShippingType(SHIPPING_TYPE.HOME)}
           />
           <TypeSelectorButton
             text="Au Bureau de Livraison"
             isSelected={shippingType === SHIPPING_TYPE.OFFICE}
-            onClick={() => handleSelectShippingTye(SHIPPING_TYPE.OFFICE)}
+            onClick={() => handleSelectShippingType(SHIPPING_TYPE.OFFICE)}
           />
         </div>
       </div>
       <div className="w-1/2">
-        <Input
-          register={register}
-          registerRules={{
-            required:
-              shippingType === SHIPPING_TYPE.HOME
-                ? "Ce champ est obligatoire"
-                : false,
-            validate: orderFormValidators.address,
-          }}
-          name="address"
-          error={errors.address?.message}
-          label="Adresse de Livraison"
-          placeholder="Votre adresse"
-          type="text"
-          id="address"
-          maxLength={200}
-          minLength={10}
-          defaultValue={
-            shippingType === SHIPPING_TYPE.OFFICE
-              ? `Bureau de livraison de la wilaya ${
-                  !selectedWilaya
-                    ? "sélectionnée"
-                    : addPartitive(selectedWilaya.name)
-                }`
-              : confirmData?.address
-          }
-          disabled={shippingType === SHIPPING_TYPE.OFFICE}
-          autoComplete={shippingType === SHIPPING_TYPE.OFFICE ? "off" : "on"}
-        />
+        {shippingType === SHIPPING_TYPE.HOME ? (
+          <Input<OrderFormValues>
+            register={register}
+            registerRules={{
+              required:
+                shippingType === SHIPPING_TYPE.HOME
+                  ? "Ce champ est obligatoire"
+                  : false,
+              validate: orderFormValidators.address,
+            }}
+            name="address"
+            error={errors.address?.message}
+            label="Adresse de Livraison"
+            placeholder="Votre adresse"
+            type="text"
+            id="address"
+            maxLength={200}
+            minLength={10}
+            defaultValue={confirmData?.address}
+            autoComplete="on"
+          />
+        ) : (
+          <ShippingLocationsSelect />
+        )}
       </div>
     </div>
   );

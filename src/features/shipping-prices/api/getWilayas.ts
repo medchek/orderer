@@ -20,7 +20,6 @@ export const useGetWilayas = (opt?: UseGetWilayasOptions) => {
   return useQuery({
     queryKey: queryKeys.wilayas.all.queryKey,
     queryFn: getWilayas,
-    cacheTime: 1000 * 60 * 10,
     ...opt,
   });
 };

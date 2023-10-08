@@ -8,26 +8,37 @@ export interface PostOrderRequestPayload {
   lastName?: string;
   email?: string;
   address?: string;
+  locationId?: string;
   isHome: boolean;
   wilayaId: number;
   townCode: number;
   productsCode: string[];
 }
+
+export type PostOrderFormData = {
+  /** recaptcha token */
+  token: string;
+  data: PostOrderRequestPayload;
+};
+
 export interface PostOrderSuccessResponse {
   orderCode: string;
 }
 
 /**
  * post request to save an order
- * @param order
+ * @param order object containing the recaptcha token the the order data
  * @returns returns the order id
  */
 export const postOrder = async (
-  order: PostOrderRequestPayload,
+  order: PostOrderFormData,
 ): Promise<PostOrderSuccessResponse> => {
   const orderId: PostOrderSuccessResponse = await ky
     .post(`/api/orders`, {
-      json: order,
+      json: order.data,
+      headers: {
+        "X-Recaptcha-Token": order.token,
+      },
     })
     .json();
   return orderId;
@@ -35,10 +46,14 @@ export const postOrder = async (
 
 type UsePostOrderOptions = MutationOptions<
   PostOrderSuccessResponse,
-  PostOrderRequestPayload
+  PostOrderFormData
 >;
 
-
+/**
+ * Mutation to post a new order
+ * @param token Recaptcha token
+ * @param opts mutation options
+ */
 export const usePostOrder = (opts?: UsePostOrderOptions) => {
   return useMutation({
     mutationFn: postOrder,

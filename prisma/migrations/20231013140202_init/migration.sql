@@ -85,8 +85,8 @@ CREATE TABLE "orders" (
     "status" "Status" NOT NULL DEFAULT 'UNCONFIRMED',
     "is_home" BOOLEAN NOT NULL DEFAULT true,
     "user_id" TEXT NOT NULL,
-    "wilaya_id" INTEGER NOT NULL,
-    "town_id" INTEGER NOT NULL,
+    "wilaya_code" INTEGER NOT NULL,
+    "town_code" INTEGER NOT NULL,
     "address" VARCHAR(255),
     "locationId" VARCHAR(25),
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -126,8 +126,8 @@ CREATE TABLE "users" (
     "phone" VARCHAR(15),
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
-    "wilaya_id" INTEGER,
-    "town_id" INTEGER,
+    "wilaya_code" INTEGER,
+    "town_code" INTEGER,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -263,10 +263,10 @@ ALTER TABLE "towns" ADD CONSTRAINT "towns_wilaya_code_fkey" FOREIGN KEY ("wilaya
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_id_fkey" FOREIGN KEY ("wilaya_id") REFERENCES "wilayas"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_town_id_fkey" FOREIGN KEY ("town_id") REFERENCES "towns"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_town_code_fkey" FOREIGN KEY ("town_code") REFERENCES "towns"("code") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Locations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -284,10 +284,10 @@ ALTER TABLE "Locations" ADD CONSTRAINT "Locations_town_code_fkey" FOREIGN KEY ("
 ALTER TABLE "Locations" ADD CONSTRAINT "Locations_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "users" ADD CONSTRAINT "users_wilaya_id_fkey" FOREIGN KEY ("wilaya_id") REFERENCES "wilayas"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "users" ADD CONSTRAINT "users_town_id_fkey" FOREIGN KEY ("town_id") REFERENCES "towns"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_town_code_fkey" FOREIGN KEY ("town_code") REFERENCES "towns"("code") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "blacklist" ADD CONSTRAINT "blacklist_userPhone_fkey" FOREIGN KEY ("userPhone") REFERENCES "users"("phone") ON DELETE CASCADE ON UPDATE CASCADE;

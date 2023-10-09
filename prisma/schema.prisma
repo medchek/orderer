@@ -30,7 +30,7 @@ model Product {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz()
 
-  OrderProducts OrdersProducts[]
+  orderProducts OrdersProducts[]
 
   @@map("products")
 }
@@ -129,11 +129,11 @@ model Order {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @map("user_id")
 
-  wilaya   Wilaya @relation(fields: [wilayaId], references: [id], onDelete: Cascade)
-  wilayaId Int    @map("wilaya_id")
+  wilaya     Wilaya @relation(fields: [wilayaCode], references: [code], onDelete: Cascade)
+  wilayaCode Int    @map("wilaya_code")
 
-  town   Town @relation(references: [id], fields: [townId], onDelete: Cascade)
-  townId Int  @map("town_id")
+  town     Town @relation(references: [code], fields: [townCode], onDelete: Cascade)
+  townCode Int  @map("town_code")
 
   address String? @db.VarChar(255)
 
@@ -174,8 +174,8 @@ model Locations {
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-  
-  Order     Order[]
+
+  Order Order[]
 }
 
 model User {
@@ -191,11 +191,11 @@ model User {
   emailVerified DateTime?
   image         String?
 
-  wilaya   Wilaya? @relation(references: [id], fields: [wilayaId], onDelete: SetNull)
-  wilayaId Int?    @map("wilaya_id")
+  wilaya     Wilaya? @relation(references: [code], fields: [wilayaCode], onDelete: SetNull)
+  wilayaCode Int?    @map("wilaya_code")
 
-  town   Town? @relation(references: [id], fields: [townId], onDelete: SetNull)
-  townId Int?  @map("town_id")
+  town     Town? @relation(references: [code], fields: [townCode], onDelete: SetNull)
+  townCode Int?  @map("town_code")
 
   orders    Order[]
   blacklist Blacklist?

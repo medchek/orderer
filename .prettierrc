@@ -6,6 +6,7 @@
     "className",
     "ngClass",
     "overlayClassName",
+    "loaderClassName",
     "nextClassName",
     "nextLinkClassName",
     "pageClassName",

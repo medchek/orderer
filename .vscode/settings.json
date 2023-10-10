@@ -4,6 +4,8 @@
     "className",
     "ngClass",
     "overlayClassName",
+    "loaderClassName",
+    "contentClassName",
     // react-paginate related
     "nextClassName",
     "nextLinkClassName",

@@ -28,10 +28,17 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+
   callbacks: {
     // TODO: REQUIRE THE PHONE IN THIS STEP
     // signIn({ profile, account, user }) {
     // },
+    session: async ({ session, user }) => {
+      if (session.user) {
+        session.user.id = user.id;
+      }
+      return session;
+    },
   },
 
   pages: {
@@ -41,10 +48,8 @@ export const authOptions: AuthOptions = {
   // debug: true,
 };
 
-
 /**
  * Return whether the session belongs to the admin
- * @param session
  * @returns
  */
 export const isAdmin = async () => {
@@ -53,6 +58,16 @@ export const isAdmin = async () => {
     session && session.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
 
   return isAdmin;
+};
+
+/**
+ * Get the session object. Only works server-side
+ * @returns session object, or null if the user is not logged
+ */
+export const getSession = async () => {
+  const session = await getServerSession(authOptions);
+
+  return session;
 };
 
 const handler = NextAuth(authOptions);

@@ -157,7 +157,7 @@ export default function ShippingPrices() {
         <div className="flex gap-2">
           <label
             htmlFor="wilaya-select-all-checkbox"
-            className="flex h-10 w-10 items-center justify-center rounded-md dark:bg-stone-950 dark:hover:bg-stone-900"
+            className="flex h-10 w-10 items-center justify-center rounded-md dark:bg-neutral-950 dark:hover:bg-neutral-900"
             title="Tout sélectionner"
           >
             <input
@@ -170,7 +170,7 @@ export default function ShippingPrices() {
           </label>
           <button
             type="button"
-            className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-stone-800 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 dark:disabled:bg-stone-900 dark:disabled:text-stone-600"
+            className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 dark:disabled:bg-neutral-900 dark:disabled:text-neutral-600"
             onClick={() => {
               // reset the selected wilaya to tell the update component that multiple wilayas should be modified
               setSelectedSingleWilaya(null);
@@ -196,7 +196,7 @@ export default function ShippingPrices() {
             Array.from({ length: 18 }, (_, i) => (
               <div
                 key={i}
-                className="flex h-48 w-full animate-pulse flex-col justify-between bg-stone-950 p-4 [&>div]:bg-stone-800"
+                className="flex h-48 w-full animate-pulse flex-col justify-between bg-neutral-950 p-4 [&>div]:bg-neutral-800"
               >
                 <div className="h-5 rounded-md"></div>
                 <div className="h-4 w-1/2 rounded-md"></div>

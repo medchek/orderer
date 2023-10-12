@@ -74,7 +74,7 @@ export default function Blacklist() {
             subContent={
               <button
                 type="button"
-                className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
+                className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-neutral-900 dark:focus:bg-neutral-900/70"
                 onClick={openAddNumberToBlock}
               >
                 <MdAdd className="h-7 w-7" /> Ajouter un numéro
@@ -132,7 +132,7 @@ export default function Blacklist() {
         />
       </div>
 
-      <section className="relative w-full grow overflow-y-auto text-stone-50">
+      <section className="relative w-full grow overflow-y-auto text-neutral-50">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {isError && (
             <DashboardFetchError
@@ -145,14 +145,14 @@ export default function Blacklist() {
             Array.from({ length: 20 }).map((_, i) => (
               <div
                 key={i}
-                className="flex h-28 animate-pulse grid-flow-row-dense justify-between rounded-lg bg-stone-950 p-4"
+                className="flex h-28 animate-pulse grid-flow-row-dense justify-between rounded-lg bg-neutral-950 p-4"
               >
-                <div className="flex w-10/12 flex-col gap-2 [&>div]:rounded-md [&>div]:bg-stone-800">
+                <div className="flex w-10/12 flex-col gap-2 [&>div]:rounded-md [&>div]:bg-neutral-800">
                   <div className="h-6 w-full"></div>
                   <div className="h-5 w-1/4"></div>
                   <div className="h-5 w-3/5"></div>
                 </div>
-                <div className="h-8 w-8 rounded-md bg-stone-800"></div>
+                <div className="h-8 w-8 rounded-md bg-neutral-800"></div>
               </div>
             ))}
 

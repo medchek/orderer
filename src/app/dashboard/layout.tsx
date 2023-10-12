@@ -2,7 +2,6 @@
 import DashboardNav from "@/components/dashboard/DashboardNav";
 import React from "react";
 import AuthProvider from "@/components/AuthProvider";
-import DashboardContent from "@/components/dashboard/DashboardContent";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
@@ -16,12 +15,10 @@ export default async function DashboardLayout({ children }: Props) {
   const isAdmin = session?.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
 
   return isAdmin ? (
-    <main id="dashboard" className="flex h-screen w-screen overflow-x-hidden">
+    <main id="dashboard" className="flex h-screen w-screen overflow-hidden">
       <DashboardNav />
-      <DashboardContent>
-        {/* TOOLS */}
-        <AuthProvider>{children}</AuthProvider>
-      </DashboardContent>
+
+      <AuthProvider>{children}</AuthProvider>
     </main>
   ) : (
     redirect("/")

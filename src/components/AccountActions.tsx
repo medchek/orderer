@@ -1,6 +1,10 @@
 "use client";
 import { useSession, signOut } from "next-auth/react";
-import { IoLogOutOutline } from "react-icons/io5";
+import {
+  IoGridOutline,
+  IoLogOutOutline,
+  IoSettingsOutline,
+} from "react-icons/io5";
 import Loader from "./Loader";
 import Image from "next/image";
 import { DropdownMenu } from "./ui/Dropdown";
@@ -12,13 +16,16 @@ import {
 import { BiUser } from "react-icons/bi";
 import Link from "next/link";
 
-export default function AccountActions() {
+interface Props {
+  isAdmin?: boolean;
+}
+export default function AccountActions({ isAdmin }: Props) {
   const { data, status } = useSession();
 
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
-        className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full dark:bg-neutral-900 dark:hover:bg-neutral-800"
+        className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800"
         disabled={status !== "authenticated"}
       >
         <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
@@ -38,7 +45,10 @@ export default function AccountActions() {
             />
           )}
           {status === "unauthenticated" && (
-            <Link href="/login" className="w-full h-full flex items-center justify-center">
+            <Link
+              href="/login"
+              className="flex h-full w-full items-center justify-center"
+            >
               <BiUser className="h-6 w-6 text-stone-400" />
             </Link>
           )}
@@ -48,10 +58,33 @@ export default function AccountActions() {
         avoidCollisions
         sideOffset={4}
         align="end"
-        className="z-10 flex flex-col gap-1 rounded-md border border-neutral-800 bg-neutral-900 p-1 text-sm text-stone-400 outline-none"
+        className="z-10 flex flex-col gap-1 rounded-md border border-neutral-200 bg-neutral-100 p-1 text-sm text-neutral-800 shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
       >
+        {isAdmin && (
+          <DropdownMenuItem
+            className="flex h-8 rounded-md px-2 hover:bg-neutral-200 hover:outline-none hover:dark:bg-neutral-800"
+            title="Gérer l'application"
+          >
+            <Link
+              href="../dashboard/"
+              className="flex h-full w-full items-center gap-1"
+            >
+              <IoGridOutline className="h-5 w-5" /> <span>Administration</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+
+        <DropdownMenuItem className="flex h-8 rounded-md px-2 hover:bg-neutral-200 hover:outline-none hover:dark:bg-neutral-800">
+          <Link
+            href="../settings/account"
+            className="flex h-full w-full items-center gap-1"
+          >
+            <IoSettingsOutline className="h-6 w-6" /> <span>Paramètres</span>
+          </Link>
+        </DropdownMenuItem>
+
         <DropdownMenuItem
-          className="flex h-8 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-800 hover:outline-none"
+          className="flex h-8 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-none hover:dark:bg-neutral-800"
           onClick={() => signOut()}
         >
           <IoLogOutOutline className="h-6 w-6" /> <span>Se déconncter</span>

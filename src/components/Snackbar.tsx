@@ -18,11 +18,12 @@ export default function Snackbar() {
     <div
       id="snack"
       className={clsx(
-        "absolute bottom-6 left-0 right-0 z-50 mx-auto flex h-14 w-96 items-center justify-between rounded-xl px-4 py-2 text-sm gap-2  shadow-lg",
+        "absolute bottom-6 left-0 right-0 z-50 mx-auto flex min-h-[3.5rem] w-96 items-center justify-between gap-2 rounded-xl px-4 py-2 text-sm  shadow-lg ",
         {
           "text-red-50 dark:bg-red-700": snackType === "error",
-          "bg-stone-900 dark:text-stone-100": snackType !== "error",
-        }
+          "bg-neutral-200 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-100":
+            snackType !== "error",
+        },
       )}
     >
       <p>{snackText}</p>
@@ -35,13 +36,13 @@ export default function Snackbar() {
               snackType === "error",
             "dark:hover:bg-stone-800 dark:focus:bg-stone-950":
               snackType !== "error",
-          }
+          },
         )}
         onClick={hideSnackbar}
       >
         <MdClear className="h-6 w-6" />
       </button>
     </div>,
-    document.body
+    document.body,
   );
 }

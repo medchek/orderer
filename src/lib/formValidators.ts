@@ -41,37 +41,44 @@ export const orderFormValidators: OrderFormValidator = {
     }
   },
   phone: (val) => {
-    const value = val.trim();
+    if (!val) return;
 
-    if (!phoneRegex.test(value))
+    const value = val.trim();
+    if (!phoneRegex.test(value)) {
       return "Le numéro de téléphone n'est pas valide";
+    }
   },
   email: (val) => {
     const value = val.trim();
     if (!value) return;
-    const isValidEmail = emailRegex.test(value)
+    const isValidEmail = emailRegex.test(value);
     if (!isValidEmail) {
       return "Veuillez entrer un email valide";
     }
-
   },
   address: (val) => {
+    if (!val) return;
+
     const value = val.trim();
 
     if (value.length <= 10 || value.length > 200)
       return "L'adresse doit être au minimum 10 caractères";
   },
   wilaya: (val) => {
+    if (!val) return;
+
     const value = val.trim();
 
-    if (value == "0") {
+    if (value == "0" || value == "") {
       return "Aucune wilaya n'a été selectionnée";
     }
   },
   town: (val) => {
+    if (!val) return;
+
     const value = val.trim();
 
-    if (value == "0") {
+    if (value == "0" || value == "") {
       return "Aucune commune n'a été selectionnée";
     }
   },

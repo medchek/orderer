@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SelectInput from "../../../components/home/order-form/SelectInput";
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import { Path, UseFormRegister } from "react-hook-form";
 
 import { useGetCategories } from "../api/getCategories";
 import { capitalizeFirst } from "@/lib/utils";
@@ -13,7 +13,8 @@ type CategorySelectElementProps = Omit<
   React.SelectHTMLAttributes<HTMLSelectElement>,
   "onChange"
 >;
-interface Props<T extends FieldValues> extends CategorySelectElementProps {
+interface Props<T extends { category: string }>
+  extends CategorySelectElementProps {
   /** Disable the label on top of the input */
   noLabel?: boolean;
   register?: UseFormRegister<T>;
@@ -28,7 +29,7 @@ interface Props<T extends FieldValues> extends CategorySelectElementProps {
   onChange?: (data: ProductCategoryPayload | null) => void;
 }
 
-export default function CategorySelect<T extends FieldValues>({
+export default function CategorySelect<T extends { category: string }>({
   error,
   noLabel,
   disablePrompt,
@@ -56,11 +57,11 @@ export default function CategorySelect<T extends FieldValues>({
 
   return (
     <SelectInput
+      {...props}
       label={!noLabel ? "Catégorie" : undefined}
       removeErrorSpace={noLabel}
-      name="category"
+      name={"category" as Path<T>}
       id="category-select"
-      {...props}
       // if the onChange is not provided, allow select to
       // react react-hook-form events
       // otherwise, the regular onChange is invoked

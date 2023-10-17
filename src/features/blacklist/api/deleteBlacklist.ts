@@ -13,7 +13,6 @@ export const deleteBlacklist = async (id: number): Promise<void> => {
 
 type UseDleteBlacklistNumberOptions = MutationOptions<
   void, // return type
-  unknown, // error type
   number // request data type
 >;
 /**

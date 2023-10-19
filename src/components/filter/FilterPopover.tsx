@@ -28,9 +28,12 @@ export default function FilterPopover({
         title="Filtrer par"
         disabled={disabled}
         className={clsx(
-          "flex h-10 items-center justify-center gap-1 rounded-lg px-6  shadow-md outline-none transition-colors disabled:cursor-not-allowed dark:bg-neutral-900 dark:hover:bg-neutral-800  dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600",
+          "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-100/70  px-6 shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300  disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 ",
 
-          { "text-secondary": hasFilters, "text-stone-400": !hasFilters },
+          {
+            "text-secondary": hasFilters,
+            "text-neutral-600 dark:text-neutral-400": !hasFilters,
+          },
         )}
       >
         <BiFilterAlt className="h-6 w-6" /> Filtrer
@@ -40,18 +43,20 @@ export default function FilterPopover({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="z-10 flex w-96 flex-col gap-1 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-500 outline-none"
+        className="z-10 flex w-96 flex-col gap-1 rounded-lg border border-transparent bg-neutral-100 px-4 py-2 text-sm text-neutral-500 shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none"
       >
         <div className="flex h-8 items-center justify-between">
-          <p className="text-base text-stone-300">Filtrer</p>
-          {hasFilters && <p className="text-stone-600">Filtres appliqués</p>}
+          <p className="text-base text-neutral-800 dark:text-neutral-300">
+            Filtrer
+          </p>
+          {hasFilters && <p className="text-neutral-600">Filtres appliqués</p>}
         </div>
 
         <section>{children}</section>
-        <section className="mt-2 flex h-11 items-center justify-end gap-2 border-t border-t-neutral-800">
+        <section className="mt-2 flex h-11 items-center justify-end gap-2 border-t border-t-neutral-300 dark:border-t-neutral-800">
           <button
             type="button"
-            className=" mt-1 h-8 rounded-md px-2 text-neutral-400 transition-colors hover:text-neutral-200 active:bg-neutral-800"
+            className=" mt-1 h-8 rounded-md px-2 text-neutral-600 transition-colors hover:text-neutral-700 active:bg-neutral-200 dark:text-neutral-400 hover:dark:text-neutral-200 active:dark:bg-neutral-800"
             onClick={onResetFiltersClick}
           >
             Réinitialiser

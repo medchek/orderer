@@ -7,14 +7,15 @@ import { Product } from "@/features/products/types";
 import DashboardProductsFilter from "@/features/products/components/dashboard/DashboardProductsFilter";
 import DashboardFetchError from "../dashboard/DashboardFetchError";
 import ProductCardLoader from "../ProductCardLoader";
-import DashboardPagination from "../dashboard/DashboardPagination";
+import Pagination from "../Pagination";
 
 interface Props {
   closeModal: () => void;
 }
 
 export default function AddProduct({ closeModal }: Props) {
-  const { addSelectedProduct, productsFilters, setProductsCurrentPage } = useStore();
+  const { addSelectedProduct, productsFilters, setProductsCurrentPage } =
+    useStore();
 
   const { data, isFetching, isSuccess, isError, refetch } =
     useGetProducts(productsFilters);
@@ -49,8 +50,8 @@ export default function AddProduct({ closeModal }: Props) {
         code={code}
       >
         <button
-          className="flex h-8 w-full items-center justify-center rounded-md bg-[#E9E9E9] font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary 
-          focus:text-white dark:bg-stone-800 dark:text-stone-50 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
+          className="flex h-8 w-full items-center justify-center rounded-md bg-neutral-200 font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary 
+          focus:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-700 dark:focus:bg-neutral-900"
           onClick={() => handleAddProduct(product)}
         >
           Ajouter
@@ -60,7 +61,7 @@ export default function AddProduct({ closeModal }: Props) {
   });
   return (
     <Modal
-      className="flex h-full flex-col rounded-lg bg-[#F3F3F3] pb-0 pt-4 shadow-md dark:bg-[#040404]"
+      className="flex h-full flex-col rounded-lg pb-0 pt-4 shadow-md"
       closeModal={closeModal}
       label="Ajouter un Produit"
       closeOnClickOutside
@@ -75,7 +76,7 @@ export default function AddProduct({ closeModal }: Props) {
       <section className="h-full grow flex-col overflow-y-auto">
         <div
           id="product-search-result"
-          className="relative grid grow grid-cols-4 2xl:grid-cols-5 justify-end gap-2 dark:[color-scheme:dark]"
+          className="relative grid grow grid-cols-4 justify-end gap-2 dark:[color-scheme:dark] 2xl:grid-cols-5"
         >
           {isError && !isFetching && <DashboardFetchError refetch={refetch} />}
           {isFetching &&
@@ -84,7 +85,11 @@ export default function AddProduct({ closeModal }: Props) {
           {isSuccess && !isFetching && productList}
         </div>
       </section>
-      <DashboardPagination pageCount={pageCount} className="m-0 p-0" onPageChange={handlePageChange} />
+      <Pagination
+        pageCount={pageCount}
+        className="m-0 p-0"
+        onPageChange={handlePageChange}
+      />
     </Modal>
   );
 }

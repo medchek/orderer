@@ -19,7 +19,7 @@ export default function FilterSelect({
       <select
         disabled={isLoading}
         className={cn(
-          "h-8 w-48 appearance-none rounded-md px-2 outline-none ring-secondary focus:ring-2 dark:bg-neutral-800 dark:text-neutral-300 dark:[color-scheme:dark] disabled:cursor-not-allowed",
+          "h-8 w-48 appearance-none rounded-md bg-neutral-200 px-2 text-neutral-900 outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed dark:bg-neutral-800 dark:text-neutral-300 dark:[color-scheme:dark]",
           className,
         )}
         {...props}
@@ -27,7 +27,7 @@ export default function FilterSelect({
         {children}
       </select>
       {!isLoading ? (
-        <MdChevronRight className="pointer-events-none absolute right-1 h-5 w-5 rotate-90" />
+        <MdChevronRight className="pointer-events-none absolute right-1 h-5 w-5 rotate-90 text-neutral-600" />
       ) : (
         <Loader className="absolute right-1 h-4 w-4 border-neutral-500" />
       )}

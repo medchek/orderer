@@ -46,7 +46,7 @@ export default function Input<T extends FieldValues>({
       {label && (
         <label
           htmlFor={inputId}
-          className="mb-1 font-semibold dark:text-stone-100 2xl:text-lg"
+          className="mb-1 font-semibold text-neutral-900 dark:text-neutral-100 2xl:text-base"
         >
           {label}
         </label>
@@ -57,7 +57,7 @@ export default function Input<T extends FieldValues>({
         {...props}
         {...(register && register(name, registerRules))}
         className={cn(
-          "h-12 rounded-lg bg-[#ECECEC] px-4 text-sm placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:text-stone-400 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base",
+          "h-12 rounded-lg bg-neutral-200 px-4 text-sm text-neutral-900 placeholder-neutral-500 outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:text-neutral-400 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base",
           className,
         )}
       />

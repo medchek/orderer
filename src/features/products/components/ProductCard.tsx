@@ -38,9 +38,9 @@ export default function ProductCard({
   // });
 
   return (
-    <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-white transition-all hover:shadow-xl dark:bg-stone-950">
+    <div className="relative flex h-[460px] w-auto flex-col overflow-hidden rounded-lg bg-neutral-50 transition-all hover:shadow-xl dark:bg-neutral-950">
       {/* <div
-        className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-stone-200  dark:bg-stone-800"
+        className="pointer-events-none relative aspect-square h-[210px] max-h-[210px] w-full bg-neutral-200  dark:bg-neutral-800"
         aria-description="product-images-display"
       >
         <Image
@@ -62,7 +62,7 @@ export default function ProductCard({
         )}
       </div> */}
       {/* text */}
-      <section className="flex grow flex-col justify-between p-2 text-stone-50">
+      <section className="flex grow flex-col justify-between p-2 text-neutral-900 dark:text-neutral-50">
         <div className="flex grow flex-col justify-between overflow-hidden pb-2">
           <section className="flex flex-col gap-2">
             {/* previous height h-12 and gap-1*/}
@@ -74,7 +74,7 @@ export default function ProductCard({
             </div>
 
             <div
-              className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-stone-900 text-sm text-stone-500"
+              className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-neutral-200 text-sm text-neutral-500 dark:bg-neutral-900"
               title="Catégorie"
             >
               <p className="px-1 py-0.5 first-letter:capitalize">
@@ -84,7 +84,7 @@ export default function ProductCard({
             </div>
 
             <div
-              className="line-clamp-3 text-sm text-stone-500"
+              className="line-clamp-3 text-sm text-neutral-500"
               title={description ?? ""}
             >
               {description}

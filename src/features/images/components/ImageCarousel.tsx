@@ -51,7 +51,7 @@ export default function ImageCarousel({ imageIds, discount }: Props) {
   return (
     <div
       className={clsx(
-        "embla relative aspect-square h-[210px] max-h-[210px] w-full overflow-hidden bg-stone-200  dark:bg-stone-800",
+        "embla relative aspect-square h-[210px] max-h-[210px] w-full overflow-hidden bg-neutral-300/80  dark:bg-stone-800",
         {
           "pointer-events-none": imageIds.length <= 1,
         },

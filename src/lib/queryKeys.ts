@@ -37,6 +37,9 @@ export const queryKeys = createQueryKeyStore({
       queryKey: [{ wilayaCode }],
     }),
   },
+  account: {
+    currentSession: null,
+  },
   images: {
     all: null,
   },

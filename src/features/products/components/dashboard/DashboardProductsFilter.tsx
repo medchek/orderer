@@ -10,7 +10,13 @@ import { useGetProducts } from "../../api/getProducts";
 import FilterPopover from "@/components/filter/FilterPopover";
 import { generateCategoryOptionValue } from "@/features/categories/utils/generateCategoryOptionValue";
 
-export default function DashboardProductsFilter() {
+interface Props {
+  disabled?: boolean;
+}
+
+export default function DashboardProductsFilter({
+  disabled: disabledProp,
+}: Props) {
   const { productsFilters, setProductsFilters, resetProductsFilters } =
     useStore();
   const [hasFilters, setHasFilters] = useState<boolean>(false);
@@ -70,7 +76,9 @@ export default function DashboardProductsFilter() {
   return (
     <FilterPopover
       disabled={
-        !productsData || (productsData.products.length === 0 && !hasFilters)
+        disabledProp ||
+        !productsData ||
+        (productsData.products.length === 0 && !hasFilters)
       }
       hasFilters={hasFilters}
       onApplyFiltersClick={applyFilters}
@@ -89,7 +97,8 @@ export default function DashboardProductsFilter() {
         </FilterLabel>
         <FilterLabel label="Catégorie" htmlFor="cat-select">
           <CategorySelect<{ category: string }>
-            className="h-8 w-48 rounded-md px-2  text-neutral-300 dark:bg-neutral-800"
+            id="cat-select"
+            className="h-8 w-48 rounded-md bg-neutral-200  px-2 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300"
             noLabel
             disablePrompt
             small

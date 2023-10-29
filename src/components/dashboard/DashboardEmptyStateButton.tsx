@@ -14,7 +14,7 @@ export default function DashboardEmptyStateButton({
 }: Props) {
   return (
     <button
-      className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
+      className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-neutral-900 dark:focus:bg-neutral-900/70"
       {...props}
     >
       {plusIcon && <MdAdd className="h-7 w-7" />} {text}

@@ -19,30 +19,30 @@ export default function DashboardShippingLocationsCard({
   town,
 }: Props) {
   return (
-    // <div className="w-80 rounded-md bg-stone-900 p-2 px-4">
-    <div className="w-auto rounded-md bg-stone-950 p-2 px-4">
+    // <div className="w-80 rounded-md bg-neutral-900 p-2 px-4">
+    <div className="w-auto rounded-md bg-neutral-950 p-2 px-4">
       <section className="flex h-10 items-center justify-between gap-10">
-        <p className="text-stone-100 line-clamp-1">{name}</p>
+        <p className="line-clamp-1 text-neutral-100">{name}</p>
         <DashboardShippingLocationsCardDropdown
           className="w-min"
           onDeleteClick={onDeleteClick}
           onEditClick={onEditClick}
         />
       </section>
-      <hr className="border-stone-900" />
+      <hr className="border-neutral-900" />
       <section className="flex w-full flex-col gap-1.5 py-2 [&>div]:flex [&>div]:w-full [&>div]:items-center [&>div]:justify-between [&>div]:text-sm">
         <div>
-          <p className="text-stone-500">Wilaya</p>
-          <p className="capitalize text-stone-200">
+          <p className="text-neutral-500">Wilaya</p>
+          <p className="capitalize text-neutral-200">
             {wilaya.code} - {wilaya.name}
           </p>
         </div>
         <div>
-          <p className="text-stone-500">Commune</p>
-          <p className="capitalize text-stone-200">{town.name}</p>
+          <p className="text-neutral-500">Commune</p>
+          <p className="capitalize text-neutral-200">{town.name}</p>
         </div>
         <div>
-          <p className="text-stone-500">Coordonnées</p>
+          <p className="text-neutral-500">Coordonnées</p>
           {coordinates ? (
             <a
               className="text-secondary hover:underline"
@@ -56,10 +56,10 @@ export default function DashboardShippingLocationsCard({
           )}
         </div>
         <div>
-          <p className="text-stone-500">Tarifs additionnels</p>
+          <p className="text-neutral-500">Tarifs additionnels</p>
           <p
             className={`${
-              additionalCosts ? "text-stone-200" : "text-stone-400"
+              additionalCosts ? "text-neutral-200" : "text-neutral-400"
             }`}
           >
             {additionalCosts ? `${additionalCosts}DA` : "Aucun"}

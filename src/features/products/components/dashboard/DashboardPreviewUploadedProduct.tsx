@@ -62,7 +62,7 @@ export default function DashboardPreviewUploadedProduct({
       {uploadStatus !== "uploading" && (
         <button
           type="button"
-          className="absolute right-2 top-2 h-6 w-6 rounded-md bg-[#dcdff1] text-card-dark shadow-lg transition-colors focus:bg-[#c0c3d6]"
+          className="absolute right-2 top-2 h-6 w-6 rounded-md bg-neutral-200 text-card-dark shadow-lg transition-colors focus:bg-neutral-300"
           onClick={() => removeImage()}
         >
           <MdClear className="h-5 w-5" />

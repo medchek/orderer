@@ -26,7 +26,7 @@ export default function DashboardWilayaCard({
   return (
     <div
       className={clsx(
-        "flex h-[13.5rem] max-h-[13.5rem] w-auto flex-col gap-2 rounded-lg bg-stone-950 px-4 py-3 text-stone-100",
+        "flex h-[13.5rem] max-h-[13.5rem] w-auto flex-col gap-2 rounded-lg bg-neutral-950 px-4 py-3 text-neutral-100",
         { "ring-2": isSelected },
       )}
       key={code}
@@ -43,9 +43,9 @@ export default function DashboardWilayaCard({
           {code} - {name}
         </label>
       </div>
-      <hr className="border-stone-900" />
+      <hr className="border-neutral-900" />
       <section className="text-sm">
-        <p className="mb-1 text-stone-600">Livraison à domicile</p>
+        <p className="mb-1 text-neutral-600">Livraison à domicile</p>
         <div className="flex items-center justify-between">
           <p>{homePrice > 0 ? `${homePrice}DA` : "Gratuite"}</p>
           <div
@@ -61,7 +61,7 @@ export default function DashboardWilayaCard({
         </div>
       </section>
       <section className="text-sm">
-        <p className="mb-1 text-stone-600">Livraison au bureau</p>
+        <p className="mb-1 text-neutral-600">Livraison au bureau</p>
         <div className="flex items-center justify-between">
           <p>{officePrice > 0 ? `${officePrice}DA` : "Gratuite"}</p>
 
@@ -79,7 +79,7 @@ export default function DashboardWilayaCard({
       </section>
       <button
         type="button"
-        className="h-8 gap-1 rounded-md text-sm dark:bg-stone-900 dark:hover:bg-stone-800 dark:focus:bg-stone-900/50"
+        className="h-8 gap-1 rounded-md text-sm dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-900/50"
         onClick={handleEditClick}
       >
         <MdEdit className="h-5 w-5" />

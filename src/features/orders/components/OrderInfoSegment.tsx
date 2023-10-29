@@ -16,15 +16,19 @@ export default function OrderInfoSegment({
   justifyBetween,
 }: Props) {
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <h3 className="font-bold text-lg text-stone-200">{title}</h3>
-      <ul className="[&>li>span]:inline-block space-y-4 list-none w-full">
+    <div className="flex w-full flex-col gap-4">
+      <h3 className="text-lg font-bold text-neutral-900 dark:text-neutral-200">
+        {title}
+      </h3>
+      <ul className="w-full list-none space-y-4 [&>li>span]:inline-block">
         {data.map(({ label, content, capitalize }, i) => (
           <li
             key={i}
-            className={`w-full flex ${justifyBetween && "justify-between"}`}
+            className={`flex w-full ${justifyBetween && "justify-between"}`}
           >
-            <span className="w-48 text-stone-400">{label}</span>
+            <span className="w-48 text-neutral-900 dark:text-neutral-400">
+              {label}
+            </span>
             <span className={capitalize ? "capitalize" : ""}>
               {!content ? "Non mentioné" : content}
             </span>

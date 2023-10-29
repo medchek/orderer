@@ -1,9 +1,7 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
 import { type ReactNode } from "react";
 import { Metadata } from "next";
 import AppProviders from "@/components/AppProviders";
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Commander - TRB Eshop",
@@ -17,9 +15,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`relative ${inter.className} bg-white dark:bg-dark`}>
-        <AppProviders>{children}</AppProviders>
-      </body>
+      <AppProviders>{children}</AppProviders>
     </html>
   );
 }

@@ -10,7 +10,6 @@ import { useStore } from "@/store";
 import Prices from "./Prices";
 import OrderConfirm from "../OrderConfirm";
 import { toPositiveNumber } from "@/lib/utils";
-import Loader from "@/components/Loader";
 import { useRouter } from "next/navigation";
 import TownSelect from "./TownSelect";
 import { useEffectOnce } from "usehooks-ts";
@@ -22,6 +21,9 @@ import {
 
 import ReCAPTCHA from "react-google-recaptcha";
 import { useRef } from "react";
+import Button from "@/components/Button";
+import { AccountDetail } from "@/features/settings/types";
+import { STATUS_TOO_MANY_REQUESTS } from "@/lib/constants";
 
 export interface OrderFormValues {
   lastName: string;
@@ -36,7 +38,11 @@ export interface OrderFormValues {
   locationId: string;
 }
 
-export default function OrderForm() {
+interface Props {
+  accountDetail: AccountDetail | null;
+}
+
+export default function OrderForm({ accountDetail }: Props) {
   const { replace, prefetch } = useRouter();
   const {
     selectedProducts,
@@ -61,11 +67,17 @@ export default function OrderForm() {
   useEffectOnce(() => {
     prefetch("/thanks");
 
-    // set select values for the form
-    if (confirmData) {
-      setValue("wilaya", confirmData.wilaya);
-      setValue("town", confirmData.town);
+    if (accountDetail) {
+      const { address, fullName, phone, town, wilaya } = accountDetail;
+
+      setValue("phone", phone ?? "");
+      setValue("name", fullName ?? "");
+      setValue("wilaya", wilaya?.toString() ?? "");
+      setValue("town", town?.toString() ?? "");
+      setValue("address", address ?? "");
     }
+    // set select values for the form
+
     return () => {
       removeAllSelectedProducts();
       setIsConfirming(false);
@@ -80,6 +92,15 @@ export default function OrderForm() {
   const { mutate, isLoading, isSuccess } = usePostOrder({
     onSuccess: ({ orderCode }) => {
       replace(`/thanks?code=${orderCode}`);
+    },
+    onError: (e) => {
+      if (e.response.status === STATUS_TOO_MANY_REQUESTS) {
+        return showSnackbar(
+          "Vous avez atteint le nombre maximum de commandes que vous pouvez soumettre. Réessayez plus tard",
+          "error",
+        );
+      }
+      showSnackbar("Une érreur est survenu, veuillez reéssayer", "error");
     },
   });
 
@@ -128,7 +149,7 @@ export default function OrderForm() {
       }
 
       const recaptchaToken = await recaptchaRef.current?.executeAsync();
-      
+
       if (!recaptchaToken) return;
 
       const requestData: PostOrderFormData = {
@@ -137,7 +158,7 @@ export default function OrderForm() {
           isHome,
           phone,
           productsCode: selectedProducts.map((p) => p.code),
-          wilayaId: toPositiveNumber(wilaya),
+          wilayaCode: toPositiveNumber(wilaya),
           townCode: toPositiveNumber(town),
           ...(email && { email }),
           ...(name && { name }),
@@ -200,21 +221,33 @@ export default function OrderForm() {
               />
             </div>
             <div className="flex gap-4 2xl:gap-7">
-              <WilayaSelect
+              <WilayaSelect<OrderFormValues>
                 register={register}
                 error={errors.wilaya?.message}
                 id="wilaya-select"
-                defaultValue={confirmData?.wilaya}
+                defaultValue={
+                  confirmData
+                    ? confirmData.wilaya
+                    : accountDetail?.wilaya ?? undefined
+                }
+                setFormHookValue={setValue}
               />
-              <TownSelect
+              <TownSelect<OrderFormValues>
                 register={register}
                 error={errors.town?.message}
                 id="town-select"
-                defaultValue={confirmData?.town}
+                defaultValue={
+                  confirmData
+                    ? confirmData.town
+                    : accountDetail?.town ?? undefined
+                }
+                setFormHookValue={setValue}
               />
             </div>
             <div className="flex gap-7">
-              <ShippingTypeSelector />
+              <ShippingTypeSelector
+                addressDefaultValue={accountDetail?.address ?? undefined}
+              />
             </div>
           </section>
           {/* Show the orderConfirm component */}
@@ -245,18 +278,15 @@ export default function OrderForm() {
                 <MdArrowBack className="h-6 w-6" /> Retour
               </button>
             )}
-            <button
-              className="text flex h-12 w-44 items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed  disabled:bg-stone-200 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-stone-800 disabled:dark:text-stone-600"
+            <Button
+              className="text flex h-12 w-44 items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed  disabled:bg-stone-200 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700"
               disabled={isDisabledSubmit || isLoading || isSuccess}
+              isLoading={isLoading || isSuccess}
             >
-              {isLoading || isSuccess ? (
-                <Loader className="h-6 w-6 border-white" />
-              ) : (
-                <span className="flex gap-2">
-                  <MdOutlineShoppingCart className="h-6 w-6" /> Commander
-                </span>
-              )}
-            </button>
+              <span className="flex gap-2">
+                <MdOutlineShoppingCart className="h-6 w-6" /> Commander
+              </span>
+            </Button>
           </div>
         </form>
       </FormProvider>
@@ -275,7 +305,7 @@ export default function OrderForm() {
           showSnackbar("Captcha expiré, veuillez reéssayer", "error");
         }}
         theme="dark"
-        badge="bottomright"
+        badge="bottomleft"
         size="invisible"
       />
     </>

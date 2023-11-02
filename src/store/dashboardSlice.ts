@@ -13,6 +13,9 @@ export interface CategoryDataOpen {
   code: string;
 }
 export interface DashboardSlice {
+  isDashboardNavMinimized: boolean;
+  setIsDashboardNavMinimized: (v: boolean) => void;
+
   // products
   isAddProductOpen: boolean;
   setIsAddProductOpen: (v: boolean) => void;
@@ -70,6 +73,11 @@ export interface DashboardSlice {
 }
 
 export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
+  isDashboardNavMinimized: false,
+  setIsDashboardNavMinimized: (v: boolean) => {
+    set(() => ({ isDashboardNavMinimized: v }));
+  },
+
   // Products
   isAddProductOpen: false,
   setIsAddProductOpen: (v: boolean) => {

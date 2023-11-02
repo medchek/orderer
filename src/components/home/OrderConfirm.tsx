@@ -24,37 +24,41 @@ export default function OrderConfirm({
     if (!name && !lastname) {
       return "Non mentioné";
     } else {
-      const fullName = `${lastname} ${name}`;
+      const fullName = `${lastname ?? ""} ${name ?? ""}`;
       return fullName.trim();
     }
   };
   return (
-    <section className=" flex w-full grow flex-col gap-2 text-sm xl:text-base [&>div]:flex [&>div]:h-12 [&>div]:w-full [&>div]:items-center [&>div]:rounded-lg [&>div]:px-4 [&>div]:text-white [&>div]:dark:bg-neutral-900">
-      <h2 className="text-lg font-semibold text-white">Résumé</h2>
+    <section className=" flex w-full grow flex-col gap-2 text-sm xl:text-base [&>div]:flex [&>div]:h-12 [&>div]:w-full [&>div]:items-center [&>div]:rounded-lg [&>div]:bg-neutral-200 [&>div]:px-4 [&>div]:text-neutral-900 [&>div]:dark:bg-neutral-900 [&>div]:dark:text-neutral-50">
+      <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
+        Résumé
+      </h2>
       <div>
-        <p className="w-40 text-stone-100">Téléphone</p>
+        <p className="w-40 text-neutral-800 dark:text-neutral-100">Téléphone</p>
         <p className="font-semibold">{data.phone}</p>
       </div>
       <div>
-        <p className="w-40 text-stone-100">Wilaya</p>
+        <p className="w-40 text-neutral-800 dark:text-neutral-100">Wilaya</p>
         <p className="font-semibold">{selectedWilaya.name}</p>
       </div>
       <div>
-        <p className="w-40 text-stone-100">Commune</p>
+        <p className="w-40 text-neutral-800 dark:text-neutral-100">Commune</p>
         <p className="font-semibold capitalize">{selectedTown.name}</p>
       </div>
       <div>
-        <p className="w-40 text-stone-100">Adresse</p>
+        <p className="w-40 text-neutral-800 dark:text-neutral-100">Adresse</p>
         <p className="font-semibold">
           {data.address !== ""
             ? data.address
             : `Bureau de livraison de la wilaya ${addPartitive(
-                selectedWilaya.name
+                selectedWilaya.name,
               )}`}
         </p>
       </div>
       <div>
-        <p className="w-40 text-stone-100">Nom/Prénom</p>
+        <p className="w-40 text-neutral-800 dark:text-neutral-100">
+          Nom/Prénom
+        </p>
         <p className="font-semibold">{fullName()}</p>
       </div>
       {/* <div>
@@ -64,7 +68,7 @@ export default function OrderConfirm({
         </p>
       </div> */}
       {!sessionData && (
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-neutral-500">
           <Link
             href="/login"
             className="text-secondary hover:underline focus:underline"

@@ -6,13 +6,12 @@ import React, {
   useRef,
 } from "react";
 import { useFormContext } from "react-hook-form";
-import { FileMetaData } from "../../types";
+import { FileMetaData, ProductFormValues } from "../../types";
 import DashboardImageInputLabel from "./DashboardImageInputLabel";
 import DashboardPreviewUploadedProduct from "./DashboardPreviewUploadedProduct";
 import { MAX_UPLOAD_FILE_SIZE } from "@/lib/constants";
 
 import { usePostImage } from "@/features/images/api/postImage";
-import { AddProductFormValues } from "./DashboardAddProduct.copy";
 import { klona } from "klona/json";
 import { getImageDirectUrl } from "@/lib/utils";
 import { useStore } from "@/store";
@@ -30,7 +29,7 @@ export default function DashboardImageUpload({
     register,
     setError,
     formState: { errors },
-  } = useFormContext<AddProductFormValues>();
+  } = useFormContext<ProductFormValues>();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { setIsUploadingImage } = useStore();

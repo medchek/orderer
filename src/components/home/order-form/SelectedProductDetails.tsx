@@ -1,15 +1,14 @@
-import { getImageDirectUrl, trucateString } from "@/lib/utils";
+import { getImageDirectUrl } from "@/lib/utils";
 import React from "react";
 import { MdClear } from "react-icons/md";
 import { clsx } from "clsx";
+import Image from "next/image";
 interface Props {
   name: string;
   description: string | null;
   price: number;
   images: { id: string }[];
   discount: number;
-  /** Checks if the user has only one product selected for shipping. */
-  productCount: number;
   /** Event triggered when user wants to remove the product from the order. */
   onClear: () => void;
 
@@ -24,7 +23,7 @@ export default function SelectedProductDetails({
   name,
   description,
   price,
-  productCount,
+  // productCount,
   images,
   discount,
   disabledRemove,
@@ -42,19 +41,19 @@ export default function SelectedProductDetails({
       className={clsx(
         {
           "bg-transparent": transparentBg,
-          "dark:bg-input-dark bg-[#F4F4F4] rounded-2xl": !transparentBg,
+          "rounded-2xl bg-neutral-200 dark:bg-neutral-900": !transparentBg,
           "h-[154px] gap-3": !small,
           "h-[130px] gap-4": small,
         },
-        "relative flex w-full items-center px-3 py-2"
+        "relative flex w-full items-center px-3 py-2",
       )}
     >
       {/* Clear cross */}
-      {productCount > 1 && !disabledRemove && (
+      {!disabledRemove && (
         <button
           type="button"
           onClick={onClear}
-          className="absolute right-1 top-3 flex h-6 w-6 items-center justify-center rounded-md transition-colors focus:bg-stone-300 dark:focus:bg-[#2e2e2e]"
+          className="absolute right-1 top-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors focus:bg-stone-300 dark:focus:bg-neutral-800"
           title="Supprimer de la commande"
         >
           <MdClear className=" h-5 w-5 dark:text-stone-100" />
@@ -64,15 +63,17 @@ export default function SelectedProductDetails({
       <div
         className={clsx(
           small ? "h-28 w-28 min-w-[7rem]" : "h-32 w-32 min-w-[8rem]",
-          "relative flex"
+          "relative flex",
         )}
       >
-        <img
+        <Image
           className="relative w-full rounded-xl object-cover"
           src={productImageUrl}
           alt={name}
           loading="lazy"
           referrerPolicy="no-referrer"
+          unoptimized
+          fill
         />
         {/* discount */}
         {discount > 0 && (
@@ -84,14 +85,14 @@ export default function SelectedProductDetails({
       <div
         className={clsx(
           small ? "h-28 max-h-28" : "h-32 max-h-32",
-          "flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4"
+          "flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4",
         )}
       >
         <div className="space-y-0.5">
           <p
             className={clsx(
               // { "text-sm": small },
-              "line-clamp-2 font-semibold dark:text-stone-50"
+              "line-clamp-2 font-semibold dark:text-stone-50",
             )}
           >
             {name}
@@ -100,7 +101,7 @@ export default function SelectedProductDetails({
           <p
             className={clsx(
               small ? "text-xs" : "text-sm",
-              "line-clamp-2 text-[#666666]"
+              "line-clamp-2 text-[#666666]",
             )}
           >
             {description}
@@ -111,7 +112,7 @@ export default function SelectedProductDetails({
         <p
           className={clsx(
             small && "text-sm",
-            "font-semibold text-[#171717] dark:text-stone-50"
+            "font-semibold text-[#171717] dark:text-stone-50",
           )}
         >
           Prix: {discountedPrice}DA

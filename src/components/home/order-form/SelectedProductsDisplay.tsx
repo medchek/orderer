@@ -3,16 +3,21 @@ import React, { useState, useEffect } from "react";
 import { useStore } from "@/store";
 import ProductDetails from "@/components/home/order-form/SelectedProductDetails";
 import { MdAdd } from "react-icons/md";
-import AddProduct from "../AddProduct";
+
 import AddProductButton from "../AddProductButton";
-import { useQuery } from "@tanstack/react-query";
 
 import { useSearchParams } from "next/navigation";
 import Loader from "@/components/Loader";
-import { getSingleProduct } from "@/lib/clientApiHelpers";
+import { useGetSingleProduct } from "@/features/products/api/getSingleProduct";
+import dynamic from "next/dynamic";
+import ModalLoader from "@/components/ModalLoader";
+
+const AddProduct = dynamic(() => import("../AddProduct"), {
+  loading: () => <ModalLoader />,
+});
 
 export default function SelectedProductsDisplay() {
-  const searchParams = useSearchParams();
+  const productCode = useSearchParams().get("product")?.trim();
   const {
     selectedProducts,
     removeSelectedProduct,
@@ -20,40 +25,23 @@ export default function SelectedProductsDisplay() {
     isConfirming,
   } = useStore((state) => state);
 
-  // const [isFetchingProduct, setIsFetchingProduct] = useState(false);
-
-  const { status, isFetching } = useQuery({
-    queryKey: ["products", searchParams.get("product")],
-    queryFn: ({ queryKey }) => getSingleProduct(queryKey),
-    enabled: !!searchParams.get("product") && !selectedProducts.length,
-    onSuccess(data) {
-      addSelectedProduct(data);
+  const { isFetching, data: fetchedProduct } = useGetSingleProduct(
+    productCode ?? "",
+    {
+      enabled: productCode !== undefined && productCode !== "",
     },
-    cacheTime: 1000 * 60 * 10,
-  });
+  );
 
-  // useEffect(() => {
-  //   // qp9EMKmCxHDkXkkj3heb
-  //   // only search for the product when there none selected and the product code is supplied in the url
-  //   if (selectedProducts.length === 0) {
-  //     const productCode = searchParams.get("product");
-  //     if (productCode) {
-  //       setIsFetchingProduct(true);
-  //       fetchSingleProduct(productCode)
-  //         .catch((e) => {
-  //           console.error("error searching single product in component", e);
-  //         })
-  //         .finally(() => {
-  //           setIsFetchingProduct(false);
-  //         });
-  //     }
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (fetchedProduct) {
+      addSelectedProduct(fetchedProduct);
+    }
+  }, [fetchedProduct, addSelectedProduct]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const productList = !selectedProducts.length ? (
-    <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-[#F4F4F4] px-3 py-2 font-semibold dark:bg-input-dark dark:text-stone-200">
+    <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-neutral-200 px-3 py-2 font-semibold dark:bg-neutral-900 dark:text-neutral-200">
       {isFetching ? (
         <Loader />
       ) : (
@@ -62,7 +50,7 @@ export default function SelectedProductsDisplay() {
           onClick={() => setIsModalOpen(true)}
           type="button"
         >
-          <p>Aucun produit n'a été selectionné pour livraison</p>
+          <p>Aucun produit n&apos;a été selectionné pour livraison</p>
           <span className="flex font-semibold">
             <MdAdd className="h-6 w-6" />
             <span>Ajouter un produit</span>
@@ -73,7 +61,6 @@ export default function SelectedProductsDisplay() {
   ) : (
     selectedProducts.map((product, idx) => (
       <ProductDetails
-        productCount={selectedProducts.length}
         onClear={() => removeSelectedProduct(idx)}
         name={product.name}
         description={product.description}
@@ -89,14 +76,16 @@ export default function SelectedProductsDisplay() {
   return (
     <section id="products-detail" className="mb-2 w-full">
       <div className="mb-2 flex h-8 w-full justify-between">
-        <h1 className="text-xl font-bold dark:text-white">Votre Commande</h1>
+        <h1 className="text-xl font-semibold dark:text-white">
+          Votre Commande
+        </h1>
         {selectedProducts.length < 3 && !isConfirming && (
           <AddProductButton onClick={() => setIsModalOpen(true)} />
         )}
         {isModalOpen && <AddProduct closeModal={() => setIsModalOpen(false)} />}
       </div>
       <div className="flex w-full space-x-3">{productList}</div>
-      <div className="flex items-center justify-end pt-1 text-sm text-stone-950 dark:text-stone-500">
+      <div className="flex items-center justify-end pt-1 text-sm text-neutral-600 dark:text-neutral-500">
         {/* <Prices /> */}Produits sélectionnés {selectedProducts.length} (3
         Maximum)
       </div>

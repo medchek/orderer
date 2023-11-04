@@ -24,10 +24,11 @@ export interface OrderFormSlice {
   selectedWilaya: Wilaya | null;
   setSelectedWilaya: (selectedWilaya: Wilaya | null) => void;
 
-  selectedTown: Town | null,
+  selectedTown: Town | null;
   setSelectedTown: (town: Town | null) => void;
 
-
+  selectedShippingLocationId: string | null;
+  setSelectedShippingLocationId: (v: string | null) => void;
 }
 
 export const orderFormSlice: StateCreator<OrderFormSlice> = (set) => ({
@@ -35,10 +36,11 @@ export const orderFormSlice: StateCreator<OrderFormSlice> = (set) => ({
   setShippingType: (shippingType: SHIPPING_TYPE) =>
     set(() => ({ shippingType })),
   confirmData: null,
-  setConfirmData: (data: OrderFormValues | null) => set(() => ({ confirmData: data })),
+  setConfirmData: (data: OrderFormValues | null) =>
+    set(() => ({ confirmData: data })),
   isConfirming: false,
   setIsConfirming: (v) => {
-    set(() => ({ isConfirming: v }))
+    set(() => ({ isConfirming: v }));
   },
 
   selectedWilaya: null,
@@ -48,5 +50,10 @@ export const orderFormSlice: StateCreator<OrderFormSlice> = (set) => ({
   selectedTown: null,
   setSelectedTown: (town) => {
     set(() => ({ selectedTown: town }));
-  }
+  },
+
+  selectedShippingLocationId: null,
+  setSelectedShippingLocationId: (v) => {
+    set(() => ({ selectedShippingLocationId: v }));
+  },
 });

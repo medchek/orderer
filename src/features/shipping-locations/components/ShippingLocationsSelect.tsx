@@ -6,7 +6,7 @@ import { addPartitive } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 
 export default function ShippingLocationsSelect() {
-  const { selectedWilaya } = useStore();
+  const { selectedWilaya, setSelectedShippingLocationId } = useStore();
   const {
     register,
     resetField,
@@ -90,7 +90,9 @@ export default function ShippingLocationsSelect() {
       registerRules={{
         required: validateRequired(),
         onChange: (e) => {
-          setSelectValue(e.target.value.trim());
+          const value = e.target.value.trim();
+          setSelectValue(value);
+          setSelectedShippingLocationId(value);
         },
       }}
       error={errors.locationId?.message}

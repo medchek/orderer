@@ -10,7 +10,7 @@ export interface PostOrderRequestPayload {
   address?: string;
   locationId?: string;
   isHome: boolean;
-  wilayaId: number;
+  wilayaCode: number;
   townCode: number;
   productsCode: string[];
 }

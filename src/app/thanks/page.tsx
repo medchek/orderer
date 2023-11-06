@@ -10,6 +10,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { redirect } from "next/navigation";
 import { ORDER_CODE_LENGTH } from "@/lib/constants";
 import { RedirectType } from "next/dist/client/components/redirect";
+import { getSession } from "../api/auth/[...nextauth]/route";
 
 // search param
 interface Props {
@@ -17,6 +18,9 @@ interface Props {
 }
 
 export default async function ThankYouPage({ searchParams }: Props) {
+  const session = await getSession();
+  const isAdmin = session?.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
+
   const headersMap = headers();
   const orderCode = searchParams.code;
   const host = headersMap.get("host");
@@ -29,17 +33,12 @@ export default async function ThankYouPage({ searchParams }: Props) {
     return redirect("/", RedirectType.replace);
   }
   const orderStatusLink = `${protocol}://${host}/orders/${orderCode}`;
-  // const orderCode = headersMap.get("x-invoke-query");
-  // if (!orderCode || orderCode.length !== ORDER_CODE_LENGTH) {
-  //   console.log(orderCode);
-  //   return redirect("/", RedirectType.replace);
-  // }
 
   return (
-    <main className="relative flex min-h-screen flex-col px-10 dark:text-stone-50 2xl:px-56">
-      <HomeHeader />
+    <main className="relative flex min-h-screen flex-col px-10 dark:text-neutral-50 2xl:px-56">
+      <HomeHeader isAdmin={isAdmin} />
 
-      <section className="flex grow -translate-y-20 flex-col items-center justify-center">
+      <div className="relative  flex grow -translate-y-20 flex-col items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <TbShoppingBag className="h-20 w-20" />
           <div className="flex flex-col items-center gap-1">
@@ -51,13 +50,13 @@ export default async function ThankYouPage({ searchParams }: Props) {
               Vous recevrez un appel au numéro fourni pour confirmer la commande
             </p>
             <div className="flex h-10 items-center">
-              <hr className="w-20 border-stone-800"></hr>
+              <hr className="w-20 border-neutral-800"></hr>
             </div>
-            <p className="text-stone-300">
+            <p className="text-neutral-500 dark:text-neutral-300">
               Vous pouvez à tout moment suivre le statut de la commande en
               visitant le lien
             </p>
-            <div className="flex h-8 items-center rounded-md px-4 text-secondary transition-colors dark:bg-stone-900 dark:hover:bg-stone-800/90">
+            <div className="flex h-8 items-center rounded-md bg-neutral-200 px-4 text-secondary transition-colors hover:bg-neutral-200/50 dark:bg-neutral-900 dark:hover:bg-neutral-800/90">
               <Link
                 href={orderStatusLink}
                 className="group flex items-center gap-2"
@@ -70,13 +69,13 @@ export default async function ThankYouPage({ searchParams }: Props) {
           <Link
             href="/."
             title="Acceuil"
-            className="mt-6 flex items-center gap-1 text-stone-700"
+            className="mt-6 flex items-center gap-1 text-neutral-700"
           >
             <IoMdArrowBack className="h-7 w-7" />
             <span>Acceuil</span>
           </Link>
         </div>
-      </section>
+      </div>
       <Footer />
     </main>
   );

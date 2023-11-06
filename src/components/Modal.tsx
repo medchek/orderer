@@ -68,7 +68,7 @@ export default function Modal({
     <div
       id="dialog"
       className={cn(
-        "absolute left-0 top-0 z-10 h-screen w-screen bg-gray-950 bg-opacity-50 px-10 py-10 dark:bg-stone-950 dark:bg-opacity-80 2xl:px-72",
+        "absolute left-0 top-0 z-10 h-screen w-screen bg-gray-950 bg-opacity-50 px-10 py-10 dark:bg-stone-950 dark:bg-opacity-80 2xl:px-60",
         centerModalContent ? "flex items-center justify-center" : "",
         overlayClassName,
       )}
@@ -77,7 +77,7 @@ export default function Modal({
         className={cn(
           "flex flex-col dark:[color-scheme:dark]",
           {
-            "rounded-lg  bg-[#F3F3F3] px-8 py-5 shadow-md dark:bg-[#040404]":
+            "rounded-lg  bg-neutral-200 px-8 py-5 shadow-md dark:bg-[#040404]":
               !transparent,
           },
           className,
@@ -87,12 +87,12 @@ export default function Modal({
       >
         {!hideHeader && (
           <div id="dialog-header" className="flex grow-0 justify-between px-2">
-            <h1 className="text-xl font-semibold dark:text-neutral-100">
+            <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
               {label}
             </h1>
             <button
               onClick={closeModal}
-              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-[#d4d4d4] disabled:cursor-not-allowed dark:focus:bg-neutral-950"
+              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-neutral-300 disabled:cursor-not-allowed dark:focus:bg-neutral-950"
               disabled={preventClose}
             >
               <MdClear className="h-6 w-6 dark:text-neutral-500" />

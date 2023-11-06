@@ -11,7 +11,11 @@ import { addPartitive } from "@/lib/utils";
 import { OrderFormValues } from "./OrderForm";
 import ShippingLocationsSelect from "@/features/shipping-locations/components/ShippingLocationsSelect";
 
-export default function ShippingTypeSelector() {
+interface Props {
+  addressDefaultValue?: string;
+}
+
+export default function ShippingTypeSelector({ addressDefaultValue }: Props) {
   const { shippingType, setShippingType, selectedWilaya, confirmData } =
     useStore();
 
@@ -37,9 +41,12 @@ export default function ShippingTypeSelector() {
         }`,
       );
     } else {
-      setValue("address", confirmData?.address ?? "");
+      setValue(
+        "address",
+        confirmData ? confirmData.address : addressDefaultValue ?? "",
+      );
     }
-  }, [shippingType, selectedWilaya, confirmData]);
+  }, [shippingType, selectedWilaya, confirmData, addressDefaultValue]);
 
   const handleSelectShippingType = (type: SHIPPING_TYPE) => {
     if (type === shippingType) return;
@@ -56,9 +63,7 @@ export default function ShippingTypeSelector() {
   return (
     <div className="flex w-full gap-4 2xl:gap-7">
       <div className="flex w-1/2 flex-col gap-1">
-        <p className="font-semibold dark:text-white 2xl:text-lg">
-          Type de Livraison
-        </p>
+        <p className="font-semibold dark:text-neutral-100">Type de Livraison</p>
         <div className="flex h-12 gap-2 2xl:gap-4">
           <TypeSelectorButton
             text="À Domicile"
@@ -91,7 +96,9 @@ export default function ShippingTypeSelector() {
             id="address"
             maxLength={200}
             minLength={10}
-            defaultValue={confirmData?.address}
+            defaultValue={
+              confirmData ? confirmData.address : addressDefaultValue
+            }
             autoComplete="on"
           />
         ) : (

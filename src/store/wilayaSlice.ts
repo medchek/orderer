@@ -16,13 +16,18 @@ export interface WilayaSlice {
   wilayas: Wilaya[];
   isFetchingWilayas: boolean;
   wilayaFetchStatus: PromiseStatus;
-  fetchWilayas: () => Promise<{ status: PromiseStatus, wilayas: Wilaya[] }>;
-  updateWilaya: (data: { homePrice?: number, officePrice?: number, available?: boolean, index: number }) => void;
+  fetchWilayas: () => Promise<{ status: PromiseStatus; wilayas: Wilaya[] }>;
+  updateWilaya: (data: {
+    homePrice?: number;
+    officePrice?: number;
+    available?: boolean;
+    index: number;
+  }) => void;
   setWilayas: (data: Wilaya[]) => void;
-  getFilteredWilayas: (searchTerm: string) => Wilaya[]
+  getFilteredWilayas: (searchTerm: string) => Wilaya[];
 }
 
-export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
+export const wilayaSlice: StateCreator<WilayaSlice> = (set, get) => ({
   wilayas: [],
   isFetchingWilayas: false,
   wilayaFetchStatus: "init",
@@ -34,11 +39,15 @@ export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
       const response = await fetch("/api/wilayas", {
         method: "GET",
       });
-      const wilayas: Wilaya[] = await (response.json());
-      const promiseStatus = response.status === STATUS_OK ? "success" : "error"
-      set(() => ({ wilayas, isFetchingWilayas: false, wilayaFetchStatus: promiseStatus }));
+      const wilayas: Wilaya[] = await response.json();
+      const promiseStatus = response.status === STATUS_OK ? "success" : "error";
+      set(() => ({
+        wilayas,
+        isFetchingWilayas: false,
+        wilayaFetchStatus: promiseStatus,
+      }));
 
-      return { status: promiseStatus, wilayas }
+      return { status: promiseStatus, wilayas };
     } catch (e) {
       console.error(e);
       set(() => ({ isFetchingWilayas: true, wilayaFetchStatus: "error" }));
@@ -46,22 +55,26 @@ export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
     }
   },
   setWilayas: (wilayas: Wilaya[]) => {
-    return set(() => ({ wilayas }))
-
+    return set(() => ({ wilayas }));
   },
-  updateWilaya: (value: { homePrice?: number, officePrice?: number, available?: boolean, index: number }) => {
+  updateWilaya: (value: {
+    homePrice?: number;
+    officePrice?: number;
+    available?: boolean;
+    index: number;
+  }) => {
     const { index, ...data } = value;
     set((state) => {
       const wilayasCopy = [...state.wilayas];
       // copy the new data into the existing one
       wilayasCopy[index] = Object.assign(wilayasCopy[index], data);
-      return { wilayas: wilayasCopy }
-    })
+      return { wilayas: wilayasCopy };
+    });
   },
   getFilteredWilayas: (term: string) => {
-    console.log("running get filter")
+    console.log("running get filter");
     const searchTerm = term.trim().toLowerCase();
-    const wilayas = [...get().wilayas]
+    const wilayas = [...get().wilayas];
 
     if (!searchTerm.length) {
       // only if no filter was applied before
@@ -75,8 +88,7 @@ export const uiSlice: StateCreator<WilayaSlice> = (set, get) => ({
         } else {
           return name.toLocaleLowerCase().includes(searchTerm);
         }
-      })
-
+      });
     }
-  }
+  },
 });

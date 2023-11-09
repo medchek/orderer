@@ -16,7 +16,7 @@ const randId = (max: number = 1000) => Math.ceil(Math.random() * max);
  * @param n single number i.e 0 to 9
  * @returns the number prefixed with 0
  */
-const zeroPrefix = (n: number) => (n < 10 && n > -10 ? `0${n}` : n);
+export const zeroPrefix = (n: number) => (n < 10 && n > -10 ? `0${n}` : n);
 
 export const randInputId = (prefix: string = "input") =>
   `${prefix}-${randId()}`;
@@ -153,11 +153,36 @@ export const discountedPrice = (price: number, discountPercentage: number) => {
 };
 
 /**
+ * Calculate the total price of an order
+ * @param productPriceData combined products price data, shipping price, and anyadditional costs
+ * @returns total price
+ */
+export const calculateTotalPrice = ({
+  productsPrice,
+  shippingPrice,
+  additionalCosts,
+}: {
+  productsPrice: number;
+  shippingPrice: number;
+  additionalCosts?: number;
+}) => {
+  const totalShipping = shippingPrice + (additionalCosts ?? 0);
+
+  return productsPrice + totalShipping;
+};
+
+/**
  * Formats a date object
  * @param date date object
  * @returns retuns DD/MM/YYYY HH:mm date string
  */
-export const formatDate = (rawDate: Date | string, noTime = false) => {
+export const formatDate = (
+  rawDate: Date | string,
+  opt?: {
+    noTime?: boolean;
+    addPreposition?: boolean;
+  },
+) => {
   const date = typeof rawDate === "string" ? new Date(rawDate) : rawDate;
   const year = date.getFullYear();
   const month = zeroPrefix(date.getMonth() + 1);
@@ -165,7 +190,48 @@ export const formatDate = (rawDate: Date | string, noTime = false) => {
   const hours = zeroPrefix(date.getHours());
   const minutes = zeroPrefix(date.getMinutes());
 
-  return `${day}/${month}/${year}` + (!noTime ? ` ${hours}:${minutes}` : "");
+  return (
+    `${day}/${month}/${year}` +
+    (!opt?.noTime
+      ? `${opt?.addPreposition ? " à" : ""} ${hours}:${minutes}`
+      : "")
+  );
+};
+
+/**
+ * Get month name by month number
+ * @param month a number between 1 and 12
+ * @returns the month name
+ */
+export const getMonthName = (month: number) => {
+  switch (month) {
+    case 1:
+      return "Janvier";
+    case 2:
+      return "Février";
+    case 3:
+      return "mars";
+    case 4:
+      return "Avril";
+    case 5:
+      return "Mai";
+    case 6:
+      return "Juin";
+    case 7:
+      return "juillet";
+    case 8:
+      return "Août";
+    case 9:
+      return "septembre";
+    case 10:
+      return "Octobre";
+    case 11:
+      return "Novembre ";
+    case 12:
+      return "Décembre ";
+    default:
+      return "invalid month number";
+  }
 };
 
 export function cn(...inputs: ClassValue[]) {
@@ -196,6 +262,20 @@ export const convertObjectToQueryParams = (o: { [key: string]: unknown }) => {
     .join("&");
 
   return filterParams;
+};
+
+/**
+ * Check if the town code belongs to the wilaya by checking if the townCode starts with the wilayaCode
+ * @param townCode the town code
+ * @param wilayaCode the wilaya code
+ * @returns true if it is valid, false otherwise
+ */
+export const verifyTownCode = (townCode: number, wilayaCode: number) => {
+  if (typeof townCode !== "number" || typeof wilayaCode !== "number")
+    return false;
+
+  if (!townCode.toString().startsWith(`${wilayaCode}0`)) return false;
+  else return true;
 };
 
 /**

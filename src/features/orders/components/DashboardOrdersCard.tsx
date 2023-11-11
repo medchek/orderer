@@ -1,11 +1,16 @@
-
 import {
   MdLocationPin,
+  MdOutlineCheck,
   MdOutlineDateRange,
   MdOutlineLocationOn,
   MdOutlineMapsHomeWork,
 } from "react-icons/md";
-import { addPartitive, discountedPrice, formatDate } from "@/lib/utils";
+import {
+  addPartitive,
+  calculateTotalPrice,
+  discountedPrice,
+  formatDate,
+} from "@/lib/utils";
 import DashboardOrderCardDropdown from "./DashboardOrdersCardDropdown";
 import DashboardOrderStatusBadge from "./DashboardOrdersStatusBadge";
 import { UseMutateAsyncFunction } from "@tanstack/react-query";
@@ -45,6 +50,7 @@ export default function DashboardOrdersCard({
   createdAt,
   isHome,
   orderProducts,
+  location,
   status,
   wilaya,
   town,
@@ -52,24 +58,27 @@ export default function DashboardOrdersCard({
   isPatching,
   patchingCode,
 }: Props) {
+  const shippingPrice = isHome ? wilaya.homePrice : wilaya.officePrice;
   const totalPrice = () => {
     const productsPrice = orderProducts.reduce((prev, { product }) => {
       return prev + discountedPrice(product.price, product.discount);
     }, 0);
 
-    const shippingPrice = isHome ? wilaya.homePrice : wilaya.officePrice;
-
-    return productsPrice + shippingPrice;
+    return calculateTotalPrice({
+      productsPrice,
+      shippingPrice,
+      additionalCosts: location?.additionalCosts ?? 0,
+    });
   };
 
   return (
-    <div className="dark:bg-stone-950 rounded-lg w-full py-4 px-5">
-      <section className="flex items-center text-neutral-500 justify-between">
+    <div className="w-full rounded-lg px-5 py-4  dark:bg-neutral-950">
+      <section className="flex items-center justify-between text-neutral-500">
         <div className="flex items-center gap-2">
           <p>#{code}</p>
           <p>-</p>
           <div
-            className={clsx("font-semibold flex items-center gap-1", {
+            className={clsx("flex items-center gap-1 font-semibold", {
               "text-red-500": user.blacklist !== null,
               "text-neutral-50": user.blacklist === null,
             })}
@@ -80,11 +89,11 @@ export default function DashboardOrdersCard({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span>
-                      <IoWarning className="w-5 h-5" />
+                      <IoWarning className="h-5 w-5" />
                     </span>
                   </TooltipTrigger>
                   <TooltipContent
-                    className="text-sm bg-neutral-950 border-neutral-900 border rounded-md p-2 font-normal text-neutral-200"
+                    className="rounded-md border border-neutral-900 bg-neutral-950 p-2 text-sm font-normal text-neutral-200"
                     align="center"
                     sideOffset={5}
                   >
@@ -99,6 +108,11 @@ export default function DashboardOrdersCard({
             status={status}
             isLoading={isPatching && patchingCode === code}
           />
+          {status === Status.SUCCESS && (
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600">
+              <MdOutlineCheck className="h-3.5 w-3.5 text-white" />
+            </span>
+          )}
         </div>
 
         <DashboardOrderCardDropdown
@@ -112,41 +126,47 @@ export default function DashboardOrdersCard({
           isLoading={isPatching}
         />
       </section>
-      <section className="flex items-center gap-4 text-neutral-400 h-12 text-sm">
+      <section className="flex h-12 items-center gap-4 text-sm text-neutral-400">
         <p className="flex gap-1">
-          <MdLocationPin className="w-5 h-5" /> {wilaya.name}
+          <MdLocationPin className="h-5 w-5" /> {wilaya.name}
         </p>
         <p className="flex gap-1 capitalize">
-          <MdOutlineLocationOn className="w-5 h-5" /> {town.name}
+          <MdOutlineLocationOn className="h-5 w-5" /> {town.name}
         </p>
         <p className="flex gap-1 first-letter:capitalize">
-          <MdOutlineMapsHomeWork className="w-5 h-5 " />{" "}
+          <MdOutlineMapsHomeWork className="h-5 w-5 " />{" "}
           {isHome
-            ? address
-            : `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
+            ? // display the home address for home shipping
+              address
+            : // if it's an office (stopdesk) shipping type and a location was chosen...
+            location !== null
+            ? // display it
+              location.name
+            : // otherwise display a generic stopdesk shipping message
+              `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
         </p>
         <p className="flex gap-1">
-          <MdOutlineDateRange className="w-5 h-5 " /> {formatDate(createdAt)}
+          <MdOutlineDateRange className="h-5 w-5 " /> {formatDate(createdAt)}
         </p>
       </section>
-      <hr className="dark:border-stone-800" />
+      <hr className="dark:border-neutral-800" />
       <section className="flex justify-between pt-4">
         <div className="flex flex-col gap-2">
           {orderProducts.map(({ product }, i) => (
             <div
               key={i}
-              className="flex items-center justify-between bg-stone-900  w-96 rounded-md h-10 px-4 gap-4"
+              className="flex h-10 w-96 items-center  justify-between gap-4 rounded-md bg-neutral-800 px-4"
             >
               <p
-                className="text-neutral-200 w-56 whitespace-nowrap overflow-ellipsis overflow-hidden"
+                className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-200"
                 title={product.name}
               >
                 {product.name}
               </p>
 
-              <p className="text-neutral-400 flex gap-1 items-center">
+              <p className="flex items-center gap-1 text-neutral-400">
                 {product.discount > 0 && (
-                  <span title="Réduction" className="text-xs text-stone-500">
+                  <span title="Réduction" className="text-xs text-neutral-500">
                     -{product.discount}%
                   </span>
                 )}
@@ -158,12 +178,12 @@ export default function DashboardOrdersCard({
           ))}
         </div>
         <div className="flex items-end">
-          <div className="text-neutral-200 flex flex-col">
-            <div className="flex gap-10">
+          <div className="flex flex-col text-neutral-200">
+            <div className="flex justify-between gap-10">
               <span>Prix livraion:</span>{" "}
-              <span>{isHome ? wilaya.homePrice : wilaya.officePrice}DA</span>
+              <span>{shippingPrice + (location?.additionalCosts ?? 0)}DA</span>
             </div>
-            <div className="flex gap-10 font-semibold">
+            <div className="flex justify-between gap-10 font-semibold">
               <span>Prix total:</span>{" "}
               <span className="text-secondary">{totalPrice()}DA</span>
             </div>

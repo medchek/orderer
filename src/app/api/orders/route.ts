@@ -26,8 +26,7 @@ import { GetOrdersSuccessResponse } from "@/features/orders/api/getOrders";
 import { emailRegex, phoneRegex } from "@/lib/patterns";
 import { headers } from "next/headers";
 import { verifyCaptcha } from "@/features/recaptcha/api/verifyCaptcha";
-
-// TODO: Implement Rate limiting for all API routes
+import { notifyOrderCreated } from "@/features/notifications/api/notifyOrderCreated";
 
 export async function POST(req: NextRequest) {
   try {
@@ -60,16 +59,13 @@ export async function POST(req: NextRequest) {
         .max(200),
       locationId: Joi.string().when("isHome", {
         is: false,
-        then: Joi.string()
-          .length(SHIPPING_LOCATION_ID_LENGTH)
-          .allow("")
-          .required(),
+        then: Joi.string().length(SHIPPING_LOCATION_ID_LENGTH),
         otherwise: Joi.optional().empty(),
       }),
       lastName: Joi.string().min(3).max(40).optional(),
       name: Joi.string().min(3).max(40).optional(),
       email: Joi.string().regex(emailRegex).optional(),
-      wilayaId: Joi.number().strict().min(1).max(58).required(),
+      wilayaCode: Joi.number().strict().min(1).max(58).required(),
       townCode: Joi.number().strict().min(1001).max(58003).required(),
       productsCode: Joi.array()
         .min(1)
@@ -93,7 +89,7 @@ export async function POST(req: NextRequest) {
       isHome,
       phone,
       productsCode,
-      wilayaId,
+      wilayaCode,
       address,
       lastName,
       name,
@@ -128,14 +124,14 @@ export async function POST(req: NextRequest) {
     const orderCode = uniqueId(ORDER_CODE_LENGTH, true);
 
     // if there are no user with this phone number, create one
-    await prisma.order.create({
+    const createdOrder = await prisma.order.create({
       data: {
         code: orderCode,
         isHome,
         address,
         wilaya: {
           connect: {
-            id: wilayaId,
+            code: wilayaCode,
           },
         },
         town: {
@@ -152,16 +148,18 @@ export async function POST(req: NextRequest) {
               name,
               email,
               lastName,
-              wilaya: {
-                connect: { id: wilayaId },
-              },
+              wilayaCode: wilayaCode,
+              townCode: townCode,
             },
           }),
         },
         location: {
-          connect: {
-            id: locationId && locationId.length > 0 ? locationId : undefined,
-          },
+          connect:
+            locationId && locationId.length > 0
+              ? {
+                  id: locationId,
+                }
+              : undefined,
         },
         orderProducts: {
           createMany: {
@@ -170,11 +168,49 @@ export async function POST(req: NextRequest) {
           },
         },
       },
-      // include: {
-      //   user: true,
-      //   wilaya: true,
-      //   orderProducts: true,
-      // },
+
+      select: {
+        createdAt: true,
+        town: {
+          select: {
+            name: true,
+          },
+        },
+        wilaya: {
+          select: {
+            name: true,
+          },
+        },
+        orderProducts: {
+          select: {
+            product: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // await sendOrderCreatedEmail({
+    //   createdAt: formatDate(createdOrder.createdAt, {
+    //     addPreposition: true,
+    //   }),
+    //   orderCode,
+    //   phone,
+    //   town: createdOrder.town.name,
+    //   wilaya: createdOrder.wilaya.name,
+    //   products: createdOrder.orderProducts.map(
+    //     (product) => product.product.name,
+    //   ),
+    // });
+
+    await notifyOrderCreated({
+      orderCode,
+      phone,
+      town: createdOrder.town.name,
+      wilaya: createdOrder.wilaya.name,
     });
 
     return NextResponse.json<PostOrderSuccessResponse>(
@@ -275,6 +311,12 @@ export async function GET(req: NextRequest) {
           isHome: true,
           status: true,
           createdAt: true,
+          location: {
+            select: {
+              additionalCosts: true,
+              name: true,
+            },
+          },
           user: {
             select: {
               phone: true,

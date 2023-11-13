@@ -1,9 +1,12 @@
+"use client";
 import { cn, toNumber } from "@/lib/utils";
 import React from "react";
 import { MdChevronRight } from "react-icons/md";
 import ReactPaginate, { type ReactPaginateProps } from "react-paginate";
 
 interface Props extends ReactPaginateProps {
+  /** href link used to render link tags which preceedes the page number */
+  href?: string;
   perPageCount?: {
     setPerPageCount: (n: number) => void;
     count: number;
@@ -12,6 +15,7 @@ interface Props extends ReactPaginateProps {
 }
 
 export default function DashboardPagination({
+  href,
   perPageCount,
   className,
   ...props
@@ -26,7 +30,7 @@ export default function DashboardPagination({
   return (
     <div
       className={cn(
-        "relative flex h-14 min-h-[3.5rem] w-full items-center justify-center",
+        "relative flex h-12 min-h-[3rem] w-full items-center justify-center",
         className,
       )}
       id="dashboard-pagination"
@@ -34,15 +38,16 @@ export default function DashboardPagination({
       <div>
         <ReactPaginate
           {...props}
+          hrefBuilder={href ? (page) => href + page : undefined}
           className="flex w-full gap-2 text-stone-50"
           breakLabel="..."
           nextLabel={<MdChevronRight className="h-7 w-7" />}
           previousLabel={<MdChevronRight className="h-7 w-7 rotate-180 " />}
-          nextLinkClassName="flex justify-center items-center w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md"
-          previousLinkClassName="flex justify-center items-center w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md"
-          breakLinkClassName="flex font-bold justify-center items-center w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md"
-          pageLinkClassName="w-10 h-10 bg-stone-950 hover:bg-stone-800  rounded-md font-semibold flex justify-center items-center"
-          disabledLinkClassName="opacity-40 hover:!bg-stone-950 cursor-not-allowed"
+          nextLinkClassName="flex h-8 w-8 items-center justify-center rounded-md bg-stone-950  hover:bg-stone-800"
+          previousLinkClassName="flex h-8 w-8 items-center justify-center rounded-md bg-stone-950  hover:bg-stone-800"
+          breakLinkClassName="flex h-8 w-8 items-center justify-center rounded-md bg-stone-950 font-bold  hover:bg-stone-800"
+          pageLinkClassName="flex h-8 w-8 items-center  justify-center rounded-md bg-stone-950 font-semibold hover:bg-stone-800"
+          disabledLinkClassName="cursor-not-allowed opacity-40 hover:!bg-stone-950"
           activeLinkClassName="!bg-secondary"
           pageRangeDisplayed={3}
           // marginPagesDisplayed={2}

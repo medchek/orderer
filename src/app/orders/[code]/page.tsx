@@ -34,6 +34,18 @@ export default async function Orders({ params }: Props) {
     include: {
       wilaya: true,
       town: true,
+      location: {
+        select: {
+          additionalCosts: true,
+          name: true,
+          coordinates: true,
+          town: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
       orderProducts: {
         select: {
           product: {
@@ -45,9 +57,12 @@ export default async function Orders({ params }: Props) {
     },
   });
 
-  const shippingPrice = data?.isHome
-    ? data.wilaya.homePrice
-    : data?.wilaya.officePrice;
+  const shippingPrice = () => {
+    const price =
+      (data?.isHome ? data.wilaya.homePrice : data?.wilaya.officePrice) ?? 0;
+
+    return price + (data?.location?.additionalCosts ?? 0);
+  };
 
   const totalPrice = () => {
     if (!data || !shippingPrice) return;
@@ -61,7 +76,42 @@ export default async function Orders({ params }: Props) {
       0,
     );
 
-    return allProductsPrice + shippingPrice;
+    return allProductsPrice + shippingPrice();
+  };
+
+  const displayAddress = () => {
+    if (!data) return;
+    if (data.isHome) {
+      return data.address;
+    } else {
+      if (data.location) {
+        const { name, town, coordinates } = data.location;
+        return (
+          <div className="flex gap-1 [&>span]:dark:text-neutral-600">
+            <p>{name}</p>
+            <span>&bull;</span>
+            <span className="capitalize">{town.name}</span>
+            {coordinates ? (
+              <>
+                <span>&bull;</span>
+                <a
+                  className="text-secondary hover:underline"
+                  href={coordinates}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Google Maps
+                </a>
+              </>
+            ) : null}
+          </div>
+        );
+      } else {
+        return `Bureau de livraison de la wilaya ${addPartitive(
+          data.wilaya.name,
+        )}`;
+      }
+    }
   };
 
   // const handleEmptyValue = (v: string | undefined | null) =>
@@ -69,7 +119,7 @@ export default async function Orders({ params }: Props) {
 
   const fullName = (name: StringOrEmpty, lastName: StringOrEmpty) => {
     if (!name && !lastName) return "Non mentioné";
-    const fullName = `${lastName} ${name}`;
+    const fullName = `${lastName ?? ""} ${name ?? ""}`;
     return fullName.trim();
   };
 
@@ -78,7 +128,7 @@ export default async function Orders({ params }: Props) {
       <HomeHeader />
 
       {!data ? (
-        <div className="flex h-full w-full grow flex-col items-center justify-center gap-2 text-stone-500">
+        <div className="flex h-full w-full grow flex-col items-center justify-center gap-2 text-neutral-500">
           <p>Aucune commande ne correspond au code fourni</p>
           <BsCartX className="h-16 w-16" />
         </div>
@@ -91,7 +141,7 @@ export default async function Orders({ params }: Props) {
             <h1 className="text-xl font-semibold">Votre commande</h1>
           </div>
           <div className="flex w-full grow gap-4">
-            <section className="flex w-auto grow flex-col gap-10 rounded-xl bg-stone-950 px-6 py-6">
+            <section className="flex w-auto grow flex-col gap-10 rounded-xl bg-neutral-200 px-6 py-6 dark:bg-neutral-950">
               {/* {data.map(({ title, data }) => {
             return <OrderInfoSegment title={title} data={data} />;
           })} */}
@@ -103,13 +153,19 @@ export default async function Orders({ params }: Props) {
                   {
                     label: "Nom",
                     content: fullName(data.user.name, data.user.lastName),
+                    capitalize: true,
                   },
                 ]}
               />
               <OrderInfoSegment
                 title="Livraison"
                 data={[
-                  { label: "Type de livraison", content: "À domicile" },
+                  {
+                    label: "Type de livraison",
+                    content: data.isHome
+                      ? "À domicile"
+                      : "Au bureau de livraison",
+                  },
                   {
                     label: "Wilaya",
                     content: `${data.wilaya.code} - ${data.wilaya.name}`,
@@ -121,11 +177,7 @@ export default async function Orders({ params }: Props) {
                   },
                   {
                     label: "Adresse",
-                    content: data.isHome
-                      ? data.address
-                      : `Bureau de livraison de la wilaya ${addPartitive(
-                          data.wilaya.name,
-                        )}`,
+                    content: displayAddress(),
                   },
                 ]}
               />
@@ -150,8 +202,8 @@ export default async function Orders({ params }: Props) {
                 ]}
               />
             </section>
-            <section className="flex w-[390px] flex-col overflow-hidden rounded-xl bg-stone-950 pt-6">
-              <h3 className="pl-4 text-lg font-bold text-stone-200">
+            <section className="flex w-[390px] flex-col overflow-hidden rounded-xl bg-neutral-200 pt-6 dark:bg-neutral-950">
+              <h3 className="pl-4 text-lg font-bold text-neutral-900 dark:text-neutral-200">
                 Produits
               </h3>
               <div className="grow px-2">
@@ -163,7 +215,7 @@ export default async function Orders({ params }: Props) {
                     discount={product.discount}
                     name={product.name}
                     price={product.price}
-                    productCount={0}
+                    // productCount={0}
                     onClear={() => {}}
                     transparentBg
                     images={product.images}
@@ -171,17 +223,14 @@ export default async function Orders({ params }: Props) {
                   />
                 ))}
               </div>
-              <div className="flex h-40 items-center bg-stone-900 px-4">
+              <div className="flex h-40 items-center bg-neutral-300 px-4 dark:bg-neutral-900">
                 <OrderInfoSegment
                   justifyBetween
                   title="Prix"
                   data={[
                     {
                       label: "Prix livraison",
-                      content:
-                        (data.isHome
-                          ? data.wilaya.homePrice
-                          : data.wilaya.officePrice) + "DA",
+                      content: shippingPrice() + "DA",
                     },
                     {
                       label: "Prix total à payer",

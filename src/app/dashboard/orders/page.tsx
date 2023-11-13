@@ -19,10 +19,9 @@ import { useDeleteOrder } from "@/features/orders/api/deleteOrder";
 import { usePatchOrder } from "@/features/orders/api/patchOrder";
 import { queryKeys } from "@/lib/queryKeys";
 
-
 const DashboardDeleteConfirm = dynamic(
   () => import("@/components/dashboard/DashboardDeleteConfirm"),
-  { loading: () => <ModalLoader /> }
+  { loading: () => <ModalLoader /> },
 );
 
 export default function Orders() {
@@ -61,14 +60,14 @@ export default function Orders() {
     onSuccess: (deletedOrderCode) => {
       if (!ordersData) return;
       const ordersDataCopy = ordersData.data.filter(
-        (order) => order.code !== deletedOrderCode
+        (order) => order.code !== deletedOrderCode,
       );
       queryClient.setQueryData(
         queryKeys.orders.all(ordersQueryFilters).queryKey,
         {
           count: ordersData.count,
           data: ordersDataCopy,
-        }
+        },
       );
       // queryClient.invalidateQueries({queryKey: ["orders"]})
       showSnackbar("Commande supprimée", "default");
@@ -102,7 +101,7 @@ export default function Orders() {
       return Array.from({ length: 8 }, (_, i) => (
         <div
           key={`tr-${i}`}
-          className="h-auto rounded-md animate-pulse bg-stone-900/80 py-3 px-4 [&>section>div]:bg-stone-800 [&>section>div]:rounded-md space-y-2"
+          className="h-auto animate-pulse space-y-2 rounded-md bg-neutral-900/80 px-4 py-3 [&>section>div]:rounded-md [&>section>div]:bg-neutral-800"
         >
           <section className="flex gap-2 [&>div]:h-6 ">
             <div className="w-1/6"></div>
@@ -115,12 +114,12 @@ export default function Orders() {
             <div className="w-72"></div>
             <div className="w-32"></div>
           </section>
-          <hr className="border-stone-800" />
+          <hr className="border-neutral-800" />
           <section className="flex justify-between">
-            <div className="w-72 h-6"></div>
+            <div className="h-6 w-72"></div>
             <section className="flex flex-col items-end gap-2">
-              <div className="w-40 rounded-md bg-stone-800 h-4"></div>
-              <div className="w-44 rounded-md bg-stone-800 h-6"></div>
+              <div className="h-4 w-40 rounded-md bg-neutral-800"></div>
+              <div className="h-6 w-44 rounded-md bg-neutral-800"></div>
             </section>
           </section>
         </div>
@@ -137,11 +136,11 @@ export default function Orders() {
       // no data
       if (!ordersData || ordersData.data.length === 0) {
         const hasFilter = !!Object.entries(ordersQueryFilters).filter(
-          ([_, value,]) => !!value
+          ([_, value]) => !!value,
         ).length;
         return (
           <DashboardEmptyState
-            Icon={<BsListNested className="w-20 h-20" />}
+            Icon={<BsListNested className="h-20 w-20" />}
             text={
               hasFilter
                 ? "Commandes non trouvées"
@@ -184,7 +183,7 @@ export default function Orders() {
 
         <div
           id="orders-list"
-          className="flex flex-col gap-4 overflow-y-auto w-full dark:[color-scheme:dark] grow"
+          className="flex w-full grow flex-col gap-4 overflow-y-auto dark:[color-scheme:dark]"
         >
           {displayOrdersData()}
         </div>

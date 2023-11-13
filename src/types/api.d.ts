@@ -15,5 +15,5 @@ export type MutationOptions<
 
 export type QueryOptions<TReturnData = unknown> = Omit<
   UseQueryOptions<TReturnData, HTTPError, TReturnData>,
-  "queryFn"
+  "queryFn" | "queryKey"
 >;

@@ -36,7 +36,7 @@ export default function SettingsAccountForm() {
   const { data: accountData, isFetching: isFetchingAccountData } =
     useGetAccount();
 
-  const { mutate: patchAccount, isLoading } = usePatchAccount({
+  const { mutate: patchAccount, isPending } = usePatchAccount({
     onError: () => {
       showSnackbar("Une érreur est survenu, veuillez reéssayer", "error");
     },
@@ -206,7 +206,7 @@ export default function SettingsAccountForm() {
           <Button
             className="text-sm font-normal"
             type="submit"
-            isLoading={isLoading}
+            isLoading={isPending}
           >
             Sauvegarder
           </Button>

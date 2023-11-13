@@ -16,7 +16,7 @@ export default function DashboardAddProduct({ closeModal }: Props) {
   const { showSnackbar, productsFilters } = useStore();
   const queryClinet = useQueryClient();
 
-  const { isLoading: isPostingProduct, mutate: productMutation } =
+  const { isPending: isPostingProduct, mutate: productMutation } =
     usePostProduct({
       onSuccess: () => {
         queryClinet.invalidateQueries({

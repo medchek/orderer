@@ -64,7 +64,7 @@ Props) {
     selectedWilaya === null ? true : selectedWilaya.availableOffice,
   );
 
-  const { mutate: patchWilaya, isLoading } = usePatchShippingPrices({
+  const { mutate: patchWilaya, isPending } = usePatchShippingPrices({
     onSuccess: (data) => {
       const wilayasData = queryClient.getQueryData<Wilaya[]>(
         queryKeys.wilayas.all.queryKey,
@@ -204,7 +204,7 @@ Props) {
       className="flex w-full flex-col rounded-lg  bg-[#F3F3F3] px-6 py-3 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       closeOnClickOutside
       centerModalContent
-      preventClose={isLoading}
+      preventClose={isPending}
     >
       <form
         className="w-full px-2"
@@ -298,9 +298,9 @@ Props) {
             className="h-10 w-36 rounded-md bg-blue-600 font-semibold text-white transition-colors hover:bg-secondary focus:bg-blue-700  disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
             // onClick={handleDeleteProduct}
             // disabled
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? <Loader className="h-6 w-6" /> : <span>Modifier</span>}
+            {isPending ? <Loader className="h-6 w-6" /> : <span>Modifier</span>}
           </button>
         </section>
       </form>

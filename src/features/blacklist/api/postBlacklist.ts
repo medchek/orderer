@@ -26,7 +26,6 @@ export const postBlacklist = async (
 
 type UseBlacklistNumberOptions = MutationOptions<
   PhoneNumber, // return type
-  unknown, // error type
   PostBlacklistRequestPayload // request data type
 >;
 /**

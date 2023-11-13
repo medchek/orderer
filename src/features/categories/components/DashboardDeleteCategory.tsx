@@ -20,13 +20,12 @@ export default function DashboardDeleteCategory({
   const queryClient = useQueryClient();
   const { showSnackbar } = useStore();
   // delete requests
-  const { isLoading, mutate: deleteCategoryMutation } = useDeleteCategory({
+  const { isPending, mutate: deleteCategoryMutation } = useDeleteCategory({
     onSuccess: (data) => {
       const { code, type } = data;
-      const categories =
-        queryClient.getQueryData<GetCategoriesSuccessResponse>(
-          queryKeys.categories.all.queryKey
-        );
+      const categories = queryClient.getQueryData<GetCategoriesSuccessResponse>(
+        queryKeys.categories.all.queryKey,
+      );
 
       if (categories) {
         if (type === "category") {
@@ -35,7 +34,7 @@ export default function DashboardDeleteCategory({
           const newCategories = categories.filter((cat) => cat.code !== code);
           queryClient.setQueryData<GetCategoriesSuccessResponse>(
             queryKeys.categories.all.queryKey,
-            newCategories
+            newCategories,
           );
         } else {
           // handle delete subcategory
@@ -46,7 +45,7 @@ export default function DashboardDeleteCategory({
               const subcategories = category.subCategories;
               // if the subcategories contain the id returned by onSuccess
               const idIndex = subcategories.findIndex(
-                (subcat) => subcat.code === code
+                (subcat) => subcat.code === code,
               );
 
               if (idIndex > -1) {
@@ -64,13 +63,13 @@ export default function DashboardDeleteCategory({
           // set the new data with the deleted subcategory
           queryClient.setQueryData<GetCategoriesSuccessResponse>(
             queryKeys.categories.all.queryKey,
-            newCategories
+            newCategories,
           );
         }
 
         showSnackbar(
           `${type === "category" ? "Catégorie" : "Sous-catégorie"} supprimée`,
-          "default"
+          "default",
         );
         closeModal();
       }
@@ -79,7 +78,7 @@ export default function DashboardDeleteCategory({
       const text = type === "category" ? "categorie" : "sous-catégorie";
       showSnackbar(
         `Une érreur est survenu lors la suppression de la ${text}`,
-        "error"
+        "error",
       );
     },
   });
@@ -103,7 +102,7 @@ export default function DashboardDeleteCategory({
           ? "Cela aussi supprimera toute sous-catégorie liée à celle-ci."
           : ""
       }`}
-      isLoading={isLoading}
+      isLoading={isPending}
     />
   );
 }

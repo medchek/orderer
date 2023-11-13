@@ -56,7 +56,7 @@ export default function Orders() {
     setCurrentPage(selected);
   };
 
-  const { mutate: deleteMutation, isLoading: isDeleting } = useDeleteOrder({
+  const { mutate: deleteMutation, isPending: isDeleting } = useDeleteOrder({
     onSuccess: (deletedOrderCode) => {
       if (!ordersData) return;
       const ordersDataCopy = ordersData.data.filter(
@@ -81,7 +81,7 @@ export default function Orders() {
 
   const {
     mutateAsync: patchMutation,
-    isLoading: isPatching,
+    isPending: isPatching,
     variables: patchData,
   } = usePatchOrder({
     onSuccess() {

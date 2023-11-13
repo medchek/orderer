@@ -2,7 +2,12 @@
 import { useEffect, useState } from "react";
 import { useStore } from "@/store";
 
-import { MdAdd, MdDeleteOutline, MdEdit, MdOutlineFilterAltOff } from "react-icons/md";
+import {
+  MdAdd,
+  MdDeleteOutline,
+  MdEdit,
+  MdOutlineFilterAltOff,
+} from "react-icons/md";
 import ModalLoader from "@/components/ModalLoader";
 import ProductCardLoader from "@/components/ProductCardLoader";
 
@@ -60,7 +65,7 @@ export default function DashboardProductsDisplay() {
   >(null);
 
   const { refetch, data, status } = useGetProducts(productsFilters);
-  const { mutate: deleteProductMutation, isLoading: isDeleting } =
+  const { mutate: deleteProductMutation, isPending: isDeleting } =
     useDeleteProduct({
       onSuccess: (productCode: string) => {
         removePorductByCode(productCode);
@@ -99,7 +104,7 @@ export default function DashboardProductsDisplay() {
           />
         )}
         {/* LOADING */}
-        {status === "loading" && (
+        {status === "pending" && (
           <>
             {Array.from({ length: 8 }, (_, i) => (
               <ProductCardLoader key={i} />
@@ -122,7 +127,7 @@ export default function DashboardProductsDisplay() {
               subContent={
                 <button
                   type="button"
-                  className="flex justify-center items-center gap-1 h-10 rounded-lg px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
+                  className="flex h-10 items-center justify-center gap-1 rounded-lg px-2 font-semibold transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
                   onClick={() => {
                     if (hasFilters) {
                       resetProductsFilters();

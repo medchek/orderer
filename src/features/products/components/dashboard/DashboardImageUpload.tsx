@@ -38,7 +38,7 @@ export default function DashboardImageUpload({
     return uploadState.filter((v) => v !== null) as FileMetaData[]; // negate the null values
   }, [uploadState]);
 
-  const { mutate: postImageMutation, isLoading: isUploadingImage } =
+  const { mutate: postImageMutation, isPending: isUploadingImage } =
     usePostImage({
       onSuccess: ({ data, index }) => {
         const targetState = uploadState[index];

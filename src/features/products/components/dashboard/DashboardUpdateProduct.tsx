@@ -21,7 +21,7 @@ export default function DashboardUpdateProduct({
   const queryClient = useQueryClient();
   const { showSnackbar, productsFilters } = useStore();
 
-  const { mutate, isLoading } = usePatchProduct({
+  const { mutate, isPending } = usePatchProduct({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.products.all(productsFilters).queryKey,
@@ -66,7 +66,7 @@ export default function DashboardUpdateProduct({
       closeModal={closeModal}
       productData={productToUpdate}
       onSubmit={onFormSubmit}
-      isLoading={isLoading}
+      isLoading={isPending}
     />
   );
 }

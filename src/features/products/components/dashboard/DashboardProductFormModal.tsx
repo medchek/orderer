@@ -50,7 +50,7 @@ export default function DashboardProductFormModal({
   } = methods;
 
   const { isUploadingImage } = useStore();
-  const { isLoading: isCategoriesFetching } = useGetCategories();
+  const { isPending: isCategoriesFetching } = useGetCategories();
 
   const [uploadState, setUploadState] = useState<(FileMetaData | null)[]>([
     null,
@@ -239,7 +239,7 @@ export default function DashboardProductFormModal({
           <ModalActionButtons
             id="form-buttons"
             className="mt-2 flex h-12 min-h-[3rem] items-center justify-end gap-4"
-            confirmText={productData ? "Modifier": "Ajouter"}
+            confirmText={productData ? "Modifier" : "Ajouter"}
             onCancel={closeModal}
             confirmButtonType="submit"
             disableCancel={isUploadingImage || isLoading}

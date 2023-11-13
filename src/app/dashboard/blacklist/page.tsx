@@ -30,7 +30,7 @@ import { MdAdd } from "react-icons/md";
 
 export default function Blacklist() {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError, refetch } = useFetchBlacklist();
+  const { data, isPending, isError, refetch } = useFetchBlacklist();
   const {
     showSnackbar,
     blacklistedNumberIdToDelete,
@@ -45,7 +45,7 @@ export default function Blacklist() {
     setIsAddingNumberToBlock(true);
   };
 
-  const { mutate: deleteBlacklistMutation, isLoading: isDeleting } =
+  const { mutate: deleteBlacklistMutation, isPending: isDeleting } =
     useDeleteBlacklistedNumber({
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: queryKeys.orders._def });
@@ -140,7 +140,7 @@ export default function Blacklist() {
               text="Une érreur est survenur lors de la recherche des numéros bloqués"
             />
           )}
-          {isLoading &&
+          {isPending &&
             // Skeletons
             Array.from({ length: 20 }).map((_, i) => (
               <div

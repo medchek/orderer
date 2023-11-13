@@ -18,7 +18,7 @@ export default function DashboardDeleteShippingLocation({
 }: Props) {
   const queryClient = useQueryClient();
   const { showSnackbar, shippingLocationsQueryFilters } = useStore();
-  const { isLoading, mutate: deleteLocation } = useDeleteLocation({
+  const { isPending, mutate: deleteLocation } = useDeleteLocation({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.locations.all(shippingLocationsQueryFilters)
@@ -51,7 +51,7 @@ export default function DashboardDeleteShippingLocation({
       closeModal={closeModal}
       label="Supprimer un point de livraison"
       onConfirm={handleOnConfirm}
-      isLoading={isLoading}
+      isLoading={isPending}
       text="Êtes-vous sûr de vouloir supprimer ce point de livraison"
     />
   );

@@ -1,7 +1,8 @@
 import { queryKeys } from "@/lib/queryKeys";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import ky from "ky";
 import { BlacklistedUserData } from "../types";
+import { QueryOptions } from "@/types/api";
 
 export type GetBlacklistSuccessResponse = BlacklistedUserData[];
 
@@ -9,7 +10,7 @@ export const getBlacklist = async (): Promise<GetBlacklistSuccessResponse> => {
   return await ky.get("/api/blacklist").json();
 };
 
-type UseFetchBlacklistOptions = UseQueryOptions<GetBlacklistSuccessResponse>;
+type UseFetchBlacklistOptions = QueryOptions<GetBlacklistSuccessResponse>;
 
 export const useFetchBlacklist = (config?: UseFetchBlacklistOptions) => {
   return useQuery({

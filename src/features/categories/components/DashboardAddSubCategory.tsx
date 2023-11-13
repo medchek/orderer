@@ -37,7 +37,7 @@ export default function DashboardAddSubCategory({
     }
   };
 
-  const { isLoading, mutate } = usePostSubcategory({
+  const { isPending, mutate } = usePostSubcategory({
     onError: (error, vars) => {
       const status = error.response.status;
 
@@ -131,7 +131,7 @@ export default function DashboardAddSubCategory({
         console.error("Error submitting sub-category form:", err);
       })}
       error={errors.name?.message}
-      isLoading={isLoading}
+      isLoading={isPending}
     />
   );
 }

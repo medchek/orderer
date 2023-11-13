@@ -89,7 +89,7 @@ export default function OrderForm({ accountDetail }: Props) {
     selectedWilaya === null ||
     selectedTown === null;
 
-  const { mutate, isLoading, isSuccess } = usePostOrder({
+  const { mutate, isPending, isSuccess } = usePostOrder({
     onSuccess: ({ orderCode }) => {
       replace(`/thanks?code=${orderCode}`);
     },
@@ -269,9 +269,9 @@ export default function OrderForm({ accountDetail }: Props) {
             className="flex h-12 w-full justify-end gap-4 text-stone-500"
             id="form-buttons"
           >
-            {isConfirming && !isSuccess && !isLoading && (
+            {isConfirming && !isSuccess && !isPending && (
               <button
-                disabled={isLoading}
+                disabled={isPending}
                 className="text h-12 w-auto gap-2 rounded-lg px-6 focus:bg-stone-950/70 disabled:cursor-not-allowed dark:bg-stone-950"
                 onClick={cancelConfirm}
               >
@@ -280,8 +280,8 @@ export default function OrderForm({ accountDetail }: Props) {
             )}
             <Button
               className="text flex h-12 w-44 items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed  disabled:bg-stone-200 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700"
-              disabled={isDisabledSubmit || isLoading || isSuccess}
-              isLoading={isLoading || isSuccess}
+              disabled={isDisabledSubmit || isPending || isSuccess}
+              isLoading={isPending || isSuccess}
             >
               <span className="flex gap-2">
                 <MdOutlineShoppingCart className="h-6 w-6" /> Commander

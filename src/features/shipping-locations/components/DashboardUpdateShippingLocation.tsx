@@ -30,7 +30,7 @@ export default function DashboardUpdateShippingLocation({
   const { data: locationData } = useGetLocations(shippingLocationsQueryFilters);
   const targetLocation = locationData?.data[locationIndex];
 
-  const { isLoading, mutate: patchLocation } = usePatchLocation({
+  const { isPending, mutate: patchLocation } = usePatchLocation({
     onError: () => {
       showSnackbar("Une érreur est survenu, veuillez reéssayer");
     },
@@ -81,7 +81,7 @@ export default function DashboardUpdateShippingLocation({
   return (
     <DashboardShippingLocationsFormModal
       onCloseModal={onCloseModal}
-      isLoading={isLoading}
+      isLoading={isPending}
       onSubmit={handleOnSubmit}
       locationData={targetLocation}
       disableSubmit={!selectedWilaya}

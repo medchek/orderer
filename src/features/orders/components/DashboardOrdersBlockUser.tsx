@@ -24,7 +24,7 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
   const queryClient = useQueryClient();
   const { showSnackbar } = useStore();
 
-  const { mutate, isLoading } = usePostBlacklist({
+  const { mutate, isPending } = usePostBlacklist({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.orders._def });
       queryClient.invalidateQueries({ queryKey: queryKeys.blacklist._def });
@@ -61,7 +61,7 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
       closeOnClickOutside
       // label="Supprimer un produit"
       label="Bloquer un numéro"
-      className="flex w-3/5 h-auto flex-col gap-4 rounded-lg bg-[#F3F3F3] px-4 py-5 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
+      className="flex h-auto w-3/5 flex-col gap-4 rounded-lg bg-[#F3F3F3] px-4 py-5 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       centerModalContent
     >
       <form
@@ -115,17 +115,17 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
             type="button"
             className="h-10 w-36 rounded-md font-semibold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
             onClick={closeModal}
-            disabled={isLoading}
+            disabled={isPending}
           >
             Annuler
           </button>
           <button
             type="submit"
-            className="h-10 w-36 rounded-md bg-red-600 font-semibold text-neutral-100 dark:text-neutral-100 transition-colors hover:bg-red-500 focus:bg-red-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
+            className="h-10 w-36 rounded-md bg-red-600 font-semibold text-neutral-100 transition-colors hover:bg-red-500 focus:bg-red-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 dark:text-neutral-100 disabled:dark:bg-stone-600"
             // disabled
-            disabled={isLoading}
+            disabled={isPending}
           >
-            {isLoading ? <Loader className="h-6 w-6" /> : <span>Bloquer</span>}
+            {isPending ? <Loader className="h-6 w-6" /> : <span>Bloquer</span>}
           </button>
         </section>
       </form>

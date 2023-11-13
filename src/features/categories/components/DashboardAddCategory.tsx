@@ -27,7 +27,7 @@ export default function DashboardAddCategory({ closeModal }: Props) {
     formState: { errors },
   } = useForm<AddCategoryFormValues>();
 
-  const { isLoading, mutate } = usePostCategory({
+  const { isPending, mutate } = usePostCategory({
     onError: (error) => {
       const status = error.response.status;
       let errorMsg =
@@ -40,7 +40,7 @@ export default function DashboardAddCategory({ closeModal }: Props) {
     onSuccess: (data) => {
       const currentCategories =
         queryClient.getQueryData<GetCategoriesSuccessResponse>(
-          queryKeys.categories.all.queryKey
+          queryKeys.categories.all.queryKey,
         );
       if (!currentCategories) return;
       const newCategories = currentCategories
@@ -49,7 +49,7 @@ export default function DashboardAddCategory({ closeModal }: Props) {
 
       queryClient.setQueryData<GetCategoriesSuccessResponse>(
         queryKeys.categories.all.queryKey,
-        newCategories
+        newCategories,
       );
       showSnackbar("Catégorie ajouté!", "default");
       closeModal();
@@ -65,14 +65,13 @@ export default function DashboardAddCategory({ closeModal }: Props) {
 
   const onFormSubmit: SubmitHandler<AddCategoryFormValues> = (data) => {
     // check if the category already exists
-    const categories =
-      queryClient.getQueryData<GetCategoriesSuccessResponse>(
-        queryKeys.categories.all.queryKey
-      );
+    const categories = queryClient.getQueryData<GetCategoriesSuccessResponse>(
+      queryKeys.categories.all.queryKey,
+    );
 
     if (categories) {
       const nameExists = categories.findIndex(
-        (c) => c.name.toLowerCase() === data.name.toLowerCase()
+        (c) => c.name.toLowerCase() === data.name.toLowerCase(),
       );
       if (nameExists !== -1) {
         return showSnackbar("Ce nom de catégorie existe déjà", "error");
@@ -96,7 +95,7 @@ export default function DashboardAddCategory({ closeModal }: Props) {
         console.error("Error submitting sub-category form:", err);
       })}
       error={errors.name?.message}
-      isLoading={isLoading}
+      isLoading={isPending}
     />
   );
 }

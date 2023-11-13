@@ -14,7 +14,7 @@ export default function DashboardAddShippingLocation() {
     shippingLocationsQueryFilters,
   } = useStore();
 
-  const { isLoading, mutate: postLocation } = usePostShippingLocation({
+  const { isPending, mutate: postLocation } = usePostShippingLocation({
     onError: () => {
       showSnackbar("Une erreur est survenu, veuillez reéssayer", "error");
     },
@@ -35,7 +35,7 @@ export default function DashboardAddShippingLocation() {
 
   return (
     <DashboardShippingLocationsFormModal
-      isLoading={isLoading}
+      isLoading={isPending}
       onSubmit={handleOnSubmit}
     />
   );

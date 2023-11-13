@@ -32,7 +32,7 @@ export default function DashboardUpdateCategory({
     formState: { errors },
   } = useForm<UpdateCategoryFormValues>();
   // patch requests for categories api route
-  const { isLoading: isCategoryLoading, mutate: patchCategoryMutation } =
+  const { isPending: isCategoryLoading, mutate: patchCategoryMutation } =
     usePatchCategory({
       onSuccess: (data) => {
         const { code, name: newName } = data;
@@ -65,7 +65,7 @@ export default function DashboardUpdateCategory({
     });
   // patch requests for subcategories api route
 
-  const { isLoading: isSubcategoryLoading, mutate: patchSubcategoryMutation } =
+  const { isPending: isSubcategoryLoading, mutate: patchSubcategoryMutation } =
     usePatchSubcategory({
       onSuccess: (data) => {
         const { code: id, name: newName, categoryCode: categoryId } = data;

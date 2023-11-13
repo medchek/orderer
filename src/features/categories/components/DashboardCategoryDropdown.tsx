@@ -28,7 +28,7 @@ export default function DashboardCategoryDropdown({
       <DropdownMenuTrigger
         title={title ?? "éditer ou supprimer"}
         className={cn(
-          "dark:focus:bg-stone-900 dark:hover:bg-stone-800/70  transition-colors h-8 w-8 rounded-lg outline-none shadow-md text-stone-50",
+          "dark:focus:bg-stone-900 dark:hover:bg-stone-800/70  transition-colors h-8 w-8 rounded-lg outline-none shadow-md text-stone-200",
           className
         )}
       >
@@ -38,7 +38,7 @@ export default function DashboardCategoryDropdown({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm font-semibold"
+        className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm  text-neutral-400"
       >
         <DropdownMenuItem
           className="h-8 hover:bg-neutral-800 flex items-center gap-1.5 px-2 rounded-md hover:outline-none cursor-pointer"

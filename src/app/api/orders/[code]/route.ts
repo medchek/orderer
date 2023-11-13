@@ -1,9 +1,10 @@
-import { apiErrorResponse, sleep } from "@/lib/utils";
+import { apiErrorResponse } from "@/lib/utils";
 import { isAdmin } from "../../auth/[...nextauth]/route";
 import { type NextRequest, NextResponse } from "next/server";
 import {
   ORDER_CODE_LENGTH,
   STATUS_BAD_REQUEST,
+  STATUS_NOT_FOUND,
   STATUS_OK,
   STATUS_UNAUTHORIZED,
 } from "@/lib/constants";
@@ -63,8 +64,27 @@ export async function PATCH(
     if (!statusList.has(body.status)) {
       return apiErrorResponse("wrong status", STATUS_BAD_REQUEST);
     }
+    const orderToUpdate = await prisma.order.findUnique({
+      where: { code: params.code },
+      select: {
+        status: true,
+        orderProducts: {
+          select: {
+            productCode: true,
+          },
+        },
+      },
+    });
 
-    await sleep(2500);
+    if (!orderToUpdate) {
+      return apiErrorResponse("order not found", STATUS_NOT_FOUND);
+    }
+
+    if (orderToUpdate.status === body.status) {
+      return NextResponse.json({ status: STATUS_OK });
+    }
+
+    // await sleep(2500);
     await prisma.order.update({
       where: {
         code: params.code,
@@ -73,6 +93,40 @@ export async function PATCH(
         status: body.status,
       },
     });
+
+    const orderProductsCodes = orderToUpdate.orderProducts.map(
+      ({ productCode }) => productCode,
+    );
+
+    // adjust the product stock
+    // only update when setting the order status value to SUCCESS or to remove the SUCCESS status from the order
+
+    if (
+      body.status === Status.SUCCESS ||
+      orderToUpdate.status === Status.SUCCESS
+    ) {
+      await prisma.product.updateMany({
+        data: {
+          stock: {
+            increment:
+              body.status !== Status.SUCCESS &&
+              orderToUpdate.status === Status.SUCCESS
+                ? 1
+                : undefined,
+            decrement:
+              body.status === Status.SUCCESS &&
+              orderToUpdate.status !== Status.SUCCESS
+                ? 1
+                : undefined,
+          },
+        },
+        where: {
+          code: {
+            in: orderProductsCodes,
+          },
+        },
+      });
+    }
 
     return NextResponse.json({ status: STATUS_OK });
   } catch (error) {

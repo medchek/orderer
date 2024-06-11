@@ -189,7 +189,7 @@ export default function OrderForm({ accountDetail }: Props) {
             }`}
             id="from-input-group"
           >
-            <div className="2xl:gap- flex gap-4">
+            <div className="flex flex-col lg:flex-row lg:gap-4">
               <Input
                 register={register}
                 registerRules={{
@@ -220,7 +220,7 @@ export default function OrderForm({ accountDetail }: Props) {
                 defaultValue={confirmData?.name}
               />
             </div>
-            <div className="flex gap-4 2xl:gap-7">
+            <div className="flex flex-col lg:flex-row lg:gap-4">
               <WilayaSelect<OrderFormValues>
                 register={register}
                 error={errors.wilaya?.message}
@@ -261,25 +261,25 @@ export default function OrderForm({ accountDetail }: Props) {
               selectedTown={selectedTown}
             />
           ) : null}
-          <div className="flex h-16 items-start justify-end text-stone-950 dark:text-white">
+          <div className="flex h-12 items-start justify-end text-sm text-neutral-950 dark:text-white lg:h-16 lg:text-base ">
             <Prices />
           </div>
           {/* BUTTONS */}
           <div
-            className="flex h-12 w-full justify-end gap-4 text-stone-500"
+            className="flex h-12 w-full justify-end gap-4 text-neutral-500"
             id="form-buttons"
           >
             {isConfirming && !isSuccess && !isPending && (
               <button
                 disabled={isPending}
-                className="text h-12 w-auto gap-2 rounded-lg px-6 focus:bg-stone-950/70 disabled:cursor-not-allowed dark:bg-stone-950"
+                className="h-12 w-auto gap-2 rounded-lg px-6 text-sm focus:bg-neutral-950/70 disabled:cursor-not-allowed dark:bg-neutral-950 lg:text-base"
                 onClick={cancelConfirm}
               >
                 <MdArrowBack className="h-6 w-6" /> Retour
               </button>
             )}
             <Button
-              className="text flex h-12 w-44 items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed  disabled:bg-stone-200 disabled:text-stone-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700"
+              className="text flex h-12 w-full items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed disabled:bg-neutral-200  disabled:text-neutral-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700 lg:w-44"
               disabled={isDisabledSubmit || isPending || isSuccess}
               isLoading={isPending || isSuccess}
             >
@@ -293,6 +293,7 @@ export default function OrderForm({ accountDetail }: Props) {
       <ReCAPTCHA
         ref={recaptchaRef}
         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? ""}
+        className="opacity-50"
         onError={() => {
           resetCaptcha();
           showSnackbar(

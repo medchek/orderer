@@ -50,8 +50,8 @@ export default function AddProduct({ closeModal }: Props) {
         code={code}
       >
         <button
-          className="flex h-8 w-full items-center justify-center rounded-md bg-neutral-200 font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary 
-          focus:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-700 dark:focus:bg-neutral-900"
+          className="flex h-7 w-full items-center justify-center rounded-md bg-neutral-200 text-sm font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary 
+          focus:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-700 dark:focus:bg-neutral-900 lg:h-8 lg:text-base"
           onClick={() => handleAddProduct(product)}
         >
           Ajouter
@@ -61,7 +61,7 @@ export default function AddProduct({ closeModal }: Props) {
   });
   return (
     <Modal
-      className="flex h-full flex-col rounded-lg pb-0 pt-4 shadow-md"
+      className="flex h-full flex-col rounded-lg pb-0 shadow-md lg:pb-0 lg:pt-4"
       closeModal={closeModal}
       label="Ajouter un Produit"
       closeOnClickOutside
@@ -69,14 +69,14 @@ export default function AddProduct({ closeModal }: Props) {
     >
       <div
         id="select-category-container"
-        className="relative my-5 flex h-12 max-h-12 min-h-[3rem] grow items-center justify-end"
+        className="relative my-1 flex h-12 max-h-12 min-h-[3rem] grow items-center justify-end lg:my-5"
       >
         <DashboardProductsFilter disabled={isFetching || isError} />
       </div>
       <section className="h-full grow flex-col overflow-y-auto">
         <div
           id="product-search-result"
-          className="relative grid grow grid-cols-4 justify-end gap-2 dark:[color-scheme:dark] 2xl:grid-cols-5"
+          className="relative grid grow grid-cols-2 justify-end gap-2 dark:[color-scheme:dark] lg:grid-cols-4 2xl:grid-cols-5"
         >
           {isError && !isFetching && <DashboardFetchError refetch={refetch} />}
           {isFetching &&
@@ -85,11 +85,9 @@ export default function AddProduct({ closeModal }: Props) {
           {isSuccess && !isFetching && productList}
         </div>
       </section>
-      <Pagination
-        pageCount={pageCount}
-        className="m-0 p-0"
-        onPageChange={handlePageChange}
-      />
+      <div>
+        <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+      </div>
     </Modal>
   );
 }

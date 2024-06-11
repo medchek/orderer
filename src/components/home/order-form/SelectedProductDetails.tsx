@@ -53,16 +53,16 @@ export default function SelectedProductDetails({
         <button
           type="button"
           onClick={onClear}
-          className="absolute right-1 top-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors focus:bg-stone-300 dark:focus:bg-neutral-800"
+          className="absolute right-1 top-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors focus:bg-neutral-300 dark:focus:bg-neutral-800"
           title="Supprimer de la commande"
         >
-          <MdClear className=" h-5 w-5 dark:text-stone-100" />
+          <MdClear className=" h-5 w-5 dark:text-neutral-100" />
         </button>
       )}
       {/* IMAGE */}
       <div
         className={clsx(
-          small ? "h-28 w-28 min-w-[7rem]" : "h-32 w-32 min-w-[8rem]",
+          small ? "h-28 w-28 min-w-[7rem]" : "h-32 min-w-[8rem] lg:w-32",
           "relative flex",
         )}
       >
@@ -92,7 +92,7 @@ export default function SelectedProductDetails({
           <p
             className={clsx(
               // { "text-sm": small },
-              "line-clamp-2 font-semibold dark:text-stone-50",
+              "line-clamp-2 text-sm font-semibold dark:text-neutral-50 lg:text-base",
             )}
           >
             {name}
@@ -100,7 +100,7 @@ export default function SelectedProductDetails({
           {/* DESCRIPTION */}
           <p
             className={clsx(
-              small ? "text-xs" : "text-sm",
+              small ? "text-xs" : "text-xs lg:text-sm",
               "line-clamp-2 text-[#666666]",
             )}
           >
@@ -112,12 +112,12 @@ export default function SelectedProductDetails({
         <p
           className={clsx(
             small && "text-sm",
-            "font-semibold text-[#171717] dark:text-stone-50",
+            "text-sm font-semibold text-[#171717] dark:text-neutral-50 lg:text-base",
           )}
         >
           Prix: {discountedPrice}DA
           {discount > 0 && (
-            <span className="font-normal dark:text-stone-600">
+            <span className="font-normal dark:text-neutral-600">
               {" "}
               &bull; (<span className="line-through">{price}DA</span>)
             </span>

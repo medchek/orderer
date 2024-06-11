@@ -15,7 +15,7 @@ export default async function HomeHeader({ isAdmin }: Props) {
       </Link>
 
       <div className="flex items-center gap-4 text-sm">
-        <nav className="flex gap-4">
+        <nav className="hidden gap-4 lg:flex">
           <Link href="../" className="text-blue-500 hover:underline">
             Commander
           </Link>

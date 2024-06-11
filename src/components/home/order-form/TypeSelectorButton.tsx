@@ -13,12 +13,12 @@ export default function TypeSelectorButton({
 }: Props) {
   return (
     <button
-      className="flex h-full w-full flex-1 items-center justify-start gap-2 2xl:gap-4 rounded-lg bg-[#E9E9E9] px-2 2xl:px-4 font-semibold focus:ring-2 focus:ring-secondary dark:bg-neutral-900 dark:text-white text-sm 2xl:text-base "
+      className="flex h-full w-full flex-1 items-center justify-start gap-2 rounded-lg bg-[#E9E9E9] px-2 text-sm font-semibold focus:ring-2 focus:ring-secondary dark:bg-neutral-900 dark:text-white 2xl:gap-4 2xl:px-4 2xl:text-base"
       onClick={onClick}
       type="button"
     >
       <div
-        className={`flex w-5 h-5 2xl:h-6 2xl:w-6 items-center justify-center rounded-full border-2 border-black ${
+        className={`flex h-5 min-h-[1.25rem] w-5 min-w-[1.25rem] items-center justify-center rounded-full border-2 border-black 2xl:h-6 2xl:w-6 ${
           isSelected ? "dark:border-secondary" : "dark:border-white"
         }`}
       >

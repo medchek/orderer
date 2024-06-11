@@ -61,8 +61,8 @@ export default function ShippingTypeSelector({ addressDefaultValue }: Props) {
   };
 
   return (
-    <div className="flex w-full gap-4 2xl:gap-7">
-      <div className="flex w-1/2 flex-col gap-1">
+    <div className="flex w-full flex-col gap-4 lg:flex-row">
+      <div className="flex w-full flex-col gap-1 lg:w-1/2">
         <p className="font-semibold dark:text-neutral-100">Type de Livraison</p>
         <div className="flex h-12 gap-2 2xl:gap-4">
           <TypeSelectorButton
@@ -77,7 +77,7 @@ export default function ShippingTypeSelector({ addressDefaultValue }: Props) {
           />
         </div>
       </div>
-      <div className="w-1/2">
+      <div className="w-full lg:w-1/2">
         {shippingType === SHIPPING_TYPE.HOME ? (
           <Input<OrderFormValues>
             register={register}

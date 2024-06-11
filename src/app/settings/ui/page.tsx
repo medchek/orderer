@@ -29,7 +29,7 @@ export default function SettingsUi() {
           <div className="relative">
             <FilterSelect
               id="lang-select"
-              className="h-12 w-full px-2 dark:bg-neutral-900"
+              className="h-12 w-full px-2 dark:bg-neutral-900 lg:w-full"
             >
               <option>Français</option>
               <option>Anglais</option>

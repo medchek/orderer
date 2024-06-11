@@ -13,7 +13,7 @@ export default function FilterLabel({
   ...props
 }: Props) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between gap-6 lg:gap-0">
       <label {...props}>{label}</label>
       <div className={cn("relative flex items-center", className)}>
         {children}

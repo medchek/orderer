@@ -68,7 +68,7 @@ export default function Modal({
     <div
       id="dialog"
       className={cn(
-        "absolute left-0 top-0 z-10 h-screen w-screen bg-gray-950 bg-opacity-50 px-10 py-10 dark:bg-stone-950 dark:bg-opacity-80 2xl:px-60",
+        "fixed left-0 top-0 z-10 h-screen w-screen overflow-hidden bg-gray-950 bg-opacity-50 px-2 py-10 dark:bg-stone-950 dark:bg-opacity-80 lg:px-10 2xl:px-60",
         centerModalContent ? "flex items-center justify-center" : "",
         overlayClassName,
       )}
@@ -77,7 +77,7 @@ export default function Modal({
         className={cn(
           "flex flex-col dark:[color-scheme:dark]",
           {
-            "rounded-lg  bg-neutral-200 px-8 py-5 shadow-md dark:bg-[#040404]":
+            "rounded-lg  bg-neutral-200 px-2 py-2 shadow-md dark:bg-[#040404] lg:px-8 lg:py-5":
               !transparent,
           },
           className,
@@ -86,8 +86,11 @@ export default function Modal({
         ref={ref}
       >
         {!hideHeader && (
-          <div id="dialog-header" className="flex grow-0 justify-between px-2">
-            <h1 className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+          <div
+            id="dialog-header"
+            className="flex grow-0 items-center justify-between lg:px-2"
+          >
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 lg:text-xl">
               {label}
             </h1>
             <button

@@ -11,6 +11,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import { addPartitive, discountedPrice, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import DashboardOrdersStatusBadge from "@/features/orders/components/DashboardOrdersStatusBadge";
+import Main from "@/components/Main";
 
 type StringOrEmpty = string | null | undefined;
 
@@ -124,11 +125,11 @@ export default async function Orders({ params }: Props) {
   };
 
   return (
-    <main className="flex min-h-screen flex-col px-10 dark:text-stone-50 2xl:px-56">
+    <Main>
       <HomeHeader />
 
       {!data ? (
-        <div className="flex h-full w-full grow flex-col items-center justify-center gap-2 text-neutral-500">
+        <div className="flex h-full w-full grow flex-col items-center justify-center gap-2 text-center text-neutral-500">
           <p>Aucune commande ne correspond au code fourni</p>
           <BsCartX className="h-16 w-16" />
         </div>
@@ -138,16 +139,16 @@ export default async function Orders({ params }: Props) {
             <Link href="/." title="Acceuil">
               <IoMdArrowBack className="h-8 w-8" />
             </Link>
-            <h1 className="text-xl font-semibold">Votre commande</h1>
+            <h1 className="text-lg font-semibold lg:text-xl">Votre commande</h1>
           </div>
-          <div className="flex w-full grow gap-4">
-            <section className="flex w-auto grow flex-col gap-10 rounded-xl bg-neutral-200 px-6 py-6 dark:bg-neutral-950">
+          <div className="flex w-full grow flex-col gap-2 lg:flex-row lg:gap-4">
+            <section className="flex w-auto grow flex-col gap-10 rounded-xl bg-neutral-200 p-4 dark:bg-neutral-950 lg:p-6">
               {/* {data.map(({ title, data }) => {
             return <OrderInfoSegment title={title} data={data} />;
           })} */}
 
               <OrderInfoSegment
-                title="Information personnelles"
+                title="Informations personnelles"
                 data={[
                   { label: "Téléphone", content: data.user.phone },
                   {
@@ -182,7 +183,7 @@ export default async function Orders({ params }: Props) {
                 ]}
               />
               <OrderInfoSegment
-                title="Information commande"
+                title="Informations commande"
                 data={[
                   { label: "Code", content: data.code },
                   {
@@ -202,11 +203,11 @@ export default async function Orders({ params }: Props) {
                 ]}
               />
             </section>
-            <section className="flex w-[390px] flex-col overflow-hidden rounded-xl bg-neutral-200 pt-6 dark:bg-neutral-950">
-              <h3 className="pl-4 text-lg font-bold text-neutral-900 dark:text-neutral-200">
+            <section className="flex w-full flex-col overflow-hidden rounded-xl bg-neutral-200 pt-4 dark:bg-neutral-950 lg:w-[390px] lg:pt-6">
+              <h3 className="pl-4 text-base font-bold text-neutral-900 dark:text-neutral-200 lg:text-lg">
                 Produits
               </h3>
-              <div className="grow px-2">
+              <div className="mb-2 grow px-1 lg:mb-0 lg:px-2">
                 {data.orderProducts.map(({ product }) => (
                   <SelectedProductDetails
                     key={product.code}
@@ -249,6 +250,6 @@ export default async function Orders({ params }: Props) {
       )}
 
       <Footer />
-    </main>
+    </Main>
   );
 }

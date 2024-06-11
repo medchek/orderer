@@ -103,7 +103,9 @@ export default function SelectInput<T extends FieldValues>({
         )}
       </div>
       <div
-        className={`flex h-5 justify-between ${removeErrorSpace && "hidden"}`}
+        className={`flex h-3 justify-between lg:h-5 ${
+          removeErrorSpace && "hidden"
+        }`}
       >
         <p className="grow text-sm text-red-500">{error && error}</p>
         <p className="grow-0 text-right text-neutral-800 dark:text-neutral-100">

@@ -28,7 +28,7 @@ export default function FilterPopover({
         title="Filtrer par"
         disabled={disabled}
         className={clsx(
-          "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-100/70  px-6 shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300  disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 ",
+          "text-s flex h-9 items-center justify-center gap-1 rounded-lg  bg-neutral-100/70 px-4 shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300  disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 lg:h-10 lg:px-6 lg:text-base",
 
           {
             "text-secondary": hasFilters,
@@ -43,7 +43,7 @@ export default function FilterPopover({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="z-10 flex w-96 flex-col gap-1 rounded-lg border border-transparent bg-neutral-100 px-4 py-2 text-sm text-neutral-500 shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none"
+        className="z-10 flex w-full flex-col gap-1 rounded-lg border border-transparent bg-neutral-100 px-4 py-2 text-sm text-neutral-500 shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none lg:w-96 "
       >
         <div className="flex h-8 items-center justify-between">
           <p className="text-base text-neutral-800 dark:text-neutral-300">

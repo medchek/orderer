@@ -11,6 +11,7 @@ import Loader from "@/components/Loader";
 import { useGetSingleProduct } from "@/features/products/api/getSingleProduct";
 import dynamic from "next/dynamic";
 import ModalLoader from "@/components/ModalLoader";
+import clsx from "clsx";
 
 const AddProduct = dynamic(() => import("../AddProduct"), {
   loading: () => <ModalLoader />,
@@ -41,7 +42,7 @@ export default function SelectedProductsDisplay() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const productList = !selectedProducts.length ? (
-    <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-neutral-200 px-3 py-2 font-semibold dark:bg-neutral-900 dark:text-neutral-200">
+    <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-neutral-200 px-3 py-2 text-sm font-semibold dark:bg-neutral-900 dark:text-neutral-200 lg:text-base">
       {isFetching ? (
         <Loader />
       ) : (
@@ -74,9 +75,9 @@ export default function SelectedProductsDisplay() {
   );
 
   return (
-    <section id="products-detail" className="mb-2 w-full">
-      <div className="mb-2 flex h-8 w-full justify-between">
-        <h1 className="text-xl font-semibold dark:text-white">
+    <section id="products-detail" className="w-full  lg:mb-2">
+      <div className="mb-2 flex h-5 w-full justify-between lg:h-8">
+        <h1 className="text-base font-semibold dark:text-white lg:text-xl">
           Votre Commande
         </h1>
         {selectedProducts.length < 3 && !isConfirming && (
@@ -84,10 +85,24 @@ export default function SelectedProductsDisplay() {
         )}
         {isModalOpen && <AddProduct closeModal={() => setIsModalOpen(false)} />}
       </div>
-      <div className="flex w-full space-x-3">{productList}</div>
-      <div className="flex items-center justify-end pt-1 text-sm text-neutral-600 dark:text-neutral-500">
-        {/* <Prices /> */}Produits sélectionnés {selectedProducts.length} (3
-        Maximum)
+      <div
+        className={clsx("overflow-hidden", {
+          // "-mr-4 lg:mr-0": selectedProducts.length > 1,
+        })}
+      >
+        <div className="h-full w-full overflow-x-auto">
+          <div
+            className={clsx("flex gap-3 overflow-auto", {
+              "w-max lg:w-full": selectedProducts.length > 1,
+              "w-full": selectedProducts.length <= 1,
+            })}
+          >
+            {productList}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-end pt-1 text-xs text-neutral-600 dark:text-neutral-500 lg:text-sm">
+        sélectionnés {selectedProducts.length} (3 Maximum)
       </div>
     </section>
   );

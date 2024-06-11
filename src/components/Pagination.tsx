@@ -1,32 +1,14 @@
 "use client";
-import { cn, toNumber } from "@/lib/utils";
-import React from "react";
+import { cn } from "@/lib/utils";
 import { MdChevronRight } from "react-icons/md";
 import ReactPaginate, { type ReactPaginateProps } from "react-paginate";
 
 interface Props extends ReactPaginateProps {
   /** href link used to render link tags which preceedes the page number */
   href?: string;
-  perPageCount?: {
-    setPerPageCount: (n: number) => void;
-    count: number;
-    text: string;
-  };
 }
 
-export default function Pagination({
-  href,
-  perPageCount,
-  className,
-  ...props
-}: Props) {
-  const perPageOptions = [5, 7, 9, 10, 15, 20, 25];
-  const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!perPageCount) return;
-    const value = toNumber(e.target.value);
-    perPageCount.setPerPageCount(value);
-  };
-
+export default function Pagination({ href, className, ...props }: Props) {
   return (
     <div
       className={cn(
@@ -57,23 +39,6 @@ export default function Pagination({
           // }}
         />
       </div>
-      {perPageCount && (
-        <div className="absolute right-0 flex h-10 items-center gap-2 text-sm text-neutral-400">
-          <span>Afficher</span>
-          <select
-            className="flex h-10 items-center justify-center rounded-md bg-neutral-900 px-1 text-base text-neutral-200"
-            value={perPageCount.count}
-            onChange={handleOnChange}
-          >
-            {perPageOptions.map((v) => (
-              <option key={v} value={v}>
-                {v}
-              </option>
-            ))}
-          </select>
-          <span>{perPageCount.text}</span>
-        </div>
-      )}
     </div>
   );
 }

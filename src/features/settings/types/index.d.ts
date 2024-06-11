@@ -10,4 +10,4 @@ export interface SettingsAccountFormValues {
 
 export type AccountDetail = GetAccountResponse;
 
-export type ThemeType = "dark" | "light" | "sys";
+export type ThemeType = "dark" | "light" | "system";

@@ -19,7 +19,7 @@ export default function ThemeSelectorButton({
   isSelected,
 }: Props) {
   const content = () => {
-    if (inputValue === "sys") {
+    if (inputValue === "system") {
       return (
         <>
           <MdOutlineBrightness6 className="h-6 w-6 text-neutral-900" />
@@ -63,7 +63,7 @@ export default function ThemeSelectorButton({
             "bg-neutral-200 text-neutral-900": inputValue === "light",
             "bg-neutral-900 text-neutral-200": inputValue === "dark",
             "bg-gradient-to-r from-neutral-200 from-50% to-neutral-900 to-50%":
-              inputValue === "sys",
+              inputValue === "system",
           },
         )}
         htmlFor={`${inputValue}-radio`}

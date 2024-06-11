@@ -1,19 +1,24 @@
 "use client";
 import React from "react";
 import ThemeSelectorButton from "./ThemeSelectorButton";
-import { useStore } from "@/store";
+// import { useStore } from "@/store";
+import { useTheme } from "next-themes";
+import { useEffectOnce } from "usehooks-ts";
 
 export default function SettingsThemeSelector() {
-  const { setTheme, theme } = useStore();
+  const { theme, setTheme } = useTheme();
+
+  useEffectOnce(() => {
+    console.log("loaded theme value =>", theme);
+  });
 
   const switchTheme = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = e.target.value.trim();
     // if the user messes with the values, do nothing
-    if (value !== "dark" && value !== "light" && value !== "sys") return;
-
-    localStorage.setItem("theme", value);
+    if (value !== "dark" && value !== "light" && value !== "system") return;
     setTheme(value);
   };
+
   return (
     <div className="flex gap-4">
       <ThemeSelectorButton
@@ -27,9 +32,9 @@ export default function SettingsThemeSelector() {
         isSelected={theme === "dark"}
       />
       <ThemeSelectorButton
-        inputValue="sys"
+        inputValue="system"
         onChange={switchTheme}
-        isSelected={theme === "sys"}
+        isSelected={theme === "system"}
       />
     </div>
   );

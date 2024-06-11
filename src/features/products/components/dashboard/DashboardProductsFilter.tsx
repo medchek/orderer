@@ -85,20 +85,19 @@ export default function DashboardProductsFilter({
       onResetFiltersClick={resetFilters}
     >
       <div className="flex flex-col gap-2">
-        <FilterLabel htmlFor="prod-name" label="Nom du produit">
+        <FilterLabel htmlFor="product-name" label="Nom du produit">
           <FilterInput
             placeholder="Chercher par nom"
-            id="prod-name"
+            id="product-name"
             onChange={(e) => setName(e.target.value)}
             value={name}
             minLength={2}
             autoComplete="off"
           />
         </FilterLabel>
-        <FilterLabel label="Catégorie" htmlFor="cat-select">
+        <FilterLabel label="Catégorie" htmlFor="category-select">
           <CategorySelect<{ category: string }>
-            id="cat-select"
-            className="h-8 w-48 rounded-md bg-neutral-200  px-2 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300"
+            className="h-8 w-40 rounded-md bg-neutral-200 px-2  text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300 lg:w-48"
             noLabel
             disablePrompt
             small
@@ -112,11 +111,11 @@ export default function DashboardProductsFilter({
         </FilterLabel>
 
         <FilterLabel label="Prix" htmlFor="price-input" className="h-8">
-          <div className="flex h-7 w-48 items-center justify-between gap-2">
+          <div className="flex h-7 w-40 items-center justify-between gap-2 lg:w-48">
             <FilterInput
               id="price-select"
               placeholder="Min"
-              className="w-1/2"
+              className="w-1/2 lg:w-1/2"
               type="number"
               onChange={(e) => setMinPrice(e.target.value.trim())}
               value={minPrice}
@@ -126,7 +125,7 @@ export default function DashboardProductsFilter({
               type="number"
               id="price-select"
               placeholder="Max"
-              className="w-1/2"
+              className="w-1/2 lg:w-1/2"
               onChange={(e) => setMaxPrice(e.target.value.trim())}
               value={maxPrice}
               min={0}
@@ -135,12 +134,12 @@ export default function DashboardProductsFilter({
         </FilterLabel>
 
         <FilterLabel label="Stock" htmlFor="price-input" className="h-8">
-          <div className="flex h-7 w-48 items-center justify-between gap-2">
+          <div className="flex h-7 w-40 items-center justify-between gap-2 lg:w-48">
             <FilterInput
               type="number"
               id="price-select"
               placeholder="Min"
-              className="w-1/2"
+              className="w-1/2 lg:w-1/2"
               onChange={(e) => setMinStock(e.target.value.trim())}
               value={minStock}
               min={0}
@@ -149,7 +148,7 @@ export default function DashboardProductsFilter({
               type="number"
               id="price-select"
               placeholder="Max"
-              className="w-1/2"
+              className="w-1/2 lg:w-1/2"
               onChange={(e) => setMaxStock(e.target.value.trim())}
               value={maxStock}
               min={0}

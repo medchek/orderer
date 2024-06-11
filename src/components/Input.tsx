@@ -63,7 +63,7 @@ export default function Input<T extends FieldValues>({
       />
       <div
         className={clsx(
-          "h-5 text-sm",
+          "h-3 text-sm lg:h-5",
           removeErrorHeight && "hidden",
           info && !error
             ? "text-neutral-600"

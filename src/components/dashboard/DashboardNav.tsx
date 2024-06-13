@@ -26,7 +26,7 @@ export default function DashboardNav() {
     useStore();
 
   const toggleIsMinimized = () => {
-    setIsDashboardNavMinimized(isMinimized!);
+    setIsDashboardNavMinimized(!isMinimized);
   };
 
   const links: LinkType[] = [
@@ -57,14 +57,14 @@ export default function DashboardNav() {
     <Link
       title={name}
       className={clsx(
-        "flex h-12 items-center gap-4 rounded-lg  text-sm font-semibold text-neutral-50 transition-colors first-letter:capitalize dark:text-neutral-200 [&>svg]:h-6 [&>svg]:w-6",
+        "flex h-12 items-center gap-4 rounded-lg text-sm font-semibold text-neutral-50 transition-colors first-letter:capitalize dark:text-neutral-200 [&>svg]:h-6 [&>svg]:w-6",
         pathName === `/dashboard/${href}`
           ? "bg-[#8b1e1e] dark:bg-black/50"
-          : "bg-[#EC2A2A] hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-neutral-900 dark:hover:bg-neutral-800 focus:dark:bg-neutral-900/50 ",
+          : "bg-[#EC2A2A] hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-neutral-900 dark:hover:bg-neutral-800 focus:dark:bg-neutral-900/50",
         {
           "mb-2 mt-auto": !!selfEnd,
           "w-12 justify-center": isMinimized,
-          "w-full pl-5 ": !isMinimized,
+          "w-full pl-5": !isMinimized,
         },
       )}
       key={href}
@@ -78,7 +78,7 @@ export default function DashboardNav() {
       id="dashboard-nav"
       // dark:bg-[#0b0c1f]
       className={clsx(
-        "flex h-full flex-col justify-between bg-primary-darker  py-2 dark:bg-neutral-950",
+        "flex h-full flex-col justify-between bg-primary-darker py-2 dark:bg-neutral-950",
         {
           "w-16 min-w-[4rem] px-2": isMinimized,
           "min-w-[280px] px-5": !isMinimized,

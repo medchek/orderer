@@ -1,5 +1,3 @@
-import { STATUS_OK } from "@/lib/constants";
-import { PromiseStatus } from "@/types/api";
 import { StateCreator } from "zustand";
 
 export interface Wilaya {
@@ -14,9 +12,6 @@ export interface Wilaya {
 
 export interface WilayaSlice {
   wilayas: Wilaya[];
-  isFetchingWilayas: boolean;
-  wilayaFetchStatus: PromiseStatus;
-  fetchWilayas: () => Promise<{ status: PromiseStatus; wilayas: Wilaya[] }>;
   updateWilaya: (data: {
     homePrice?: number;
     officePrice?: number;
@@ -29,31 +24,6 @@ export interface WilayaSlice {
 
 export const wilayaSlice: StateCreator<WilayaSlice> = (set, get) => ({
   wilayas: [],
-  isFetchingWilayas: false,
-  wilayaFetchStatus: "init",
-
-  fetchWilayas: async () => {
-    try {
-      set(() => ({ isFetchingWilayas: true, wilayaFetchStatus: "fetching" }));
-
-      const response = await fetch("/api/wilayas", {
-        method: "GET",
-      });
-      const wilayas: Wilaya[] = await response.json();
-      const promiseStatus = response.status === STATUS_OK ? "success" : "error";
-      set(() => ({
-        wilayas,
-        isFetchingWilayas: false,
-        wilayaFetchStatus: promiseStatus,
-      }));
-
-      return { status: promiseStatus, wilayas };
-    } catch (e) {
-      console.error(e);
-      set(() => ({ isFetchingWilayas: true, wilayaFetchStatus: "error" }));
-      throw new Error("Error fetching wilayas");
-    }
-  },
   setWilayas: (wilayas: Wilaya[]) => {
     return set(() => ({ wilayas }));
   },

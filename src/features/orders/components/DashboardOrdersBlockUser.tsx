@@ -2,7 +2,6 @@ import Input from "@/components/Input";
 import Loader from "@/components/Loader";
 import Modal from "@/components/Modal";
 import Textarea from "@/components/Textarea";
-import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { usePostBlacklist } from "../../blacklist/api/postBlacklist";
 import { orderFormValidators } from "@/lib/formValidators";
@@ -60,7 +59,7 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
       closeModal={closeModal}
       closeOnClickOutside
       // label="Supprimer un produit"
-      label="Bloquer un numéro"
+      label="Bloquer le numéro"
       className="flex h-auto w-3/5 flex-col gap-4 rounded-lg bg-[#F3F3F3] px-4 py-5 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       centerModalContent
     >
@@ -90,6 +89,7 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
           disabled={!!phone}
           registerRules={{
             required: "Ce champ est obligatoire",
+            value: phone,
             validate: orderFormValidators.phone,
           }}
           error={errors.phone?.message}
@@ -109,7 +109,7 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
         />
         <section
           id="form-buttons"
-          className="flex items-center justify-end gap-4 "
+          className="flex items-center justify-end gap-4"
         >
           <button
             type="button"

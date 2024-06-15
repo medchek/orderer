@@ -89,6 +89,7 @@ CREATE TABLE "orders" (
     "town_code" INTEGER NOT NULL,
     "address" VARCHAR(255),
     "locationId" VARCHAR(25),
+    "shipping_price" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -99,13 +100,15 @@ CREATE TABLE "orders" (
 CREATE TABLE "orders_products" (
     "productCode" VARCHAR(25) NOT NULL,
     "orderId" INTEGER NOT NULL,
+    "price" INTEGER NOT NULL,
+    "discount" SMALLINT NOT NULL DEFAULT 0,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "orders_products_pkey" PRIMARY KEY ("productCode","orderId")
 );
 
 -- CreateTable
-CREATE TABLE "Locations" (
+CREATE TABLE "locations" (
     "id" VARCHAR(25) NOT NULL,
     "name" VARCHAR(150) NOT NULL,
     "coordinates" VARCHAR(255),
@@ -212,7 +215,7 @@ CREATE UNIQUE INDEX "towns_code_key" ON "towns"("code");
 CREATE UNIQUE INDEX "orders_code_key" ON "orders"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Locations_id_key" ON "Locations"("id");
+CREATE UNIQUE INDEX "locations_id_key" ON "locations"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -269,7 +272,7 @@ ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_code_fkey" FOREIGN KEY ("wila
 ALTER TABLE "orders" ADD CONSTRAINT "orders_town_code_fkey" FOREIGN KEY ("town_code") REFERENCES "towns"("code") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Locations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "orders" ADD CONSTRAINT "orders_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "locations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_productCode_fkey" FOREIGN KEY ("productCode") REFERENCES "products"("code") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -278,10 +281,10 @@ ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_productCode_fkey" 
 ALTER TABLE "orders_products" ADD CONSTRAINT "orders_products_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Locations" ADD CONSTRAINT "Locations_town_code_fkey" FOREIGN KEY ("town_code") REFERENCES "towns"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "locations" ADD CONSTRAINT "locations_town_code_fkey" FOREIGN KEY ("town_code") REFERENCES "towns"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Locations" ADD CONSTRAINT "Locations_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "locations" ADD CONSTRAINT "locations_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE SET NULL ON UPDATE CASCADE;

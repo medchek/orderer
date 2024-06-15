@@ -10,6 +10,7 @@ import {
   SHIPPING_LOCATION_ID_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CREATED,
+  STATUS_NOT_FOUND,
   STATUS_OK,
   STATUS_UNAUTHORIZED,
 } from "@/lib/constants";
@@ -102,7 +103,7 @@ export async function POST(req: NextRequest) {
     // remove potential array duplicates
     const productsCodeNoDup = Array.from(new Set(productsCode));
 
-    const productsExist = await prisma.product.count({
+    const selectedProducts = await prisma.product.findMany({
       where: {
         code: {
           in: productsCodeNoDup,
@@ -110,7 +111,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (productsExist !== productsCodeNoDup.length) {
+    if (selectedProducts.length !== productsCodeNoDup.length) {
       return apiErrorResponse("invalid product codes", STATUS_BAD_REQUEST);
     }
 
@@ -123,10 +124,59 @@ export async function POST(req: NextRequest) {
 
     const orderCode = uniqueId(ORDER_CODE_LENGTH, true);
 
+    // Shipping prices can always change, thus, we need to calculate the total shipping price relative to the order at the current time keeping therefore the prices in the order history accurate
+
+    let shippingPrice = 0;
+
+    const wilayaData = await prisma.wilaya.findUnique({
+      where: {
+        code: wilayaCode,
+      },
+    });
+
+    if (!wilayaData) {
+      return apiErrorResponse("invalid wilaya code", STATUS_NOT_FOUND);
+    }
+
+    // calculating shipping and products (including diccount) price
+    if (isHome) {
+      shippingPrice = wilayaData.homePrice;
+    } else {
+      shippingPrice = wilayaData.officePrice;
+      if (locationId) {
+        const locationData = await prisma.locations.findUnique({
+          where: {
+            id: locationId,
+          },
+        });
+        if (!locationData) {
+          return apiErrorResponse("invalid location id", STATUS_NOT_FOUND);
+        }
+
+        if (locationData.additionalCosts && locationData.additionalCosts > 0) {
+          shippingPrice += locationData.additionalCosts;
+        }
+      }
+    }
+
+    // prepare orderProducts data
+
+    const orderProductsData: Prisma.OrdersProductsCreateManyOrderInput[] =
+      productsCode.map((code) => {
+        const productData = selectedProducts.find(({ code }) => code === code);
+
+        return {
+          productCode: code,
+          price: productData?.price ?? 0,
+          discount: productData?.discount,
+        };
+      });
+
     // if there are no user with this phone number, create one
     const createdOrder = await prisma.order.create({
       data: {
         code: orderCode,
+        shippingPrice,
         isHome,
         address,
         wilaya: {
@@ -164,7 +214,8 @@ export async function POST(req: NextRequest) {
         orderProducts: {
           createMany: {
             // allow duplicates if the user wants to order the same product twice or more
-            data: productsCode.map((code) => ({ productCode: code })),
+            // also, calculate each product price at the time of the order since it can always change
+            data: orderProductsData,
           },
         },
       },
@@ -269,8 +320,8 @@ export async function GET(req: NextRequest) {
       shippyingTypeFilterParam === "home"
         ? true
         : shippyingTypeFilterParam === "office"
-        ? false
-        : undefined;
+          ? false
+          : undefined;
     // phone
     const phoneFilterParam = req.nextUrl.searchParams.get("phone");
     const phoneFilter =
@@ -346,6 +397,8 @@ export async function GET(req: NextRequest) {
           },
           orderProducts: {
             select: {
+              price: true,
+              discount: true,
               product: {
                 select: {
                   name: true,

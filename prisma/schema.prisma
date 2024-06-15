@@ -140,6 +140,9 @@ model Order {
   location   Locations? @relation(references: [id], fields: [locationId], onDelete: SetNull)
   locationId String?    @db.VarChar(25)
 
+  // We store the shipping price here as well as the price can always change and we must keep track of the price at the moment of the order
+  shippingPrice Int @map("shipping_price")
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -154,6 +157,10 @@ model OrdersProducts {
 
   order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId Int
+
+  // ? Since the price and the discount can always change, we must save them relative to the time of the order
+  price    Int
+  discount Int @default(0) @db.SmallInt
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
@@ -176,6 +183,8 @@ model Locations {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   Order Order[]
+
+  @@map("locations")
 }
 
 model User {

@@ -1,34 +1,36 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Orderer
 
-## Getting Started
+> Note: This app is still a work in progress
 
-First, run the development server:
+Orderer is a simple yet powerful e-store app that will help you manage the essentials of your shop. The design and features were all buit with an emphasis on user experience making it therefore very easy and straightforward to use while keeping a pleasant looking interface.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+It is built with [Nextjs 14](https://nextjs.org/) and designed in [Figma](https://www.figma.com/).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app is aimed to be used by stores within the country of Algeria and comes with a preset of all the wilayas and their relative towns.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## screenshots
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+<p align="center" width="100%">
+  <img src="./.github/images/1.png" />
+</p>
+<p align="center" width="100%">
+  <img src="./.github/images/2.png" />
+</p>
+<p align="center" width="100%">
+  <img src="./.github/images/3.png" />
+</p>
 
-## Learn More
+## features
 
-To learn more about Next.js, take a look at the following resources:
+- Easy to use product ordering flow.
+- Ability for users to track their order.
+- Shipping prices and be changed for each wilaya individually.
+- Shipping prices can also be set for both home delivery and shipping point delivery.
+- Ability to add custom shipping locations with Google maps coordinates and additional cost (if desired).
+- Light and Dark themes.
+- Ability to blacklist phone numbers.
+- And more...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is released under the [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt).

@@ -32,8 +32,15 @@ export default async function Orders({ params }: Props) {
     where: {
       code,
     },
-    include: {
+    select: {
+      shippingPrice: true,
       wilaya: true,
+      isHome: true,
+      address: true,
+      code: true,
+      createdAt: true,
+      status: true,
+      updatedAt: true,
       town: true,
       location: {
         select: {
@@ -49,6 +56,8 @@ export default async function Orders({ params }: Props) {
       },
       orderProducts: {
         select: {
+          price: true,
+          discount: true,
           product: {
             include: { images: true },
           },
@@ -58,26 +67,34 @@ export default async function Orders({ params }: Props) {
     },
   });
 
-  const shippingPrice = () => {
-    const price =
-      (data?.isHome ? data.wilaya.homePrice : data?.wilaya.officePrice) ?? 0;
+  // const shippingPrice = () => {
+  //   const price =
+  //     (data?.isHome ? data.wilaya.homePrice : data?.wilaya.officePrice) ?? 0;
 
-    return price + (data?.location?.additionalCosts ?? 0);
-  };
+  //   return price + (data?.location?.additionalCosts ?? 0);
+  // };
 
+  // const totalPrice = () => {
+  //   if (!data || !shippingPrice) return;
+  //   const allProductsPrice = data?.orderProducts.reduce(
+  //     (prevPrice, { product: currentProduct }) => {
+  //       return (
+  //         discountedPrice(currentProduct.price, currentProduct.discount) +
+  //         prevPrice
+  //       );
+  //     },
+  //     0,
+  //   );
   const totalPrice = () => {
-    if (!data || !shippingPrice) return;
+    if (!data || !data.shippingPrice) return;
     const allProductsPrice = data?.orderProducts.reduce(
-      (prevPrice, { product: currentProduct }) => {
-        return (
-          discountedPrice(currentProduct.price, currentProduct.discount) +
-          prevPrice
-        );
+      (prevPrice, { price, discount }) => {
+        return discountedPrice(price, discount) + prevPrice;
       },
       0,
     );
 
-    return allProductsPrice + shippingPrice();
+    return allProductsPrice + data.shippingPrice;
   };
 
   const displayAddress = () => {
@@ -197,6 +214,13 @@ export default async function Orders({ params }: Props) {
                     ),
                   },
                   {
+                    label: "Statut modifié le",
+                    content:
+                      data.createdAt.getTime() === data.updatedAt.getTime()
+                        ? "Pas encore"
+                        : formatDate(data.updatedAt),
+                  },
+                  {
                     label: "Nombre de produits",
                     content: data.orderProducts.length,
                   },
@@ -208,14 +232,14 @@ export default async function Orders({ params }: Props) {
                 Produits
               </h3>
               <div className="mb-2 grow px-1 lg:mb-0 lg:px-2">
-                {data.orderProducts.map(({ product }) => (
+                {data.orderProducts.map(({ product, price, discount }) => (
                   <SelectedProductDetails
                     key={product.code}
                     description={product.description}
                     disabledRemove
-                    discount={product.discount}
+                    discount={discount}
                     name={product.name}
-                    price={product.price}
+                    price={price}
                     // productCount={0}
                     onClear={() => {}}
                     transparentBg
@@ -231,7 +255,7 @@ export default async function Orders({ params }: Props) {
                   data={[
                     {
                       label: "Prix livraison",
-                      content: shippingPrice() + "DA",
+                      content: data.shippingPrice + "DA",
                     },
                     {
                       label: "Prix total à payer",

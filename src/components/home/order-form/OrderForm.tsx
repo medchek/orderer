@@ -12,7 +12,6 @@ import OrderConfirm from "../OrderConfirm";
 import { toPositiveNumber } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import TownSelect from "./TownSelect";
-import { useEffectOnce } from "usehooks-ts";
 import WilayaSelect from "./WilayaSelect";
 import {
   PostOrderFormData,
@@ -20,7 +19,7 @@ import {
 } from "@/features/orders/api/postOrder";
 
 import ReCAPTCHA from "react-google-recaptcha";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Button from "@/components/Button";
 import { AccountDetail } from "@/features/settings/types";
 import { STATUS_TOO_MANY_REQUESTS } from "@/lib/constants";
@@ -52,7 +51,6 @@ export default function OrderForm({ accountDetail }: Props) {
     confirmData,
     isConfirming,
     setIsConfirming,
-    removeAllSelectedProducts,
     showSnackbar,
   } = useStore();
   const methods = useForm<OrderFormValues>();
@@ -64,7 +62,7 @@ export default function OrderForm({ accountDetail }: Props) {
     formState: { errors },
   } = methods;
 
-  useEffectOnce(() => {
+  useEffect(() => {
     prefetch("/thanks");
 
     if (accountDetail) {
@@ -79,10 +77,9 @@ export default function OrderForm({ accountDetail }: Props) {
     // set select values for the form
 
     return () => {
-      removeAllSelectedProducts();
       setIsConfirming(false);
     };
-  });
+  }, [accountDetail, prefetch, setIsConfirming, setValue]);
 
   const isDisabledSubmit =
     selectedProducts.length === 0 ||
@@ -181,7 +178,7 @@ export default function OrderForm({ accountDetail }: Props) {
             console.log(invalidData);
           })}
           id="order-form"
-          className="mt-2 flex  w-full grow flex-col"
+          className="mt-2 flex w-full grow flex-col"
         >
           <section
             className={`w-full grow flex-col ${
@@ -261,7 +258,7 @@ export default function OrderForm({ accountDetail }: Props) {
               selectedTown={selectedTown}
             />
           ) : null}
-          <div className="flex h-12 items-start justify-end text-sm text-neutral-950 dark:text-white lg:h-16 lg:text-base ">
+          <div className="flex h-12 items-start justify-end text-sm text-neutral-950 dark:text-white lg:h-16 lg:text-base">
             <Prices />
           </div>
           {/* BUTTONS */}
@@ -279,12 +276,13 @@ export default function OrderForm({ accountDetail }: Props) {
               </button>
             )}
             <Button
-              className="text flex h-12 w-full items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed disabled:bg-neutral-200  disabled:text-neutral-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700 lg:w-44"
+              className="text flex h-12 w-full items-center justify-center self-end rounded-lg bg-primary px-4 font-semibold text-white transition-colors hover:bg-[#fd4949] focus:bg-primary-darker disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700 lg:w-44"
               disabled={isDisabledSubmit || isPending || isSuccess}
               isLoading={isPending || isSuccess}
             >
               <span className="flex gap-2">
-                <MdOutlineShoppingCart className="h-6 w-6" /> Commander
+                <MdOutlineShoppingCart className="h-6 w-6" />
+                <span>{isConfirming ? "Commander" : "Continuer"}</span>
               </span>
             </Button>
           </div>

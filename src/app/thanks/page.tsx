@@ -1,7 +1,6 @@
 import Footer from "@/components/Footer";
 import HomeHeader from "@/components/home/HomeHeader";
 import Link from "next/link";
-import React from "react";
 import { TbShoppingBag } from "react-icons/tb";
 import { FiLink2 } from "react-icons/fi";
 
@@ -12,6 +11,7 @@ import { ORDER_CODE_LENGTH } from "@/lib/constants";
 import { RedirectType } from "next/dist/client/components/redirect";
 import { getSession } from "../api/auth/[...nextauth]/route";
 import Main from "@/components/Main";
+import ResetOrderProducts from "@/components/home/ResetOrderProducts";
 
 // search param
 interface Props {
@@ -37,10 +37,11 @@ export default async function ThankYouPage({ searchParams }: Props) {
 
   return (
     <Main>
+      <ResetOrderProducts />
       <HomeHeader isAdmin={isAdmin} />
 
       <div className="relative flex grow -translate-y-20 flex-col items-center justify-center overflow-hidden">
-        <div className="flex flex-col items-center gap-2 ">
+        <div className="flex flex-col items-center gap-2">
           <TbShoppingBag className="h-20 w-20" />
           <div className="flex flex-col items-center gap-1 text-center">
             <p className="text-5xl font-semibold">Merci</p>

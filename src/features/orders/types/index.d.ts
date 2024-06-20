@@ -30,6 +30,8 @@ export interface OrderData {
     name: string;
   };
   orderProducts: {
+    price: number;
+    discount: number;
     product: {
       name: string;
       price: number;

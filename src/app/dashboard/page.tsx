@@ -8,6 +8,12 @@ import DashboardHomeVisualize from "@/features/dashboard/components/DashboardHom
 import { SuccessfulOrder } from "@/features/dashboard/types";
 import { prisma } from "../../../prisma/db";
 import { Status } from "@prisma/client";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Administration - TRB Eshop",
+  description: "Gérez votre shop",
+};
 
 export default async function Dashboard() {
   const completedOrders: SuccessfulOrder[] = await prisma.order.findMany({
@@ -51,14 +57,14 @@ export default async function Dashboard() {
       {/* <DashboardProductsToolbar />
       <DashboardProductDisplay /> */}
       <div id="main" className="grid h-full w-full grow grid-cols-12 gap-2">
-        <div id="left-panel" className="col-span-8 flex flex-col gap-3 ">
+        <div id="left-panel" className="col-span-8 flex flex-col gap-3">
           <DashboardHomeStats />
           <div id="left-panel-wrapper" className="flex grow flex-col gap-2">
             <DashboardHomeVisualize />
             <DashboardHomeTopProducts completedOrders={completedOrders} />
           </div>
         </div>
-        <div id="side-panel" className="col-span-4 flex flex-col gap-2 ">
+        <div id="side-panel" className="col-span-4 flex flex-col gap-2">
           <DashboardHomeLatestOrders />
           <DashboardHomeTopWilayas completedOrders={completedOrders} />
         </div>

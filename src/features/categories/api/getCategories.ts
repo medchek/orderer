@@ -1,5 +1,6 @@
 import { queryKeys } from "@/lib/queryKeys";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { QueryOptions } from "@/types/api";
+import { useQuery } from "@tanstack/react-query";
 import ky from "ky";
 
 export type GetCategoriesSuccessResponse = {
@@ -16,7 +17,7 @@ export const getCategories =
     return await ky.get("/api/categories").json();
   };
 
-type UseGetCategoriesOptions = UseQueryOptions<GetCategoriesSuccessResponse>;
+type UseGetCategoriesOptions = QueryOptions<GetCategoriesSuccessResponse>;
 
 export const useGetCategories = (options?: UseGetCategoriesOptions) => {
   return useQuery({

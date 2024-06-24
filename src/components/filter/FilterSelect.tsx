@@ -15,7 +15,7 @@ export default function FilterSelect({
   ...props
 }: Props) {
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex w-full items-center">
       <select
         disabled={isLoading}
         className={cn(
@@ -27,7 +27,7 @@ export default function FilterSelect({
         {children}
       </select>
       {!isLoading ? (
-        <MdChevronRight className="pointer-events-none absolute right-1 h-5 w-5 rotate-90 text-neutral-600" />
+        <MdChevronRight className="pointer-events-none absolute right-1 size-5 rotate-90 text-neutral-600" />
       ) : (
         <Loader className="absolute right-1 h-4 w-4 border-neutral-500" />
       )}

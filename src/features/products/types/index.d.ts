@@ -49,6 +49,7 @@ interface ProductsFiltersParams {
   isDiscount?: "0" | "1";
   category?: string;
   subcategory?: string;
+  inStock?: "0" | "1";
 }
 
 export type ProductsFilters = ProductsFiltersParams;

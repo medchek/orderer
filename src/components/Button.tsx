@@ -15,7 +15,7 @@ export default function Button({
   return (
     <button
       className={cn(
-        "h-10 w-36 rounded-md bg-blue-600 px-2 text-white transition-colors hover:bg-secondary  focus:bg-blue-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600",
+        "h-10 w-36 rounded-md bg-blue-600 px-2 text-white transition-colors hover:bg-secondary focus:bg-blue-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-900 dark:disabled:text-stone-600",
         className,
       )}
       {...props}

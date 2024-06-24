@@ -93,6 +93,46 @@ export const toNumberOrNull = (n: string): number | null => {
 };
 
 /**
+ * Checks if a string is a valid positive whole number
+ * @param n the string number
+ * @returns true if it is valid, false otherwise
+ */
+export const isValidStringNumber = (
+  n: string | null | undefined,
+  allowNegativeNumber: boolean = false,
+): boolean => {
+  if (n === null || n === undefined) return false;
+  const converted = parseInt(n.trim());
+
+  if (isNaN(converted) && !isFinite(converted)) return false;
+
+  if (!allowNegativeNumber && converted < 0) return false;
+
+  return true;
+};
+
+/**
+ * Checks if a string is a valid positive number, allowing 3 decimals.
+ * Uses a regex for comparison.
+ * @param n the string number
+ * @param noDecimals if true, the regex wont allow decimals number
+ */
+export const isValidPositiveStringNumber = (
+  n: string | null | undefined,
+  noDecimals = false,
+): boolean => {
+  if (n === null || n === undefined) return false;
+
+  const rgx = !noDecimals ? /^0*\d*(\.[1-9]{3})?$/gi : /^0*\d*$/gi;
+
+  if (rgx.test(n)) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
  * Returns the absolute direct image url based on image id
  * @param imageId the image id
  * @returns full image url

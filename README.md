@@ -29,6 +29,7 @@ The app is aimed to be used by stores within the country of Algeria and comes wi
 - Ability to add custom shipping locations with Google maps coordinates and additional cost (if desired).
 - Light and Dark themes.
 - Ability to blacklist phone numbers.
+- Reponsive UI.
 - And more...
 
 ## License

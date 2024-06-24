@@ -32,10 +32,7 @@ export const getProducts = async (
     .json();
 };
 
-type UseGetProductsQueryOptions = {
-  filters: ProductsFilters;
-  options: QueryOptions<GetProductsSuccessResponse>;
-};
+type UseGetProductsQueryOptions = QueryOptions<GetProductsSuccessResponse>;
 
 export const useGetProducts = (
   filters: ProductsFilters,
@@ -44,6 +41,7 @@ export const useGetProducts = (
   return useQuery({
     queryKey: queryKeys.products.all(filters).queryKey,
     queryFn: () => getProducts(filters),
+
     ...opts,
   });
 };

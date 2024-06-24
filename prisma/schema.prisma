@@ -143,6 +143,8 @@ model Order {
   // We store the shipping price here as well as the price can always change and we must keep track of the price at the moment of the order
   shippingPrice Int @map("shipping_price")
 
+  note String?
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 

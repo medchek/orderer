@@ -9,13 +9,16 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   product: Product;
 }
 
-export default function ProductCardAddProductButton(props: Props) {
+export default function ProductCardAddProductButton({
+  className,
+  ...props
+}: Props) {
   const { addSelectedProduct, selectedProducts } = useStore();
   return (
     <Button
       className={cn(
         "flex h-7 w-full items-center justify-center rounded-md bg-neutral-200 text-sm font-semibold transition-colors hover:bg-gray-300 focus:bg-secondary focus:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-700 dark:focus:bg-neutral-900 lg:h-8 lg:text-base",
-        props.className,
+        className,
       )}
       {...props}
       onClick={() => addSelectedProduct(props.product)}

@@ -90,6 +90,7 @@ CREATE TABLE "orders" (
     "address" VARCHAR(255),
     "locationId" VARCHAR(25),
     "shipping_price" INTEGER NOT NULL,
+    "note" TEXT,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
@@ -99,6 +100,7 @@ CREATE TABLE "orders" (
 -- CreateTable
 CREATE TABLE "orders_products" (
     "productCode" VARCHAR(25) NOT NULL,
+    "quantity" SMALLINT NOT NULL DEFAULT 1,
     "orderId" INTEGER NOT NULL,
     "price" INTEGER NOT NULL,
     "discount" SMALLINT NOT NULL DEFAULT 0,

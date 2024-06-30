@@ -156,6 +156,7 @@ model Order {
 model OrdersProducts {
   product     Product @relation(fields: [productCode], references: [code], onDelete: Cascade)
   productCode String  @db.VarChar(25)
+  quantity    Int     @default(1) @db.SmallInt
 
   order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId Int

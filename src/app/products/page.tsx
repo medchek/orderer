@@ -2,6 +2,7 @@ import Main from "@/components/Main";
 import FilterDrawer from "@/components/filter/FilterDrawer";
 import HomeHeader from "@/components/home/HomeHeader";
 import { getProducts } from "@/features/products/api/getProducts";
+import ProductsDisplaySelectedProductsCount from "@/features/products/components/ProductsDisplaySelectedProductsCount";
 import ProductsPageDisplayProducts from "@/features/products/components/ProductsPageDisplayProducts";
 import { ProductsFilters } from "@/features/products/types";
 import { queryKeys } from "@/lib/queryKeys";
@@ -30,6 +31,9 @@ export default async function ProductsPage() {
             Produits
           </h1>
           <FilterDrawer />
+        </section>
+        <section>
+          <ProductsDisplaySelectedProductsCount className="mb-2 pt-0 text-sm" />
         </section>
         <HydrationBoundary state={dehydrate(queryClient)}>
           <ProductsPageDisplayProducts />

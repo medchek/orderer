@@ -10,6 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 export default function Prices() {
   const {
     selectedProducts,
+    selectedProductsQuantity,
     selectedWilaya,
     shippingType,
     selectedShippingLocationId,
@@ -42,16 +43,37 @@ export default function Prices() {
     }
   }, [selectedShippingLocationId, selectedWilaya]);
 
-  const productsPrice = selectedProducts.reduce((prevVal, currentVal) => {
-    return prevVal + discountedPrice(currentVal.price, currentVal.discount);
-  }, 0);
+  /**
+   * the price of all the products without the shipping cost
+   */
+  const productsPrice = Object.keys(selectedProducts).reduce(
+    (prev, current): number => {
+      const currentProduct = selectedProducts[current];
+      // get the price of each selected product, including the
+      const currentProductPrice = discountedPrice(
+        currentProduct.price,
+        currentProduct.discount,
+      );
+      // get the quantity of each selected product
+      const currentProductQuantity = selectedProductsQuantity[current];
+      // calulcate based on the quantity
+      const quantifiedCurrentProductPrice =
+        currentProductPrice * currentProductQuantity;
+      return prev + quantifiedCurrentProductPrice;
+    },
+    0,
+  );
+
+  // const productsPrice = selectedProducts.reduce((prevVal, currentVal) => {
+  //   return prevVal + discountedPrice(currentVal.price, currentVal.discount);
+  // }, 0);
 
   const shippingPrice = useCallback(() => {
     return selectedWilaya === null // if no wilaya is selected, set the price to 0
       ? 0
       : shippingType === SHIPPING_TYPE.HOME
-      ? selectedWilaya.homePrice
-      : selectedWilaya.officePrice + additionalLocationPrice;
+        ? selectedWilaya.homePrice
+        : selectedWilaya.officePrice + additionalLocationPrice;
   }, [additionalLocationPrice, selectedWilaya, shippingType]);
 
   const totalPrice = productsPrice + shippingPrice();

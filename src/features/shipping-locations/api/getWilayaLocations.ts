@@ -1,6 +1,7 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
 import ky from "ky";
+import { QueryOptions } from "@/types/api";
 
 export type ShippingLocationsQueryFilter = {
   currentPage: number;
@@ -38,7 +39,7 @@ const getWilayaLocations = async (
 };
 
 type UseGetWilayaLocationsOptions =
-  UseQueryOptions<GetWilayaShippingLocationsSuccessResponse>;
+  QueryOptions<GetWilayaShippingLocationsSuccessResponse>;
 
 /**
  * Query to get wilaya-specific shipping locations

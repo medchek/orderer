@@ -128,7 +128,7 @@ Props) {
     if (name) {
       return `de la wilaya ${addPartitive(name)}`;
     } else {
-      return "des wilayas séléctionnées";
+      return "des wilayas sélectionnées";
     }
   };
 
@@ -201,7 +201,7 @@ Props) {
     <Modal
       closeModal={closeModal}
       label="Prix de livraisons"
-      className="flex w-full flex-col rounded-lg  bg-[#F3F3F3] px-6 py-3 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
+      className="flex w-full flex-col rounded-lg bg-[#F3F3F3] px-6 py-3 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       closeOnClickOutside
       centerModalContent
       preventClose={isPending}
@@ -295,7 +295,7 @@ Props) {
           </button>
           <button
             type="submit"
-            className="h-10 w-36 rounded-md bg-blue-600 font-semibold text-white transition-colors hover:bg-secondary focus:bg-blue-700  disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
+            className="h-10 w-36 rounded-md bg-blue-600 font-semibold text-white transition-colors hover:bg-secondary focus:bg-blue-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
             // onClick={handleDeleteProduct}
             // disabled
             disabled={isPending}

@@ -9,7 +9,11 @@ interface Props {
   value?: number | null;
 }
 
-export default function ShippingLocationWilayaSelect({ onChange, id, value }: Props) {
+export default function ShippingLocationWilayaSelect({
+  onChange,
+  id,
+  value,
+}: Props) {
   const {
     data: wilayasData,
     isFetching: isFetchingWilayas,
@@ -34,7 +38,7 @@ export default function ShippingLocationWilayaSelect({ onChange, id, value }: Pr
     if (isSuccess && wilayasData.length > 0 && !isFetchingWilayas) {
       return [
         <option value="" key="0f">
-          Non séléctionné
+          Non sélectionné
         </option>,
         wilayasData.map((w) => (
           <option value={w.code} key={w.code}>

@@ -45,7 +45,7 @@ export default function ShippingLocationsSelect() {
       if (data.length > 0) {
         return [
           <option value="" key="00ff" hidden>
-            Séléctionnez une point de livraison
+            Sélectionnez un point de livraison
           </option>,
           ...data.map((location) => (
             <option value={location.id} key={location.id}>

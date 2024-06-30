@@ -46,7 +46,7 @@ export default function ShippingLocationTownSelect<T extends FieldValues>({
     if (!isFetching && data && data.length > 0) {
       return [
         <option value="" key="0x">
-          Non séléctionné
+          Non sélectionné
         </option>,
         data.map((town) => (
           <option value={town.code} key={town.code} className="capitalize">

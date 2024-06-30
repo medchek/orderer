@@ -1,12 +1,8 @@
 import { Status } from "@prisma/client";
 import ky from "ky";
 import { OrderData } from "../types";
-import {
-  UseQueryOptions,
-  useQuery
-} from "@tanstack/react-query";
+import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
-
 
 export type GetOrdersQueryFilter = {
   currentPage: number;
@@ -28,7 +24,7 @@ export interface GetOrdersSuccessResponse {
  * @returns paginated/fitered orders list
  */
 export const getOrders = async (
-  filter: GetOrdersQueryFilter
+  filter: GetOrdersQueryFilter,
 ): Promise<GetOrdersSuccessResponse> => {
   const { currentPage, ...queryFilters } = filter;
   const filterParams = Object.entries(queryFilters)
@@ -42,7 +38,7 @@ export const getOrders = async (
   return await ky
     .get(
       `/api/orders?page=${currentPage}` +
-        (filterParams.length ? `&${filterParams}` : "")
+        (filterParams.length ? `&${filterParams}` : ""),
     )
     .json();
 };
@@ -58,9 +54,9 @@ export const useGetOrders = ({ filters, config }: UseFetchOrdersOptions) => {
   return useQuery({
     queryKey: queryKeys.orders.all(filters).queryKey,
     queryFn: () => getOrders(filters),
-    keepPreviousData: true,
+    placeholderData: (prevData) => prevData,
     retryDelay: 2000,
-    cacheTime: 1000 * 60 * 10,
-    ...config
+    gcTime: 1000 * 60 * 10,
+    ...config,
   });
 };

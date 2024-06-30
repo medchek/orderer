@@ -1,6 +1,6 @@
 import React from "react";
-import AccountActions from "../AccountActions";
 import { cn } from "@/lib/utils";
+import AccountActions from "../menu/AccountActions";
 
 interface Props {
   label: string;

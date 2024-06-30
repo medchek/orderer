@@ -1,17 +1,24 @@
 import { Product } from "@/features/products/types";
 import { getImageDirectUrl } from "@/lib/utils";
-import useEmblaCarousel, { EmblaCarouselType } from "embla-carousel-react";
+import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import CarouselLazyImage from "./CarouselLazyImage";
+import { EmblaCarouselType } from "embla-carousel";
 import clsx from "clsx";
+import { FiCheck } from "react-icons/fi";
 
 type Props = {
   imageIds: Product["images"];
   className?: string;
   discount: number;
+  isSelected?: boolean;
 };
 
-export default function ImageCarousel({ imageIds, discount }: Props) {
+export default function ImageCarousel({
+  imageIds,
+  discount,
+  isSelected,
+}: Props) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     // active: imageIds.length > 1,
   });
@@ -30,7 +37,7 @@ export default function ImageCarousel({ imageIds, discount }: Props) {
       }
       const inView = emblaApi
         .slidesInView()
-        .filter((index) => !slidesInView.includes(index));
+        .filter((index: number) => !slidesInView.includes(index));
       return slidesInView.concat(inView);
     });
   }, []);
@@ -51,7 +58,7 @@ export default function ImageCarousel({ imageIds, discount }: Props) {
   return (
     <div
       className={clsx(
-        "embla relative aspect-square h-[180px] max-h-[180px] w-full overflow-hidden bg-neutral-300/80 dark:bg-stone-800 lg:h-[210px]  lg:max-h-[210px]",
+        "embla relative aspect-square h-[180px] max-h-[180px] w-full overflow-hidden bg-neutral-300/80 dark:bg-stone-800 lg:h-[210px] lg:max-h-[210px]",
         {
           "pointer-events-none": imageIds.length <= 1,
         },
@@ -94,6 +101,16 @@ export default function ImageCarousel({ imageIds, discount }: Props) {
           -{discount}%
         </span>
       )}
+
+      {isSelected ? (
+        <span className="pointer-events-none absolute right-3 top-2 flex size-8 items-center justify-center rounded-full bg-secondary text-white">
+          <FiCheck
+            className="size-6"
+            size="3rem"
+            title="Sélectionné pour livraison"
+          />
+        </span>
+      ) : null}
     </div>
   );
 }

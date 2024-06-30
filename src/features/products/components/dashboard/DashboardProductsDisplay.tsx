@@ -42,7 +42,6 @@ export default function DashboardProductsDisplay() {
   const {
     isAddProductOpen,
     setIsAddProductOpen,
-    deleteProduct: removePorductByCode,
     showSnackbar,
     clipboard,
     setClipboard,
@@ -67,8 +66,7 @@ export default function DashboardProductsDisplay() {
   const { refetch, data, status } = useGetProducts(productsFilters);
   const { mutate: deleteProductMutation, isPending: isDeleting } =
     useDeleteProduct({
-      onSuccess: (productCode: string) => {
-        removePorductByCode(productCode);
+      onSuccess: (/* productCode: string*/) => {
         showSnackbar("Produit supprimé!", "success");
         // close the modal
         setProductToDelete(null);
@@ -178,10 +176,10 @@ export default function DashboardProductsDisplay() {
                     code={code}
                     key={code}
                   >
-                    <div className="flex gap-2 text-sm font-semibold dark:text-stone-50 ">
+                    <div className="flex w-full gap-2 text-sm font-semibold dark:text-stone-50">
                       <button
                         type="button"
-                        className="h-8 grow  gap-1 rounded-md bg-[#E9E9E9] transition-colors hover:bg-[#e0e0e0] focus:bg-[#cacaca]  dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
+                        className="h-8 grow gap-1 rounded-md bg-[#E9E9E9] transition-colors hover:bg-[#e0e0e0] focus:bg-[#cacaca] dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-stone-900"
                         onClick={() => setProductToUpdateIndex(i)}
                       >
                         <MdEdit className="h-5 w-5" /> Modifier
@@ -189,7 +187,7 @@ export default function DashboardProductsDisplay() {
 
                       <button
                         type="button"
-                        className=" h-8 w-8  rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-red-600 "
+                        className="h-8 w-8 rounded-md bg-[#E9E9E9] transition-colors hover:text-red-600 focus:bg-red-600 focus:text-white dark:bg-stone-800 dark:hover:bg-stone-700 dark:focus:bg-red-600"
                         onClick={() => setProductToDelete(code)}
                       >
                         <MdDeleteOutline className="h-5 w-5" />

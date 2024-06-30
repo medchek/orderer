@@ -10,14 +10,15 @@ import Pagination from "@/components/Pagination";
 import { MdOutlineFilterAltOff } from "react-icons/md";
 import { TbPackage } from "react-icons/tb";
 import useProductFilter from "../hooks/useProductFilter";
-import ProductCardAddProductButton from "@/features/products/components/ProductCardAddProductButton";
+import ProductCardButton from "@/features/products/components/ProductCardButton";
+import ProductQuantitySelector from "./ProductQuantitySelector";
 
 /**
  * Component used to display paginated products list in products/page.tsx
  *
  */
 export default function ProductsPageDisplayProducts() {
-  const { productsFilters } = useStore();
+  const { productsFilters, selectedProducts } = useStore();
   const { resetFilters } = useProductFilter();
 
   const [hasFilters, setHasFilters] = useState<boolean>(false);
@@ -75,14 +76,25 @@ export default function ProductsPageDisplayProducts() {
 
     return data.products.map((product) => {
       const { category, subCategory, ...productData } = product;
+      const isProductSelected = selectedProducts[product.code] !== undefined;
       return (
         <ProductCard
+          isSelected={isProductSelected}
           key={product.code}
           {...productData}
           category={category?.name}
           subcategory={subCategory?.name}
         >
-          <ProductCardAddProductButton product={product} />
+          <div className="flex w-full flex-col gap-2">
+            {isProductSelected ? (
+              <ProductQuantitySelector code={product.code} />
+            ) : null}
+            <ProductCardButton
+              isSelected={isProductSelected}
+              className="h-9 min-h-9"
+              product={product}
+            />
+          </div>
         </ProductCard>
       );
     });

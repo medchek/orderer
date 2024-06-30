@@ -240,8 +240,7 @@ export default async function Orders({ params }: Props) {
                     discount={discount}
                     name={product.name}
                     price={price}
-                    // productCount={0}
-                    onClear={() => {}}
+                    code={product.code}
                     transparentBg
                     images={product.images}
                     small

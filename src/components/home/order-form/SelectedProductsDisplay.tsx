@@ -1,10 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useStore } from "@/store";
 import ProductDetails from "@/components/home/order-form/SelectedProductDetails";
 import { MdAdd } from "react-icons/md";
-
-import AddProductButton from "../AddProductButton";
 
 import { useSearchParams } from "next/navigation";
 import Loader from "@/components/Loader";
@@ -12,6 +10,8 @@ import { useGetSingleProduct } from "@/features/products/api/getSingleProduct";
 import dynamic from "next/dynamic";
 import ModalLoader from "@/components/ModalLoader";
 import clsx from "clsx";
+import { useSelectedProductsCount } from "@/features/products/hooks/useSelectedProductsCount";
+import ProductsDisplaySelectedProductsCount from "@/features/products/components/ProductsDisplaySelectedProductsCount";
 
 const AddProduct = dynamic(() => import("../AddProduct"), {
   loading: () => <ModalLoader />,
@@ -41,7 +41,27 @@ export default function SelectedProductsDisplay() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const productList = !selectedProducts.length ? (
+  const displaySelectedProducts = Object.keys(selectedProducts).map(
+    (productCodeKey) => {
+      const product = selectedProducts[productCodeKey];
+      return (
+        <ProductDetails
+          onClear={() => removeSelectedProduct(productCodeKey)}
+          name={product.name}
+          description={product.description}
+          price={product.price}
+          images={product.images}
+          key={productCodeKey}
+          code={productCodeKey}
+          discount={product.discount}
+          disabledRemove={isConfirming}
+        />
+      );
+    },
+  );
+
+  const selectedProductsCount = useSelectedProductsCount();
+  const productList = !selectedProductsCount ? (
     <div className="relative flex h-[154px] w-full flex-col items-center justify-center space-y-2 overflow-hidden rounded-2xl bg-neutral-200 px-3 py-2 text-sm font-semibold dark:bg-neutral-900 dark:text-neutral-200 lg:text-base">
       {isFetching ? (
         <Loader />
@@ -60,29 +80,26 @@ export default function SelectedProductsDisplay() {
       )}
     </div>
   ) : (
-    selectedProducts.map((product, idx) => (
-      <ProductDetails
-        onClear={() => removeSelectedProduct(idx)}
-        name={product.name}
-        description={product.description}
-        price={product.price}
-        images={product.images}
-        key={idx}
-        discount={product.discount}
-        disabledRemove={isConfirming}
-      />
-    ))
+    displaySelectedProducts
   );
 
   return (
-    <section id="products-detail" className="w-full  lg:mb-2">
+    <section id="products-detail" className="w-full lg:mb-2">
       <div className="mb-2 flex h-5 w-full justify-between lg:h-8">
         <h1 className="text-base font-semibold dark:text-white lg:text-xl">
           Votre Commande
         </h1>
-        {selectedProducts.length < 3 && !isConfirming && (
-          <AddProductButton onClick={() => setIsModalOpen(true)} />
-        )}
+        {
+          /* selectedProductsCount < 3 && */ !isConfirming && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex h-6 items-center space-x-0.5 rounded-md px-1 text-neutral-800 transition-colors hover:text-[#535353] focus:bg-[#F4F4F4] dark:text-neutral-300 dark:hover:text-white dark:focus:bg-neutral-800"
+            >
+              <MdAdd className="h-6 w-6" />
+              <span className="text-sm font-semibold">Ajouter un Produit</span>
+            </button>
+          )
+        }
         {isModalOpen && <AddProduct closeModal={() => setIsModalOpen(false)} />}
       </div>
       <div
@@ -93,17 +110,15 @@ export default function SelectedProductsDisplay() {
         <div className="h-full w-full overflow-x-auto">
           <div
             className={clsx("flex gap-3 overflow-auto", {
-              "w-max lg:w-full": selectedProducts.length > 1,
-              "w-full": selectedProducts.length <= 1,
+              "w-max lg:w-full": selectedProductsCount > 1,
+              "w-full": selectedProductsCount <= 1,
             })}
           >
             {productList}
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-end pt-1 text-xs text-neutral-600 dark:text-neutral-500 lg:text-sm">
-        sélectionnés {selectedProducts.length} (3 Maximum)
-      </div>
+      <ProductsDisplaySelectedProductsCount />
     </section>
   );
 }

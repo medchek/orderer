@@ -1,18 +1,21 @@
+"use client";
 import { getImageDirectUrl } from "@/lib/utils";
 import React from "react";
 import { MdClear } from "react-icons/md";
 import { clsx } from "clsx";
 import Image from "next/image";
+import { useStore } from "@/store";
 interface Props {
   name: string;
   description: string | null;
   price: number;
   images: { id: string }[];
   discount: number;
-  /** Event triggered when user wants to remove the product from the order. */
-  onClear: () => void;
+  code: string;
+  /** Event triggered when user wants to remove the product from the order. If not provided the remove button will be omitted */
+  onClear?: () => void;
 
-  disabledRemove: boolean;
+  disabledRemove?: boolean;
 
   transparentBg?: boolean;
 
@@ -23,6 +26,7 @@ export default function SelectedProductDetails({
   name,
   description,
   price,
+  code,
   // productCount,
   images,
   discount,
@@ -35,6 +39,7 @@ export default function SelectedProductDetails({
     discount === 0 ? price : price - (price * discount) / 100;
 
   const productImageUrl = getImageDirectUrl(images[0].id);
+  const { selectedProductsQuantity } = useStore();
   // old dark bg #121212
   return (
     <div
@@ -49,14 +54,14 @@ export default function SelectedProductDetails({
       )}
     >
       {/* Clear cross */}
-      {!disabledRemove && (
+      {!disabledRemove && onClear !== undefined && (
         <button
           type="button"
           onClick={onClear}
           className="absolute right-1 top-3 flex h-7 w-7 items-center justify-center rounded-md transition-colors focus:bg-neutral-300 dark:focus:bg-neutral-800"
           title="Supprimer de la commande"
         >
-          <MdClear className=" h-5 w-5 dark:text-neutral-100" />
+          <MdClear className="h-5 w-5 dark:text-neutral-100" />
         </button>
       )}
       {/* IMAGE */}
@@ -85,7 +90,7 @@ export default function SelectedProductDetails({
       <div
         className={clsx(
           small ? "h-28 max-h-28" : "h-32 max-h-32",
-          "flex h-32 max-h-32 w-auto grow-0 flex-col justify-between overflow-hidden pr-4",
+          "flex h-32 max-h-32 w-full grow-0 flex-col justify-between overflow-hidden",
         )}
       >
         <div className="space-y-0.5">
@@ -108,21 +113,31 @@ export default function SelectedProductDetails({
           </p>
           {/* <p className="text-secondary text-sm font-semibold">En stock: 3</p> */}
         </div>
-
-        <p
-          className={clsx(
-            small && "text-sm",
-            "text-sm font-semibold text-[#171717] dark:text-neutral-50 lg:text-base",
-          )}
-        >
-          Prix: {discountedPrice}DA
-          {discount > 0 && (
-            <span className="font-normal dark:text-neutral-600">
-              {" "}
-              &bull; (<span className="line-through">{price}DA</span>)
-            </span>
-          )}
-        </p>
+        {/* QUANTITY AND PRICE */}
+        <div className="flex w-full flex-col gap-1">
+          <p
+            className={clsx(
+              small && "text-sm",
+              "text-sm text-[#171717] dark:text-neutral-50 lg:text-base",
+            )}
+          >
+            Quantité: {selectedProductsQuantity[code]}
+          </p>
+          <p
+            className={clsx(
+              small && "text-sm",
+              "text-sm font-semibold text-[#171717] dark:text-neutral-50 lg:text-base",
+            )}
+          >
+            Prix: {discountedPrice}DA
+            {discount > 0 && (
+              <span className="font-normal dark:text-neutral-600">
+                {" "}
+                &bull; (<span className="line-through">{price}DA</span>)
+              </span>
+            )}
+          </p>
+        </div>
       </div>
     </div>
   );

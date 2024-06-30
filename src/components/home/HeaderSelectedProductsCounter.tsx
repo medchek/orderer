@@ -1,6 +1,6 @@
 "use client";
+import { useSelectedProductsCount } from "@/features/products/hooks/useSelectedProductsCount";
 import { cn } from "@/lib/utils";
-import { useStore } from "@/store";
 import React from "react";
 
 interface Props extends React.HTMLAttributes<HTMLSpanElement> {}
@@ -9,8 +9,9 @@ export default function HeaderSelectedProductsCounter({
   className,
   ...props
 }: Props) {
-  const { selectedProducts } = useStore();
-  return selectedProducts.length > 0 ? (
+  const selectedProductsCount = useSelectedProductsCount();
+
+  return selectedProductsCount > 0 ? (
     <span
       {...props}
       title="Nombre de produits sélectionnés pour livraison"
@@ -19,7 +20,7 @@ export default function HeaderSelectedProductsCounter({
         className,
       )}
     >
-      {selectedProducts.length}
+      {selectedProductsCount}
     </span>
   ) : null;
 }

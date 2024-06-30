@@ -15,6 +15,8 @@ interface Props {
   /** Controls the display of copy sharing link button */
   isDashboard?: boolean;
   code: string;
+  /** Whethere the product is selected for order */
+  isSelected?: boolean;
 }
 
 export default function ProductCard({
@@ -29,6 +31,7 @@ export default function ProductCard({
   code,
   isDashboard,
   children,
+  isSelected,
 }: Props) {
   const priceWidthDiscount =
     discount === 0 ? price : price - (price * discount) / 100;
@@ -39,14 +42,18 @@ export default function ProductCard({
 
   return (
     <div className="relative flex h-[380px] w-auto flex-col overflow-hidden rounded-lg bg-neutral-50 transition-all hover:shadow-xl dark:bg-neutral-950 lg:h-[460px]">
-      <ImageCarousel imageIds={images} discount={discount} />
-      <section className="flex grow flex-col justify-between px-1.5 py-1 text-neutral-900  dark:text-neutral-50 lg:px-2 lg:py-2">
+      <ImageCarousel
+        imageIds={images}
+        discount={discount}
+        isSelected={isSelected}
+      />
+      <section className="flex grow flex-col justify-between px-1.5 pb-1.5 pt-1 text-neutral-900 dark:text-neutral-50 lg:px-2 lg:py-2">
         <div className="flex grow flex-col justify-between overflow-hidden pb-2">
           <section className="flex flex-col gap-2">
             {/* previous height h-12 and gap-1*/}
             <div className="flex justify-between">
               <p
-                className="line-clamp-2 h-9 text-sm font-semibold lg:h-7 lg:text-base"
+                className="h-7 max-h-7 overflow-hidden overflow-ellipsis text-nowrap text-sm font-semibold lg:text-base"
                 title={name}
               >
                 {name}
@@ -58,7 +65,7 @@ export default function ProductCard({
               className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-neutral-200 text-xs text-neutral-500 dark:bg-neutral-900 lg:text-sm"
               title="Catégorie"
             >
-              <p className="px-1 py-0.5 first-letter:capitalize ">
+              <p className="px-1 py-0.5 first-letter:capitalize">
                 {category ?? "Non catégorisé"}
                 {subcategory && ` / ${subcategory}`}
               </p>
@@ -72,9 +79,9 @@ export default function ProductCard({
             </div>
           </section>
 
-          <section className="space-y-0.5 text-sm">
-            {stock && stock > 0 && (
-              <p className=" text-sm text-secondary lg:text-sm">
+          <section className="flex flex-col gap-0.5 text-sm">
+            {isDashboard && stock && stock > 0 && (
+              <p className="text-sm text-secondary lg:text-sm">
                 Stock: {stock}
               </p>
             )}
@@ -84,7 +91,9 @@ export default function ProductCard({
 
         {/* Buttons */}
 
-        <div className="h-8 min-h-[2rem] w-full">{children}</div>
+        <div className="flex w-full items-center justify-center">
+          {children}
+        </div>
       </section>
     </div>
   );

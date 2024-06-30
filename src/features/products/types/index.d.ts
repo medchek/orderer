@@ -12,6 +12,12 @@ export interface Product {
   images: { id: string }[];
 }
 
+export type SelectedProducts = {
+  [productCode: string]: Product;
+};
+
+export type SelectedProductsQuantity = Record<keyof SelectedProducts, number>;
+
 export type UploadStatus = "error" | "uploading" | "success";
 
 export interface FileMetaData {

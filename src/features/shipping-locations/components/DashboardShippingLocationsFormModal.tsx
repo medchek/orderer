@@ -12,7 +12,7 @@ import ModalActionButtons from "@/components/ModalActionButtons";
 import { useStore } from "@/store";
 import { googleMapsLinkRegex } from "@/lib/patterns";
 import { toPositiveNumber } from "@/lib/utils";
-import { useEffectOnce } from "usehooks-ts";
+import { useEffect } from "react";
 
 interface Props {
   /** Function to run when closing the form modal */
@@ -44,13 +44,13 @@ export default function DashboardShippingLocationsFormModal({
   const { setSelectedWilaya, setSelectedTown, setIsShippingLocationModalOpen } =
     useStore();
 
-  useEffectOnce(() => {
+  useEffect(() => {
     // set the values of wilaya and town if the user sends location data for update
     if (locationData) {
       setValue("town", locationData.town.code.toString());
       setValue("wilaya", locationData.wilaya.code.toString());
     }
-  });
+  }, [locationData, setValue]);
 
   const onFormSubmit: SubmitHandler<ShippingLocationsFormValues> = async (
     data,
@@ -96,7 +96,7 @@ export default function DashboardShippingLocationsFormModal({
       >
         <section
           id="dashboard-add-product-form"
-          className="flex h-full w-full grow flex-col justify-between  overflow-y-auto px-2 pt-5"
+          className="flex h-full w-full grow flex-col justify-between overflow-y-auto px-2 pt-5"
         >
           <section className="flex grow flex-col">
             <Input<ShippingLocationsFormValues>

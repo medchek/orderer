@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { addPartitive, toPositiveNumber } from "@/lib/utils";
@@ -17,7 +17,6 @@ import {
 import Modal from "@/components/Modal";
 import Input from "@/components/Input";
 import Loader from "@/components/Loader";
-import { useEffectOnce } from "usehooks-ts";
 import { WilayasSelection } from "../types";
 
 export interface SelectedWilaya extends Wilaya {
@@ -104,7 +103,7 @@ Props) {
     },
   });
 
-  useEffectOnce(() => {
+  useEffect(() => {
     if (selectedWilaya) {
       setIsAvailableHome(selectedWilaya.availableHome);
       setIsAvailableOffice(selectedWilaya.availableOffice);
@@ -121,7 +120,7 @@ Props) {
       //   setIsAvailable(true);
       // }
     }
-  });
+  }, [selectedWilaya]);
   const displayWilayaName = () => {
     const name = selectedWilaya?.name;
     // if it's null, then, only a single wilaya is requested to be modified

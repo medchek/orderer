@@ -9,7 +9,6 @@ import {
   ShippingLocationsQueryFilter,
   useGetLocations,
 } from "../api/getLocations";
-import { useEffectOnce } from "usehooks-ts";
 import FilterSelect from "@/components/filter/FilterSelect";
 
 export default function DashboardShippingLocationFilter() {
@@ -22,14 +21,14 @@ export default function DashboardShippingLocationFilter() {
     useState<ShippingLocationsQueryFilter["hasCoordinates"]>("");
 
   // set the defaultValues on component render
-  useEffectOnce(() => {
+  useEffect(() => {
     const { name, town, wilaya, hasCoordinates } =
       shippingLocationsQueryFilters;
     if (name) setName(name);
     if (wilaya) setWilaya(wilaya);
     if (town) setTown(town);
     if (hasCoordinates) setHasCoordinates(hasCoordinates);
-  });
+  }, [shippingLocationsQueryFilters]);
 
   const [hasFilters, setHasFilters] = useState(false);
   useEffect(() => {

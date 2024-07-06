@@ -3,14 +3,9 @@ import React from "react";
 import ThemeSelectorButton from "./ThemeSelectorButton";
 // import { useStore } from "@/store";
 import { useTheme } from "next-themes";
-import { useEffectOnce } from "usehooks-ts";
 
 export default function SettingsThemeSelector() {
   const { theme, setTheme } = useTheme();
-
-  useEffectOnce(() => {
-    console.log("loaded theme value =>", theme);
-  });
 
   const switchTheme = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value: string = e.target.value.trim();

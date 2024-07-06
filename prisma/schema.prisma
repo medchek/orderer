@@ -119,6 +119,23 @@ model Town {
   @@map("towns")
 }
 
+model Phone {
+  id              String  @id
+  phone           String  @unique @db.VarChar(15)
+  isBlacklisted   Boolean @default(false)
+  blacklistReason String? @db.VarChar(255)
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String? @unique @db.VarChar(15)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  Order     Order[]
+
+  @@unique([phone, userId])
+  @@map("phone")
+}
+
 model Order {
   id Int @id @default(autoincrement())
 
@@ -126,8 +143,11 @@ model Order {
   status Status  @default(UNCONFIRMED)
   isHome Boolean @default(true) @map("is_home")
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @map("user_id")
+  phone       Phone  @relation(fields: [phoneNumber], references: [phone])
+  phoneNumber String @db.VarChar(15)
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId String? @map("user_id")
 
   wilaya     Wilaya @relation(fields: [wilayaCode], references: [code], onDelete: Cascade)
   wilayaCode Int    @map("wilaya_code")
@@ -149,6 +169,7 @@ model Order {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   orderProducts OrdersProducts[]
+  Blacklist     Blacklist[]
 
   @@map("orders")
 }
@@ -217,6 +238,7 @@ model User {
 
   Account Account[]
   Session Session[]
+  Phone   Phone?
 
   @@unique([email, phone])
   @@map("users")
@@ -233,6 +255,8 @@ model Blacklist {
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  Order     Order?   @relation(fields: [orderId], references: [id])
+  orderId   Int?
 
   @@unique([phone, userPhone])
   @@map("blacklist")

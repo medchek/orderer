@@ -79,12 +79,26 @@ CREATE TABLE "towns" (
 );
 
 -- CreateTable
+CREATE TABLE "phone" (
+    "id" TEXT NOT NULL,
+    "phone" VARCHAR(15) NOT NULL,
+    "isBlacklisted" BOOLEAN NOT NULL DEFAULT false,
+    "blacklistReason" VARCHAR(255),
+    "userId" VARCHAR(15),
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
+
+    CONSTRAINT "phone_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "orders" (
     "id" SERIAL NOT NULL,
     "code" VARCHAR(100) NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'UNCONFIRMED',
     "is_home" BOOLEAN NOT NULL DEFAULT true,
-    "user_id" TEXT NOT NULL,
+    "phoneNumber" VARCHAR(15) NOT NULL,
+    "user_id" TEXT,
     "wilaya_code" INTEGER NOT NULL,
     "town_code" INTEGER NOT NULL,
     "address" VARCHAR(255),
@@ -147,6 +161,7 @@ CREATE TABLE "blacklist" (
     "reason" VARCHAR(255),
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
+    "orderId" INTEGER,
 
     CONSTRAINT "blacklist_pkey" PRIMARY KEY ("id")
 );
@@ -214,6 +229,15 @@ CREATE UNIQUE INDEX "wilayas_code_key" ON "wilayas"("code");
 CREATE UNIQUE INDEX "towns_code_key" ON "towns"("code");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "phone_phone_key" ON "phone"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "phone_userId_key" ON "phone"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "phone_phone_userId_key" ON "phone"("phone", "userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "orders_code_key" ON "orders"("code");
 
 -- CreateIndex
@@ -265,7 +289,13 @@ ALTER TABLE "images" ADD CONSTRAINT "images_product_id_fkey" FOREIGN KEY ("produ
 ALTER TABLE "towns" ADD CONSTRAINT "towns_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "phone" ADD CONSTRAINT "phone_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_phoneNumber_fkey" FOREIGN KEY ("phoneNumber") REFERENCES "phone"("phone") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "orders" ADD CONSTRAINT "orders_wilaya_code_fkey" FOREIGN KEY ("wilaya_code") REFERENCES "wilayas"("code") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -296,6 +326,9 @@ ALTER TABLE "users" ADD CONSTRAINT "users_town_code_fkey" FOREIGN KEY ("town_cod
 
 -- AddForeignKey
 ALTER TABLE "blacklist" ADD CONSTRAINT "blacklist_userPhone_fkey" FOREIGN KEY ("userPhone") REFERENCES "users"("phone") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "blacklist" ADD CONSTRAINT "blacklist_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "orders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

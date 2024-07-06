@@ -2,8 +2,12 @@ export const PRODUCT_CODE_LENGTH = 20;
 export const ORDER_CODE_LENGTH = 14;
 export const CATEGORY_CODE_LENGTH = 23;
 
+/** the max number of unqiue product type allowed per order */
+export const MAX_PRODUCT_COUNT_PER_ORDER = 3;
 // the maximum number of product allowed to be selected per product
 export const MAX_PRODUCT_QUANTITY = 50;
+
+export const PHONE_ENTRY_ID_LENGTH = 25;
 
 export const SHIPPING_LOCATION_ID_LENGTH = 25;
 

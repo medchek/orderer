@@ -4,9 +4,11 @@ import {
   uniqueId,
 } from "./../../../lib/utils";
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "../auth/[...nextauth]/route";
+import { getSession, isAdmin } from "../auth/[...nextauth]/route";
 import {
+  MAX_PRODUCT_QUANTITY,
   ORDER_CODE_LENGTH,
+  PHONE_ENTRY_ID_LENGTH,
   SHIPPING_LOCATION_ID_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CREATED,
@@ -24,28 +26,60 @@ import {
   PostOrderSuccessResponse,
 } from "@/features/orders/api/postOrder";
 import { GetOrdersSuccessResponse } from "@/features/orders/api/getOrders";
-import { emailRegex, phoneRegex } from "@/lib/patterns";
-import { headers } from "next/headers";
-import { verifyCaptcha } from "@/features/recaptcha/api/verifyCaptcha";
+import { emailRegex, phoneRegex, productCodeRegex } from "@/lib/patterns";
+// import { headers } from "next/headers";
+// import { verifyCaptcha } from "@/features/recaptcha/api/verifyCaptcha";
 import { notifyOrderCreated } from "@/features/notifications/api/notifyOrderCreated";
 
 export async function POST(req: NextRequest) {
   try {
     // verify captcha
-    const headersList = headers();
+    // TODO: REENABLE RECHAPTCHA START
+    // const headersList = headers();
 
-    const recaptchaToken = headersList.get("X-Recaptcha-Token");
+    // const recaptchaToken = headersList.get("X-Recaptcha-Token");
 
-    const isValidRecaptchaToken = await verifyCaptcha(recaptchaToken);
+    // const isValidRecaptchaToken = await verifyCaptcha(recaptchaToken);
 
-    if (!isValidRecaptchaToken.success) {
-      return apiErrorResponse(
-        "Authorization error: Invalid captcha token",
-        STATUS_UNAUTHORIZED,
-      );
-    }
+    // if (!isValidRecaptchaToken.success) {
+    //   return apiErrorResponse(
+    //     "Authorization error: Invalid captcha token",
+    //     STATUS_UNAUTHORIZED,
+    //   );
+    // }
+    // TODO: REENABLE RECHAPTCHA END
 
     const body: PostOrderRequestPayload = await req.json();
+
+    // const productsSchema = Joi.object<
+    //   PostOrderRequestPayload["products"][number]
+    // >({
+    //   code: Joi.string().regex(productCodeRegex),
+    //   quantity: Joi.number()
+    //     .strict()
+    //     .positive()
+    //     .precision(0)
+    //     .min(1)
+    //     .max(MAX_PRODUCT_QUANTITY)
+    //     .required(),
+    // });
+
+    const productsSchema = Joi.object<
+      PostOrderRequestPayload["products"]
+    >().pattern(
+      // key
+      Joi.string().regex(productCodeRegex),
+      // value
+      Joi.object({
+        quantity: Joi.number()
+          .strict()
+          .positive()
+          .precision(0)
+          .min(1)
+          .max(MAX_PRODUCT_QUANTITY)
+          .required(),
+      }),
+    );
 
     const schema = Joi.object<PostOrderRequestPayload>({
       phone: Joi.string().regex(phoneRegex).required(),
@@ -63,15 +97,13 @@ export async function POST(req: NextRequest) {
         then: Joi.string().length(SHIPPING_LOCATION_ID_LENGTH),
         otherwise: Joi.optional().empty(),
       }),
-      lastName: Joi.string().min(3).max(40).optional(),
-      name: Joi.string().min(3).max(40).optional(),
+      lastName: Joi.string().min(3).max(40),
+      name: Joi.string().min(3).max(40),
       email: Joi.string().regex(emailRegex).optional(),
       wilayaCode: Joi.number().strict().min(1).max(58).required(),
       townCode: Joi.number().strict().min(1001).max(58003).required(),
-      productsCode: Joi.array()
-        .min(1)
-        .max(3)
-        .items(Joi.string().regex(/^[a-zA-Z0-9]{20}$/)),
+      products: productsSchema,
+      // products: Joi.array().min(1).max(3).items(productsSchema).required(),
     });
 
     const validation = schema.validate(body);
@@ -84,43 +116,49 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // validated data
+    /** Validated data */
     const data = validation.value;
     const {
       isHome,
       phone,
-      productsCode,
+      products,
       wilayaCode,
       address,
-      lastName,
       name,
-      email,
       townCode,
       locationId,
     } = data;
 
+    const productsCode = Object.keys(products);
+
+    /*
+
     // check if the products exist
     // remove potential array duplicates
-    const productsCodeNoDup = Array.from(new Set(productsCode));
+    const productsCodeNoDup = Array.from(
+      new Set(products.map(({ code }) => code)),
+    );
 
+    // immediately return if there are products duplicates
+    if (productsCodeNoDup.length !== products.length) {
+      return apiErrorResponse("Products code duplicates", STATUS_FORBIDDEN);
+    }
+    */
+
+    /**
+     * Products data from Db, required to calculate prices
+     */
     const selectedProducts = await prisma.product.findMany({
       where: {
         code: {
-          in: productsCodeNoDup,
+          in: productsCode,
         },
       },
     });
 
-    if (selectedProducts.length !== productsCodeNoDup.length) {
+    if (selectedProducts.length !== productsCode.length) {
       return apiErrorResponse("invalid product codes", STATUS_BAD_REQUEST);
     }
-
-    // check if the user exists before creating one
-    const user = await prisma.user.findUnique({
-      where: {
-        phone: data.phone,
-      },
-    });
 
     const orderCode = uniqueId(ORDER_CODE_LENGTH, true);
 
@@ -159,18 +197,57 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const session = await getSession();
+
+    /**
+     * Create a phone entry in the phone table if it doesn't exist
+     */
+    const createdPhone = await prisma.phone.upsert({
+      create: {
+        id: uniqueId(PHONE_ENTRY_ID_LENGTH),
+        phone,
+
+        ...(session?.user?.id && {
+          user: {
+            connect: {
+              id: session.user.id,
+            },
+          },
+        }),
+      },
+      update: {},
+      where: { phone },
+    });
+
     // prepare orderProducts data
 
     const orderProductsData: Prisma.OrdersProductsCreateManyOrderInput[] =
       productsCode.map((code) => {
+        // extract required info from the db returned products data
         const productData = selectedProducts.find(({ code }) => code === code);
 
         return {
           productCode: code,
           price: productData?.price ?? 0,
           discount: productData?.discount,
+          quantity: products[code].quantity,
         };
       });
+
+    // update the user information
+    if (session && session.user) {
+      // update the logged in user
+      await prisma.user.update({
+        where: { id: session.user.id },
+        data: {
+          name,
+          wilayaCode,
+          townCode,
+          phone,
+          address,
+        },
+      });
+    }
 
     // if there are no user with this phone number, create one
     const createdOrder = await prisma.order.create({
@@ -179,6 +256,11 @@ export async function POST(req: NextRequest) {
         shippingPrice,
         isHome,
         address,
+        phone: {
+          connect: {
+            phone: createdPhone.phone,
+          },
+        },
         wilaya: {
           connect: {
             code: wilayaCode,
@@ -189,20 +271,13 @@ export async function POST(req: NextRequest) {
             code: townCode,
           },
         },
-        user: {
-          ...(user && { connect: { id: user.id } }),
-          ...(!user && {
-            create: {
-              phone,
-              address: isHome ? address : undefined,
-              name,
-              email,
-              lastName,
-              wilayaCode: wilayaCode,
-              townCode: townCode,
+        ...(session?.user?.id && {
+          user: {
+            connect: {
+              id: session.user.id,
             },
-          }),
-        },
+          },
+        }),
         location: {
           connect:
             locationId && locationId.length > 0
@@ -339,7 +414,7 @@ export async function GET(req: NextRequest) {
       where: {
         status: statusFilter,
         code: codeFilter,
-        user: {
+        phone: {
           phone: {
             startsWith: phoneFilter,
           },
@@ -368,15 +443,11 @@ export async function GET(req: NextRequest) {
               name: true,
             },
           },
-          user: {
+          phone: {
             select: {
+              isBlacklisted: true,
+              blacklistReason: true,
               phone: true,
-              blacklist: {
-                select: {
-                  reason: true,
-                  phone: true,
-                },
-              },
             },
           },
           wilaya: {

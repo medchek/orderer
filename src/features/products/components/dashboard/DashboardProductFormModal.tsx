@@ -11,8 +11,7 @@ import CategorySelect from "@/features/categories/components/CategorySelect";
 import Textarea from "@/components/Textarea";
 import Input from "@/components/Input";
 import DashboardImageUpload from "./DashboardImageUpload";
-import { useMemo, useState } from "react";
-import { useEffectOnce } from "usehooks-ts";
+import { useEffect, useMemo, useState } from "react";
 import {
   getImageDirectUrl,
   toNumberOrNull,
@@ -60,8 +59,8 @@ export default function DashboardProductFormModal({
     null,
   ]);
   // Handles image presetting when the user is updating the product
-  useEffectOnce(() => {
-    if (productData && uploadState.every((f) => f === null)) {
+  useEffect(() => {
+    if (productData && uploadState.every((f) => f !== null)) {
       const { images } = productData;
       if (images.length) {
         // to work immutably
@@ -80,7 +79,7 @@ export default function DashboardProductFormModal({
         setUploadState(newState);
       }
     }
-  });
+  }, [productData, uploadState]);
 
   const notNullImages = useMemo(() => {
     return uploadState.filter((v) => v !== null) as FileMetaData[]; // negate the null values
@@ -132,7 +131,7 @@ export default function DashboardProductFormModal({
 
   return (
     <Modal
-      className="flex h-full flex-col  rounded-lg  bg-[#F3F3F3] px-8 py-5 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
+      className="flex h-full flex-col rounded-lg bg-[#F3F3F3] px-8 py-5 shadow-md dark:bg-[#040404] dark:[color-scheme:dark]"
       closeModal={closeModal}
       label={`${productData ? "Modifier" : "Ajouter"} un Produit`}
     >
@@ -146,7 +145,7 @@ export default function DashboardProductFormModal({
         >
           <section
             id="dashboard-add-product-form"
-            className="flex h-full w-full grow flex-col justify-between  overflow-y-auto px-2 pt-5"
+            className="flex h-full w-full grow flex-col justify-between overflow-y-auto px-2 pt-5"
           >
             <section className="flex grow flex-col">
               <Input

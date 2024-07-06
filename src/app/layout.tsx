@@ -1,7 +1,7 @@
 import "./globals.css";
 import { type ReactNode } from "react";
 import { Metadata } from "next";
-import AppProviders from "@/components/AppProviders";
+import AppProviders from "@/components/providers/AppProviders";
 import { Inter } from "next/font/google";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`relative ${inter.className} h-screen max-h-screen  overflow-hidden bg-neutral-100 dark:bg-dark dark:[color-scheme:dark]`}
+        className={`relative ${inter.className} h-screen max-h-screen overflow-hidden bg-neutral-100 dark:bg-dark dark:[color-scheme:dark]`}
       >
         <AppProviders>{children}</AppProviders>
       </body>

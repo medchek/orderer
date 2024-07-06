@@ -6,6 +6,7 @@ import { queryClient } from "@/lib/reactQuery";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import SnackProvider from "./SnackProvider";
 import AppThemeProvider from "./AppThemeProvider";
+// import AppImageVisualizer from "../AppImageVisualizer";
 interface Props {
   children: ReactNode;
 }
@@ -17,6 +18,7 @@ export default function AppProviders({ children }: Props) {
         <AppThemeProvider>
           {children}
           <SnackProvider />
+          {/* <AppImageVisualizer /> */}
           <ReactQueryDevtools initialIsOpen={false} />
         </AppThemeProvider>
       </QueryClientProvider>

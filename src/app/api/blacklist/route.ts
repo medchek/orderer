@@ -3,8 +3,9 @@ import { isAdmin } from "../auth/[...nextauth]/route";
 
 import Joi from "joi";
 
-import { apiErrorResponse } from "@/lib/utils";
+import { apiErrorResponse, uniqueId } from "@/lib/utils";
 import {
+  PHONE_ENTRY_ID_LENGTH,
   STATUS_BAD_REQUEST,
   STATUS_CREATED,
   STATUS_OK,
@@ -15,22 +16,26 @@ import { GetBlacklistSuccessResponse } from "@/features/blacklist/api/getBlackli
 import { PostBlacklistRequestPayload } from "@/features/blacklist/api/postBlacklist";
 import { phoneRegex } from "@/lib/patterns";
 
-
 export async function GET() {
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
     }
 
-    const blacklist = await prisma.blacklist.findMany({
+    const blacklist = await prisma.phone.findMany({
       select: {
         id: true,
         phone: true,
-        reason: true,
+        blacklistReason: true,
+      },
+      where: {
+        isBlacklisted: {
+          equals: true,
+        },
       },
       orderBy: {
-        id: "desc"
-      }
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json<GetBlacklistSuccessResponse>(blacklist, {
@@ -60,25 +65,23 @@ export async function POST(req: NextRequest) {
     if (error || !data) {
       return apiErrorResponse(
         "Validation error: Invalid request",
-        STATUS_BAD_REQUEST
+        STATUS_BAD_REQUEST,
       );
     }
 
-    const user = await prisma.user.findUnique({
+    await prisma.phone.upsert({
+      create: {
+        id: uniqueId(PHONE_ENTRY_ID_LENGTH),
+        phone: data.phone,
+        blacklistReason: data.reason,
+        isBlacklisted: true,
+      },
+      update: {
+        blacklistReason: data.reason,
+        isBlacklisted: true,
+      },
       where: {
         phone: data.phone,
-      },
-    });
-
-    // if (!user) {
-    //   return apiErrorResponse("user not found", STATUS_NOT_FOUND);
-    // }
-
-    await prisma.blacklist.create({
-      data: {
-        userPhone: user ? user.phone : undefined,
-        phone: data.phone,
-        reason: !data.reason ? undefined : data.reason,
       },
     });
 

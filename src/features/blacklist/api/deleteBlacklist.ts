@@ -7,13 +7,13 @@ import ky from "ky";
  * @param data the user phone number and the reason of the ban
  * @returns the blacklisted phone number
  */
-export const deleteBlacklist = async (id: number): Promise<void> => {
+export const deleteBlacklist = async (id: string): Promise<void> => {
   await ky.delete(`/api/blacklist/${id}`).json();
 };
 
 type UseDleteBlacklistNumberOptions = MutationOptions<
   void, // return type
-  number // request data type
+  string // request data type
 >;
 /**
  * Mutation to blacklist a user by phone number

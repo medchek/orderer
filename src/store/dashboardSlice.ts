@@ -53,8 +53,8 @@ export interface DashboardSlice {
 
   // blacklist
 
-  blacklistedNumberIdToDelete: number | null;
-  setBlacklistedNumberIdToDelete: (n: number | null) => void;
+  blacklistedNumberIdToDelete: string | null;
+  setBlacklistedNumberIdToDelete: (id: string | null) => void;
 
   // copy to clipboard
   clipboard: string;
@@ -131,8 +131,8 @@ export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
   setOrderPhoneToBlock: (phone) => set(() => ({ orderPhoneToBlock: phone })),
 
   blacklistedNumberIdToDelete: null,
-  setBlacklistedNumberIdToDelete: (n) => {
-    set(() => ({ blacklistedNumberIdToDelete: n }));
+  setBlacklistedNumberIdToDelete: (id) => {
+    set(() => ({ blacklistedNumberIdToDelete: id }));
   },
 
   clipboard: "",

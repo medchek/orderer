@@ -52,7 +52,7 @@ export default function Blacklist() {
         queryClient.invalidateQueries({ queryKey: queryKeys.blacklist._def });
         // close modal
         setBlacklistedNumberIdToDelete(null);
-        showSnackbar("Numéro retiré  de liste noire", "default");
+        showSnackbar("Numéro retiré de la liste noire", "default");
       },
       onError: () => {
         showSnackbar(
@@ -74,7 +74,7 @@ export default function Blacklist() {
             subContent={
               <button
                 type="button"
-                className="h-10 rounded-lg  px-2 font-semibold transition-colors dark:hover:bg-neutral-900 dark:focus:bg-neutral-900/70"
+                className="h-10 rounded-lg px-2 font-semibold transition-colors dark:hover:bg-neutral-900 dark:focus:bg-neutral-900/70"
                 onClick={openAddNumberToBlock}
               >
                 <MdAdd className="h-7 w-7" /> Ajouter un numéro
@@ -101,7 +101,7 @@ export default function Blacklist() {
           );
         } else {
           return data.map((user) => (
-            <DashboardBlacklistedUserCard key={user.id} user={user} />
+            <DashboardBlacklistedUserCard key={user.id} phone={user} />
           ));
         }
       }
@@ -116,7 +116,7 @@ export default function Blacklist() {
       <DashboardHeader label="Liste noire" noPadding />
       <div
         id="blacklist-toolbar"
-        className="flex h-16 min-h-[4rem] w-full items-center justify-between "
+        className="flex h-16 min-h-[4rem] w-full items-center justify-between"
       >
         <DashboardToolbarAddButton
           onClick={openAddNumberToBlock}

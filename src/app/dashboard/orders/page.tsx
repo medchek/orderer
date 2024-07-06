@@ -12,7 +12,7 @@ import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardPagination from "@/components/dashboard/DashboardPagination";
 
 import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
-import DashboardOrdersBlockUser from "@/features/orders/components/DashboardOrdersBlockUser";
+import DashboardOrdersBlockPhone from "@/features/orders/components/DashboardOrdersBlockUser";
 import DashboardOrdersToolbar from "@/features/orders/components/DashboardOrdersToolbar";
 import { useGetOrders } from "@/features/orders/api/getOrders";
 import { useDeleteOrder } from "@/features/orders/api/deleteOrder";
@@ -103,10 +103,10 @@ export default function Orders() {
           key={`tr-${i}`}
           className="h-auto animate-pulse space-y-2 rounded-md bg-neutral-900/80 px-4 py-3 [&>section>div]:rounded-md [&>section>div]:bg-neutral-800"
         >
-          <section className="flex gap-2 [&>div]:h-6 ">
+          <section className="flex gap-2 [&>div]:h-6">
             <div className="w-1/6"></div>
-            <div className="h-6  w-1/12"></div>
-            <div className="h-6  w-20"></div>
+            <div className="h-6 w-1/12"></div>
+            <div className="h-6 w-20"></div>
           </section>
           <section className="flex gap-2 [&>div]:h-5">
             <div className="w-24"></div>
@@ -129,7 +129,7 @@ export default function Orders() {
         <DashboardFetchError
           refetch={refetch}
           text="Une érreur s'est produite lors de la recherche des commandes"
-          className="relative flex  h-full justify-center"
+          className="relative flex h-full justify-center"
         />
       );
     } else {
@@ -207,7 +207,7 @@ export default function Orders() {
         />
       )}
       {orderPhoneToBlock && (
-        <DashboardOrdersBlockUser
+        <DashboardOrdersBlockPhone
           phone={orderPhoneToBlock}
           closeModal={() => {
             setOrderPhoneToBlock(null);

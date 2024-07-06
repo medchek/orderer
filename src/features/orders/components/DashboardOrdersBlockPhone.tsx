@@ -19,7 +19,10 @@ interface BlockUserFormValues {
   reason: string;
 }
 
-export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
+export default function DashboardOrdersBlockPhone({
+  closeModal,
+  phone,
+}: Props) {
   const queryClient = useQueryClient();
   const { showSnackbar } = useStore();
 
@@ -98,6 +101,7 @@ export default function DashboardOrdersBlockUser({ closeModal, phone }: Props) {
         <Textarea
           label="Raison"
           name="reason"
+          className="max-h-32"
           placeholder="Raison du blocage (optionnel)"
           maxLength={200}
           minLength={2}

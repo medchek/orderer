@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useStore } from "@/store";
-import ProductDetails from "@/components/home/order-form/SelectedProductDetails";
 import { MdAdd } from "react-icons/md";
 
 import { useSearchParams } from "next/navigation";
@@ -12,15 +11,20 @@ import ModalLoader from "@/components/ModalLoader";
 import clsx from "clsx";
 import { useSelectedProductsCount } from "@/features/products/hooks/useSelectedProductsCount";
 import ProductsDisplaySelectedProductsCount from "@/features/products/components/ProductsDisplaySelectedProductsCount";
+import SelectedProductDetails from "@/features/products/components/SelectedProductDetails";
 
 const AddProduct = dynamic(() => import("../AddProduct"), {
   loading: () => <ModalLoader />,
 });
 
-export default function SelectedProductsDisplay() {
+/**
+ * Displays the selected products on top of the order form
+ */
+export default function OrderFromDisplaySelectedProducts() {
   const productCode = useSearchParams().get("product")?.trim();
   const {
     selectedProducts,
+    selectedProductsQuantity,
     removeSelectedProduct,
     addSelectedProduct,
     isConfirming,
@@ -45,7 +49,8 @@ export default function SelectedProductsDisplay() {
     (productCodeKey) => {
       const product = selectedProducts[productCodeKey];
       return (
-        <ProductDetails
+        <SelectedProductDetails
+          quantity={selectedProductsQuantity[productCodeKey]}
           onClear={() => removeSelectedProduct(productCodeKey)}
           name={product.name}
           description={product.description}

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { TextareaHTMLAttributes } from "react";
 import {
   FieldValues,
@@ -23,6 +24,7 @@ export default function Textarea<T extends FieldValues>({
   register,
   registerRules,
   error,
+  className,
   ...props
 }: Props<T>) {
   const textareaId = id ? id : `${name}-textarea`;
@@ -38,7 +40,10 @@ export default function Textarea<T extends FieldValues>({
         id={textareaId}
         {...props}
         {...(register && register(name, registerRules))}
-        className="h-12 min-h-[48px] rounded-lg bg-neutral-200 px-4 pt-3 text-sm placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base"
+        className={cn(
+          "h-12 min-h-[48px] rounded-lg bg-neutral-200 px-4 pt-3 text-sm placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base",
+          className,
+        )}
       ></textarea>
       <div className="h-5 text-sm text-red-600 dark:text-red-500">
         {error && error}

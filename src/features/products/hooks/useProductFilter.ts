@@ -12,7 +12,7 @@ import { CATEGORY_CODE_LENGTH } from "@/lib/constants";
 /**
  * A hook to reuse product filter logic
  */
-function useProductFilter() {
+function useProductFilter(disableUrlRedirects: boolean = false) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -168,10 +168,13 @@ function useProductFilter() {
 
     console.log("appying filter", filters);
     const queryParams = generateSearchParam(filters);
-    applyNewQueryString(queryParams);
+    if (!disableUrlRedirects) {
+      applyNewQueryString(queryParams);
+    }
   }, [
     applyNewQueryString,
     categoryCode,
+    disableUrlRedirects,
     inStock,
     isDiscount,
     maxPrice,
@@ -203,8 +206,11 @@ function useProductFilter() {
     const queryParams = generateSearchParam({
       currentPage: 0,
     });
-    applyNewQueryString(queryParams);
-  }, [applyNewQueryString, resetProductsFilters]);
+    // only redirect if it is allowed
+    if (!disableUrlRedirects) {
+      applyNewQueryString(queryParams);
+    }
+  }, [applyNewQueryString, disableUrlRedirects, resetProductsFilters]);
 
   return {
     hasFilters,

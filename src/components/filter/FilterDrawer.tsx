@@ -19,7 +19,16 @@ import { BiFilterAlt } from "react-icons/bi";
 import SwitchButton from "../SwitchButton";
 import { toPositiveNumber } from "@/lib/utils";
 
-export default function FilterDrawer() {
+interface Props {
+  disabledButton?: boolean;
+  /** Prevent query params changes when applying the filters */
+  disableUrlRedirects?: boolean;
+}
+
+export default function FilterDrawer({
+  disabledButton,
+  disableUrlRedirects,
+}: Props) {
   //!SECTION
 
   const {
@@ -39,13 +48,13 @@ export default function FilterDrawer() {
     subcategoryCode,
     inStock,
     setInStock,
-  } = useProductFilter();
+  } = useProductFilter(disableUrlRedirects);
 
   return (
     <Drawer>
       <DrawerTrigger
         title="Filtrer par"
-        disabled={false}
+        disabled={disabledButton}
         className={clsx(
           "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-100/70 px-4 text-base font-medium shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 lg:px-6",
 
@@ -85,6 +94,7 @@ export default function FilterDrawer() {
           <FilterLabel label="Catégorie" htmlFor="category-select" column>
             <CategorySelect<{ category: string }>
               className="h-12 w-full rounded-md bg-neutral-200 px-2 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300 lg:w-full"
+              value={generateCategoryOptionValue(categoryCode, subcategoryCode)}
               noLabel
               disablePrompt
               small

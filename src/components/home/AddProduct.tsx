@@ -3,12 +3,14 @@ import { useStore } from "@/store";
 import Modal from "../Modal";
 import { useGetProducts } from "@/features/products/api/getProducts";
 import ProductCard from "@/features/products/components/ProductCard";
-import ProductsFilter from "@/features/products/components/dashboard/DashboardProductsFilter";
 import DashboardFetchError from "../dashboard/DashboardFetchError";
 import ProductCardLoader from "../ProductCardLoader";
 import Pagination from "../Pagination";
 import ProductQuantitySelector from "@/features/products/components/ProductQuantitySelector";
 import ProductCardButton from "@/features/products/components/ProductCardButton";
+import Button from "../Button";
+import FilterDrawer from "../filter/FilterDrawer";
+import ProductsDisplayEmptyState from "@/features/products/components/ProductsDisplayEmptyState";
 
 interface Props {
   closeModal: () => void;
@@ -40,30 +42,36 @@ export default function AddProduct({ closeModal }: Props) {
     setProductsCurrentPage(selected);
   };
 
-  const productList = data?.products.map((product) => {
-    const { category, subCategory, ...productData } = product;
-    const isProductSelected = selectedProducts[product.code] !== undefined;
-    return (
-      <ProductCard
-        isSelected={isProductSelected}
-        key={product.code}
-        {...productData}
-        category={category?.name}
-        subcategory={subCategory?.name}
-      >
-        <div className="flex w-full flex-col gap-2">
-          {isProductSelected ? (
-            <ProductQuantitySelector code={product.code} />
-          ) : null}
-          <ProductCardButton
-            isSelected={isProductSelected}
-            className="h-9 min-h-9"
-            product={product}
-          />
-        </div>
-      </ProductCard>
-    );
-  });
+  const productList = () => {
+    if (!data || data.products.length === 0) {
+      return <ProductsDisplayEmptyState />;
+    }
+
+    return data?.products.map((product) => {
+      const { category, subCategory, ...productData } = product;
+      const isProductSelected = selectedProducts[product.code] !== undefined;
+      return (
+        <ProductCard
+          isSelected={isProductSelected}
+          key={product.code}
+          {...productData}
+          category={category?.name}
+          subcategory={subCategory?.name}
+        >
+          <div className="flex w-full flex-col gap-2">
+            {isProductSelected ? (
+              <ProductQuantitySelector code={product.code} />
+            ) : null}
+            <ProductCardButton
+              isSelected={isProductSelected}
+              className="h-9 min-h-9"
+              product={product}
+            />
+          </div>
+        </ProductCard>
+      );
+    });
+  };
 
   return (
     <Modal
@@ -77,7 +85,11 @@ export default function AddProduct({ closeModal }: Props) {
         id="select-category-container"
         className="relative my-1 flex h-12 max-h-12 min-h-[3rem] grow items-center justify-end lg:my-5"
       >
-        <ProductsFilter disabled={isFetching || isError} />
+        {/* <ProductsFilter disabled={isFetching || isError} /> */}
+        <FilterDrawer
+          disableUrlRedirects
+          disabledButton={isFetching || isError}
+        />
       </div>
       <section className="h-full grow flex-col overflow-y-auto">
         <div
@@ -88,11 +100,17 @@ export default function AddProduct({ closeModal }: Props) {
           {isFetching &&
             Array.from({ length: 5 }, (_, i) => <ProductCardLoader key={i} />)}
 
-          {isSuccess && !isFetching && productList}
+          {isSuccess && !isFetching && productList()}
         </div>
       </section>
-      <div>
+      <div className="relative flex flex-row-reverse items-center">
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
+        <Button
+          className="absolute h-9 w-auto px-4 md:h-10"
+          onClick={closeModal}
+        >
+          Continuer
+        </Button>
       </div>
     </Modal>
   );

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import HomeSideMenu from "../menu/HomeSideMenu";
-import HeaderSelectedProductsCounter from "./HeaderSelectedProductsCounter";
 import AccountActions from "../menu/AccountActions";
 import { getSession } from "@/app/api/auth/[...nextauth]/route";
+import ShoppingCart from "@/features/products/components/ShoppingCart";
 
 interface Props {
   isAdmin?: boolean;
@@ -32,13 +32,13 @@ export default async function HomeHeader({ isAdmin }: Props) {
             </Link>
           ) : null}
         </nav>
+
         <Link href="../" className="text-blue-500 hover:underline">
           <span className="flex items-center gap-1">
             <span>Commander</span>
-            {/* Show number of selected products */}
-            <HeaderSelectedProductsCounter />
           </span>
         </Link>
+        <ShoppingCart />
         <AccountActions isAdmin={isAdmin} />
         <HomeSideMenu />
       </div>

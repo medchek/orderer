@@ -3,7 +3,7 @@
 import Input from "../../Input";
 import ShippingTypeSelector from "./ShippingTypeSelector";
 
-import { MdArrowBack, MdOutlineShoppingCart } from "react-icons/md";
+import { MdArrowBack } from "react-icons/md";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { orderFormValidators } from "@/lib/formValidators";
 import { useStore } from "@/store";
@@ -23,6 +23,8 @@ import { useEffect, useRef } from "react";
 import Button from "@/components/Button";
 import { AccountDetail } from "@/features/settings/types";
 import { STATUS_TOO_MANY_REQUESTS } from "@/lib/constants";
+import { useSelectedProductsCount } from "@/features/products/hooks/useSelectedProductsCount";
+import { FiShoppingCart } from "react-icons/fi";
 
 export interface OrderFormValues {
   lastName: string;
@@ -45,6 +47,7 @@ export default function OrderForm({ accountDetail }: Props) {
   const { replace, prefetch } = useRouter();
   const {
     selectedProducts,
+    selectedProductsQuantity,
     selectedWilaya,
     selectedTown,
     setConfirmData,
@@ -53,6 +56,8 @@ export default function OrderForm({ accountDetail }: Props) {
     setIsConfirming,
     showSnackbar,
   } = useStore();
+  const selectedProductsCount = useSelectedProductsCount();
+
   const methods = useForm<OrderFormValues>();
 
   const {
@@ -82,7 +87,7 @@ export default function OrderForm({ accountDetail }: Props) {
   }, [accountDetail, prefetch, setIsConfirming, setValue]);
 
   const isDisabledSubmit =
-    selectedProducts.length === 0 ||
+    selectedProductsCount === 0 ||
     selectedWilaya === null ||
     selectedTown === null;
 
@@ -141,7 +146,7 @@ export default function OrderForm({ accountDetail }: Props) {
         locationId,
       } = data;
 
-      if (!selectedProducts.length) {
+      if (selectedProductsCount <= 0) {
         return showSnackbar("Aucune produit n'a été sélectioné", "error");
       }
 
@@ -149,12 +154,23 @@ export default function OrderForm({ accountDetail }: Props) {
 
       if (!recaptchaToken) return;
 
+      const products: PostOrderFormData["data"]["products"] = Object.keys(
+        selectedProducts,
+      ).reduce(
+        (obj, key) => {
+          obj[key] = { quantity: selectedProductsQuantity[key] };
+
+          return obj;
+        },
+        {} as PostOrderFormData["data"]["products"],
+      );
+
       const requestData: PostOrderFormData = {
         token: recaptchaToken,
         data: {
           isHome,
           phone,
-          productsCode: selectedProducts.map((p) => p.code),
+          products,
           wilayaCode: toPositiveNumber(wilaya),
           townCode: toPositiveNumber(town),
           ...(email && { email }),
@@ -205,6 +221,7 @@ export default function OrderForm({ accountDetail }: Props) {
               <Input
                 register={register}
                 registerRules={{
+                  required: "Ce champ est obligatoire",
                   validate: orderFormValidators.name,
                 }}
                 error={errors.name?.message}
@@ -212,7 +229,7 @@ export default function OrderForm({ accountDetail }: Props) {
                 id="name-input"
                 label="Nom/Prénom"
                 type="text"
-                placeholder="Votre Nom/Prénom (Optionnel)"
+                placeholder="Votre Nom/Prénom"
                 maxLength={10}
                 defaultValue={confirmData?.name}
               />
@@ -280,8 +297,8 @@ export default function OrderForm({ accountDetail }: Props) {
               disabled={isDisabledSubmit || isPending || isSuccess}
               isLoading={isPending || isSuccess}
             >
-              <span className="flex gap-2">
-                <MdOutlineShoppingCart className="h-6 w-6" />
+              <span className="flex items-center gap-2">
+                <FiShoppingCart className="size-[1.35rem]" />
                 <span>{isConfirming ? "Commander" : "Continuer"}</span>
               </span>
             </Button>

@@ -12,7 +12,7 @@ export interface PostOrderRequestPayload {
   isHome: boolean;
   wilayaCode: number;
   townCode: number;
-  productsCode: string[];
+  products: { [productCode: string]: { quantity: number } };
 }
 
 export type PostOrderFormData = {

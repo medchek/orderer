@@ -1,6 +1,7 @@
 import { Status } from "@prisma/client";
 
-export interface OrderData {
+/** The object structure of orders data for admin users  */
+export interface AdminOrderData {
   address: string | null;
   code: string;
   isHome: boolean;
@@ -10,12 +11,10 @@ export interface OrderData {
     name: string;
     additionalCosts: number | null;
   } | null;
-  user: {
-    phone: string | null;
-    blacklist: {
-      phone: string;
-      reason: string | null;
-    } | null;
+  phone: {
+    isBlacklisted: boolean;
+    blacklistReason: string | null;
+    phone: string;
   };
   wilaya: {
     name: string;
@@ -39,15 +38,15 @@ export interface OrderData {
     };
   }[];
 }
-
+/** The object structure of orders data for non-admin users  */
 export interface PublicOrderData {
   address: string | null;
   code: string;
   isHome: boolean;
   status: Status;
   createdAt: Date;
-  user: {
-    phone: string | null;
+  phone: {
+    phone: string;
   };
   location: {
     name: string;

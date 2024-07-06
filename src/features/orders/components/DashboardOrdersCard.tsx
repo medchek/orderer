@@ -23,10 +23,10 @@ import {
   TooltipTrigger,
 } from "@radix-ui/react-tooltip";
 import clsx from "clsx";
-import { OrderData } from "../types";
+import { AdminOrderData } from "../types";
 
 // GetAllOrdersSuccessResponsePayload represents a single order data schema
-interface Props extends OrderData {
+interface Props extends AdminOrderData {
   updateStatus: UseMutateAsyncFunction<
     {
       code: string;
@@ -45,7 +45,7 @@ interface Props extends OrderData {
 
 export default function DashboardOrdersCard({
   code,
-  user,
+  phone,
   address,
   createdAt,
   isHome,
@@ -72,19 +72,19 @@ export default function DashboardOrdersCard({
   };
 
   return (
-    <div className="w-full rounded-lg px-5 py-4  dark:bg-neutral-950">
+    <div className="w-full rounded-lg px-5 py-4 dark:bg-neutral-950">
       <section className="flex items-center justify-between text-neutral-500">
         <div className="flex items-center gap-2">
           <p>#{code}</p>
           <p>-</p>
           <div
             className={clsx("flex items-center gap-1 font-semibold", {
-              "text-red-500": user.blacklist !== null,
-              "text-neutral-50": user.blacklist === null,
+              "text-red-500": phone.isBlacklisted,
+              "text-neutral-50": !phone.isBlacklisted,
             })}
           >
-            <span>{user.phone}</span>
-            {user.blacklist !== null && (
+            <span>{phone.phone}</span>
+            {phone.isBlacklisted && (
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -119,8 +119,8 @@ export default function DashboardOrdersCard({
           currentStatus={status}
           orderData={{
             code,
-            userPhone: user.phone ?? "noPhone",
-            isPhoneBlocked: user.blacklist !== null,
+            userPhone: phone.phone,
+            isPhoneBlocked: phone.isBlacklisted,
           }}
           onUpdateStatus={updateStatus}
           isLoading={isPatching}
@@ -134,19 +134,19 @@ export default function DashboardOrdersCard({
           <MdOutlineLocationOn className="h-5 w-5" /> {town.name}
         </p>
         <p className="flex gap-1 first-letter:capitalize">
-          <MdOutlineMapsHomeWork className="h-5 w-5 " />{" "}
+          <MdOutlineMapsHomeWork className="h-5 w-5" />{" "}
           {isHome
             ? // display the home address for home shipping
               address
             : // if it's an office (stopdesk) shipping type and a location was chosen...
-            location !== null
-            ? // display it
-              location.name
-            : // otherwise display a generic stopdesk shipping message
-              `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
+              location !== null
+              ? // display it
+                location.name
+              : // otherwise display a generic stopdesk shipping message
+                `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
         </p>
         <p className="flex gap-1">
-          <MdOutlineDateRange className="h-5 w-5 " /> {formatDate(createdAt)}
+          <MdOutlineDateRange className="h-5 w-5" /> {formatDate(createdAt)}
         </p>
       </section>
       <hr className="dark:border-neutral-800" />
@@ -155,7 +155,7 @@ export default function DashboardOrdersCard({
           {orderProducts.map(({ product }, i) => (
             <div
               key={i}
-              className="flex h-10 w-96 items-center  justify-between gap-4 rounded-md bg-neutral-800 px-4"
+              className="flex h-10 w-96 items-center justify-between gap-4 rounded-md bg-neutral-800 px-4"
             >
               <p
                 className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-200"

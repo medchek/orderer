@@ -12,7 +12,7 @@ import DashboardFetchError from "@/components/dashboard/DashboardFetchError";
 import DashboardPagination from "@/components/dashboard/DashboardPagination";
 
 import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
-import DashboardOrdersBlockPhone from "@/features/orders/components/DashboardOrdersBlockUser";
+import DashboardOrdersBlockPhone from "@/features/orders/components/DashboardOrdersBlockPhone";
 import DashboardOrdersToolbar from "@/features/orders/components/DashboardOrdersToolbar";
 import { useGetOrders } from "@/features/orders/api/getOrders";
 import { useDeleteOrder } from "@/features/orders/api/deleteOrder";

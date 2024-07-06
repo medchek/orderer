@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import HomeHeader from "@/components/home/HomeHeader";
 import OrderForm from "@/components/home/order-form/OrderForm";
-import DisplaySelectedProducts from "@/components/home/order-form/SelectedProductsDisplay";
+import DisplaySelectedProducts from "@/components/home/order-form/OrderFromDisplaySelectedProducts";
 import { getSession } from "./api/auth/[...nextauth]/route";
 import { prisma } from "../../prisma/db";
 import { AccountDetail } from "@/features/settings/types";
@@ -39,9 +39,7 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col items-center px-4 xl:px-10 2xl:px-56">
       <HomeHeader isAdmin={isAdmin} />
       <DisplaySelectedProducts />
-
       <OrderForm accountDetail={accountDetail} />
-
       <Footer />
     </main>
   );

@@ -7,7 +7,7 @@ import DashboardSearchInput from "@/components/dashboard/DashboardSearchInput";
 import DashboardToolbarAddButton from "@/components/dashboard/DashboardToolbarAddButton";
 import { useDeleteBlacklistedNumber } from "@/features/blacklist/api/deleteBlacklist";
 import { useFetchBlacklist } from "@/features/blacklist/api/getBlacklist";
-import DashboardBlacklistedUserCard from "@/features/blacklist/components/DashboardBlacklistedUserCard";
+import DashboardBlacklistedPhoneCard from "@/features/blacklist/components/DashboardBlacklistedPhoneCard";
 import { queryKeys } from "@/lib/queryKeys";
 import { useStore } from "@/store";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 
 const DashboardOrdersBlockUser = dynamic(
-  () => import("@/features/orders/components/DashboardOrdersBlockUser"),
+  () => import("@/features/orders/components/DashboardOrdersBlockPhone"),
   { loading: () => <ModalLoader /> },
 );
 
@@ -101,7 +101,7 @@ export default function Blacklist() {
           );
         } else {
           return data.map((user) => (
-            <DashboardBlacklistedUserCard key={user.id} phone={user} />
+            <DashboardBlacklistedPhoneCard key={user.id} phone={user} />
           ));
         }
       }

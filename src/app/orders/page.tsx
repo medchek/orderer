@@ -42,7 +42,7 @@ export default async function Page({
       isHome: true,
       status: true,
       createdAt: true,
-      user: {
+      phone: {
         select: {
           phone: true,
         },
@@ -93,12 +93,12 @@ export default async function Page({
       return (
         <div className="flex h-full w-full grow items-center justify-center">
           <DashboardEmptyState
-            className="relative "
-            text="Vous n'avez pas de commande encore"
+            className="relative"
+            text="Vous n'avez pas encore de commande"
             subContent={
               <Link
                 href="./"
-                className="flex h-10 items-center justify-center rounded-lg  px-2 text-sm font-semibold transition-colors hover:bg-neutral-200 focus:bg-neutral-300 dark:hover:bg-neutral-900 dark:focus:bg-neutral-950"
+                className="flex h-10 items-center justify-center rounded-lg px-2 text-sm font-semibold transition-colors hover:bg-neutral-200 focus:bg-neutral-300 dark:hover:bg-neutral-900 dark:focus:bg-neutral-950"
               >
                 <MdAdd className="h-6 w-6" />
                 Créer une commander
@@ -114,7 +114,7 @@ export default async function Page({
   };
 
   return (
-    <main className="flex h-screen max-h-screen flex-col  px-4 xl:px-10 2xl:px-56">
+    <main className="flex h-screen max-h-screen flex-col px-4 xl:px-10 2xl:px-56">
       <HomeHeader isAdmin={isAdmin} />
       <div className="flex grow flex-col gap-2 overflow-hidden">
         <div className="flex h-8 min-h-[2rem] gap-1 dark:text-neutral-100">

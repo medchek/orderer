@@ -1,5 +1,5 @@
-export type BlacklistedUserData = {
-  id: number;
+export type BlacklistedPhoneData = {
+  id: string;
   phone: string;
-  reason: string | null;
+  blacklistReason: string | null;
 };

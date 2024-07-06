@@ -20,7 +20,7 @@ interface Props extends PublicOrderData {}
 
 export default function OrdersCard({
   code,
-  user,
+  phone,
   address,
   createdAt,
   isHome,
@@ -58,7 +58,7 @@ export default function OrdersCard({
           </Link>
           <p>-</p>
           <div className="flex items-center gap-1 font-semibold text-neutral-950 dark:text-neutral-50">
-            <span>{user.phone}</span>
+            <span>{phone.phone}</span>
           </div>
           {/* <p>-</p> */}
           <DashboardOrderStatusBadge status={status} />
@@ -75,19 +75,19 @@ export default function OrdersCard({
           <MdOutlineLocationOn className="h-5 w-5" /> {town.name}
         </p>
         <p className="flex gap-1 first-letter:capitalize">
-          <MdOutlineMapsHomeWork className="h-5 w-5 " />{" "}
+          <MdOutlineMapsHomeWork className="h-5 w-5" />{" "}
           {isHome
             ? // display the home address for home shipping
               address
             : // if it's an office (stopdesk) shipping type and a location was chosen...
-            location !== null
-            ? // display it
-              location.name
-            : // otherwise display a generic stopdesk shipping message
-              `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
+              location !== null
+              ? // display it
+                location.name
+              : // otherwise display a generic stopdesk shipping message
+                `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
         </p>
         <p className="flex gap-1">
-          <MdOutlineDateRange className="h-5 w-5 " /> {formatDate(createdAt)}
+          <MdOutlineDateRange className="h-5 w-5" /> {formatDate(createdAt)}
         </p>
       </section>
       <hr className="dark:border-neutral-800" />
@@ -96,7 +96,7 @@ export default function OrdersCard({
           {orderProducts.map(({ product }, i) => (
             <div
               key={i}
-              className="flex h-10 w-96 items-center  justify-between gap-4 rounded-md bg-neutral-300 px-4 dark:bg-neutral-800"
+              className="flex h-10 w-96 items-center justify-between gap-4 rounded-md bg-neutral-300 px-4 dark:bg-neutral-800"
             >
               <p
                 className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-800 dark:text-neutral-200"

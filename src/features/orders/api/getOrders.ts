@@ -1,6 +1,6 @@
 import { Status } from "@prisma/client";
 import ky from "ky";
-import { OrderData } from "../types";
+import { AdminOrderData } from "../types";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
 
@@ -15,7 +15,7 @@ export type GetOrdersQueryFilter = {
 
 export interface GetOrdersSuccessResponse {
   count: number;
-  data: OrderData[];
+  data: AdminOrderData[];
 }
 
 /**

@@ -33,6 +33,7 @@ export default async function Orders({ params }: Props) {
       code,
     },
     select: {
+      // the shipping price includes an additional costs aswell
       shippingPrice: true,
       wilaya: true,
       isHome: true,
@@ -44,7 +45,6 @@ export default async function Orders({ params }: Props) {
       town: true,
       location: {
         select: {
-          additionalCosts: true,
           name: true,
           coordinates: true,
           town: {
@@ -58,12 +58,29 @@ export default async function Orders({ params }: Props) {
         select: {
           price: true,
           discount: true,
+          quantity: true,
           product: {
-            include: { images: true },
+            select: {
+              code: true,
+              name: true,
+              description: true,
+              discount: true,
+              price: true,
+              images: {
+                select: {
+                  id: true,
+                },
+              },
+            },
           },
         },
       },
       user: true,
+      phone: {
+        select: {
+          phone: true,
+        },
+      },
     },
   });
 
@@ -85,16 +102,28 @@ export default async function Orders({ params }: Props) {
   //     },
   //     0,
   //   );
-  const totalPrice = () => {
-    if (!data || !data.shippingPrice) return;
-    const allProductsPrice = data?.orderProducts.reduce(
-      (prevPrice, { price, discount }) => {
-        return discountedPrice(price, discount) + prevPrice;
+
+  const productsPrice = () => {
+    if (!data || !data.shippingPrice) return 0;
+
+    const totalProductsPrices = data.orderProducts.reduce(
+      (prev, currentProduct): number => {
+        // get the price of each selected product, including the
+        const currentProductPrice = discountedPrice(
+          currentProduct.price,
+          currentProduct.discount,
+        );
+        // get the quantity of each selected product
+        const currentProductQuantity = currentProduct.quantity;
+        // calulcate based on the quantity
+        const quantifiedCurrentProductPrice =
+          currentProductPrice * currentProductQuantity;
+        return prev + quantifiedCurrentProductPrice;
       },
       0,
     );
 
-    return allProductsPrice + data.shippingPrice;
+    return totalProductsPrices + data.shippingPrice;
   };
 
   const displayAddress = () => {
@@ -141,6 +170,11 @@ export default async function Orders({ params }: Props) {
     return fullName.trim();
   };
 
+  const totalProductsCount =
+    data?.orderProducts.reduce((prev, current) => {
+      return current.quantity + prev;
+    }, 0) ?? 1;
+
   return (
     <Main>
       <HomeHeader />
@@ -167,10 +201,10 @@ export default async function Orders({ params }: Props) {
               <OrderInfoSegment
                 title="Informations personnelles"
                 data={[
-                  { label: "Téléphone", content: data.user.phone },
+                  { label: "Téléphone", content: data.phone.phone },
                   {
                     label: "Nom",
-                    content: fullName(data.user.name, data.user.lastName),
+                    content: fullName(data.user?.name, data.user?.lastName),
                     capitalize: true,
                   },
                 ]}
@@ -222,7 +256,7 @@ export default async function Orders({ params }: Props) {
                   },
                   {
                     label: "Nombre de produits",
-                    content: data.orderProducts.length,
+                    content: totalProductsCount,
                   },
                 ]}
               />
@@ -232,20 +266,23 @@ export default async function Orders({ params }: Props) {
                 Produits
               </h3>
               <div className="mb-2 grow px-1 lg:mb-0 lg:px-2">
-                {data.orderProducts.map(({ product, price, discount }) => (
-                  <SelectedProductDetails
-                    key={product.code}
-                    description={product.description}
-                    disabledRemove
-                    discount={discount}
-                    name={product.name}
-                    price={price}
-                    code={product.code}
-                    transparentBg
-                    images={product.images}
-                    small
-                  />
-                ))}
+                {data.orderProducts.map(
+                  ({ product, price, discount, quantity }) => (
+                    <SelectedProductDetails
+                      quantity={quantity}
+                      key={product.code}
+                      description={product.description}
+                      disabledRemove
+                      discount={discount}
+                      name={product.name}
+                      price={price}
+                      code={product.code}
+                      transparentBg
+                      images={product.images}
+                      small
+                    />
+                  ),
+                )}
               </div>
               <div className="flex h-40 items-center bg-neutral-300 px-4 dark:bg-neutral-900">
                 <OrderInfoSegment
@@ -260,7 +297,7 @@ export default async function Orders({ params }: Props) {
                       label: "Prix total à payer",
                       content: (
                         <span className="font-semibold text-secondary">
-                          {totalPrice()}DA
+                          {productsPrice()}DA
                         </span>
                       ),
                     },

@@ -9,7 +9,7 @@ export default async function DashboardHomeLatestOrders() {
   const latestOrders = await prisma.order.findMany({
     select: {
       status: true,
-      user: {
+      phone: {
         select: {
           phone: true,
         },
@@ -69,7 +69,7 @@ export default async function DashboardHomeLatestOrders() {
 
     return latestOrders.map((order, i) => {
       const {
-        user: { phone },
+        phone: { phone },
         location,
         orderProducts,
         town,
@@ -118,7 +118,7 @@ export default async function DashboardHomeLatestOrders() {
       className="flex grow flex-col gap-1 rounded-xl bg-neutral-200 p-4 dark:bg-neutral-950"
     >
       <div className="flex h-8 items-center justify-between">
-        <h2 className=" text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           Commandes Récentes
         </h2>
         <Link

@@ -175,7 +175,6 @@ export async function POST(req: NextRequest) {
       name: Joi.string().min(2).max(150).required(),
       price: Joi.number()
         .strict()
-        .strict()
         .positive()
         .precision(2)
         .min(1)

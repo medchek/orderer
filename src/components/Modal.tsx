@@ -41,7 +41,17 @@ export default function Modal({
       if (e.code === "Escape") closeModal();
     };
     const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current !== null && !ref.current.contains(e.target as Node)) {
+      // element to exclude from the clickoutside events
+      const excludeOverlay = document.querySelector("div[vaul-overlay]");
+      const excludeDrawer = document.querySelector("div[vaul-drawer]");
+
+      if (
+        ref.current !== null &&
+        !ref.current.contains(e.target as Node) &&
+        // prevent closing when navigating the filter drawer
+        !excludeOverlay?.contains(e.target as Node) &&
+        !excludeDrawer?.contains(e.target as Node)
+      ) {
         closeModal();
       }
     };
@@ -66,7 +76,7 @@ export default function Modal({
 
   return createPortal(
     <div
-      id="dialog"
+      id="app-dialog"
       className={cn(
         "fixed left-0 top-0 z-10 h-screen w-screen overflow-hidden bg-gray-950 bg-opacity-50 px-2 py-10 dark:bg-stone-950 dark:bg-opacity-80 lg:px-10 2xl:px-60",
         centerModalContent ? "flex items-center justify-center" : "",
@@ -77,7 +87,7 @@ export default function Modal({
         className={cn(
           "flex flex-col dark:[color-scheme:dark]",
           {
-            "rounded-lg  bg-neutral-200 px-2 py-2 shadow-md dark:bg-[#040404] lg:px-8 lg:py-5":
+            "rounded-lg bg-neutral-200 px-2 py-2 shadow-md dark:bg-[#040404] lg:px-8 lg:py-5":
               !transparent,
           },
           className,
@@ -95,7 +105,7 @@ export default function Modal({
             </h1>
             <button
               onClick={closeModal}
-              className="flex h-7 w-7 items-center  justify-center rounded-md focus:bg-neutral-300 disabled:cursor-not-allowed dark:focus:bg-neutral-950"
+              className="flex h-7 w-7 items-center justify-center rounded-md focus:bg-neutral-300 disabled:cursor-not-allowed dark:focus:bg-neutral-950"
               disabled={preventClose}
             >
               <MdClear className="h-6 w-6 dark:text-neutral-500" />

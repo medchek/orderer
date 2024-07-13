@@ -81,7 +81,7 @@ export const productSlice: StateCreator<ProductSlice> = (set) => ({
 
   products: [],
   addSelectedProduct: (product: Product) => {
-    console.log("adding product", product);
+    // console.log("adding product", product);
     const key = product.code;
     set((state) => ({
       selectedProducts: {

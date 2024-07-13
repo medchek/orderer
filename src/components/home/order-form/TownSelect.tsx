@@ -76,7 +76,7 @@ export default function TownSelect<T extends { town: string }>({
         setSelectedTown(selectedTown);
         setSelectedValue(defaultValue.toString());
         if (setFormHookValue) {
-          console.log("setting default town value to =>", defaultValue);
+          // console.log("setting default town value to =>", defaultValue);
           setFormHookValue(
             "town" as Path<T>,
             defaultValue.toString() as PathValue<T, Path<T>>,

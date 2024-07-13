@@ -2,15 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import HomeSideMenu from "../menu/HomeSideMenu";
 import AccountActions from "../menu/AccountActions";
-import { getSession } from "@/app/api/auth/[...nextauth]/route";
+import { getSession, isAdminSession } from "@/app/api/auth/[...nextauth]/route";
 import ShoppingCart from "@/features/products/components/ShoppingCart";
 
-interface Props {
-  isAdmin?: boolean;
-}
-
-export default async function HomeHeader({ isAdmin }: Props) {
+export default async function HomeHeader() {
   const session = await getSession();
+
+  const isAdmin = isAdminSession(session);
 
   return (
     <header className="relative z-10 flex h-20 min-h-[5rem] w-full items-start justify-between pt-2">

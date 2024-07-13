@@ -9,7 +9,6 @@ import { IoMdArrowBack } from "react-icons/io";
 import { redirect } from "next/navigation";
 import { ORDER_CODE_LENGTH } from "@/lib/constants";
 import { RedirectType } from "next/dist/client/components/redirect";
-import { getSession } from "../api/auth/[...nextauth]/route";
 import Main from "@/components/Main";
 import ResetOrderProducts from "@/components/home/ResetOrderProducts";
 
@@ -19,9 +18,6 @@ interface Props {
 }
 
 export default async function ThankYouPage({ searchParams }: Props) {
-  const session = await getSession();
-  const isAdmin = session?.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
-
   const headersMap = headers();
   const orderCode = searchParams.code;
   const host = headersMap.get("host");
@@ -38,7 +34,7 @@ export default async function ThankYouPage({ searchParams }: Props) {
   return (
     <Main>
       <ResetOrderProducts />
-      <HomeHeader isAdmin={isAdmin} />
+      <HomeHeader />
 
       <div className="relative flex grow -translate-y-20 flex-col items-center justify-center overflow-hidden">
         <div className="flex flex-col items-center gap-2">

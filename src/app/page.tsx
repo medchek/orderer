@@ -23,7 +23,6 @@ export default async function Home() {
           phone: true,
         },
       });
-  const isAdmin = session?.user?.email === process.env.GOOGLE_ADMIN_EMAIL;
 
   const accountDetail: AccountDetail | null = !userDetail
     ? null
@@ -37,7 +36,7 @@ export default async function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center px-4 xl:px-10 2xl:px-56">
-      <HomeHeader isAdmin={isAdmin} />
+      <HomeHeader />
       <DisplaySelectedProducts />
       <OrderForm accountDetail={accountDetail} />
       <Footer />

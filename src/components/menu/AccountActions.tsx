@@ -5,54 +5,28 @@ import {
   IoLogOutOutline,
   IoSettingsOutline,
 } from "react-icons/io5";
-import Loader from "../Loader";
-import Image from "next/image";
 import { DropdownMenu } from "../ui/Dropdown";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { BiUser } from "react-icons/bi";
 import Link from "next/link";
+import AppAccountImage from "../AppAccountImage";
 
 interface Props {
   isAdmin?: boolean;
 }
 export default function AccountActions({ isAdmin }: Props) {
-  const { data, status } = useSession();
+  const session = useSession();
 
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         className="hidden h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800 lg:flex"
-        disabled={status !== "authenticated"}
+        disabled={session.status !== "authenticated"}
       >
-        <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full">
-          {status === "loading" && <Loader className="h-6 w-6" />}
-          {status === "authenticated" && (
-            <Image
-              unoptimized
-              fill
-              src={
-                data?.user?.image ??
-                "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
-              }
-              className="relative rounded-full object-cover object-center"
-              alt="profile image"
-              loading="lazy"
-              referrerPolicy="no-referrer"
-            />
-          )}
-          {status === "unauthenticated" && (
-            <Link
-              href="/login"
-              className="flex h-full w-full items-center justify-center"
-            >
-              <BiUser className="h-6 w-6 text-stone-400" />
-            </Link>
-          )}
-        </div>
+        <AppAccountImage session={session} />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         avoidCollisions

@@ -21,7 +21,6 @@ export default async function Page({
   if (!session || !session.user) {
     return redirect("/login", RedirectType.replace);
   }
-  const isAdmin = session.user.email === process.env.GOOGLE_ADMIN_EMAIL;
 
   const ordersPerPage = 5;
   const currentPage =
@@ -115,7 +114,7 @@ export default async function Page({
 
   return (
     <main className="flex h-screen max-h-screen flex-col px-4 xl:px-10 2xl:px-56">
-      <HomeHeader isAdmin={isAdmin} />
+      <HomeHeader />
       <div className="flex grow flex-col gap-2 overflow-hidden">
         <div className="flex h-8 min-h-[2rem] gap-1 dark:text-neutral-100">
           <BackButton />

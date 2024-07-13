@@ -61,6 +61,22 @@ export const isAdmin = async () => {
 };
 
 /**
+ * Cheks if the session belongs to an admin.
+ *
+ * The difference between this and the `isAdmin()` util is that this requires
+ * the session object to be provided and makes the check based on it
+ * @returns true if the session belongs to the admin, false otherwise.
+ */
+export const isAdminSession = (session: Session | null): boolean => {
+  const isAdmin =
+    session !== null &&
+    session.user !== undefined &&
+    session.user.email === process.env.GOOGLE_ADMIN_EMAIL;
+
+  return isAdmin;
+};
+
+/**
  * Get the session object. Only works server-side
  * @returns session object, or null if the user is not logged
  */

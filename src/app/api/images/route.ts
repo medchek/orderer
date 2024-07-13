@@ -1,10 +1,10 @@
 import { NextApiRequest } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin } from "../auth/[...nextauth]/route";
-import { apiErrorResponse, uniqueId } from "@/lib/utils";
+import { apiErrorResponse } from "@/lib/utils";
 
 import sharp from "sharp";
-import { getAllFiles, uploadFile } from "@/lib/drive";
+import { getAllFiles } from "@/lib/drive";
 import { prisma } from "../../../../prisma/db";
 import {
   MAX_UPLOAD_FILE_SIZE,
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
       typeof imageFile === "object" &&
       "arrayBuffer" in imageFile
     ) {
+      const originalFileName = imageFile.name;
       const file = imageFile as unknown as Blob;
 
       // allowed mime types list
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
       const processedImage = await sharp(await file.arrayBuffer())
         .resize({
           fit: sharp.fit.contain,
-          width: 600,
+          width: 1024,
         })
         .webp({ quality: 60 })
         .toBuffer();
@@ -82,7 +83,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json<PostImageSuccessResponse>(
         {
           id: imgId,
-          originalName: file.name,
+          originalName: originalFileName,
           originalSize: file.size,
         },
         {
@@ -92,35 +93,7 @@ export async function POST(req: NextRequest) {
           },
         },
       );
-
-      const fileName = `${uniqueId(24)}.jpg`;
-
-      const imageId = await uploadFile(processedImage, fileName);
-
-      console.log("FILE INFO => ", imageId);
-
-      // save the image in the db
-
-      await prisma.image.create({
-        data: {
-          id: imageId,
-        },
-      });
-
-      return NextResponse.json(
-        {
-          id: imageId,
-          originalName: file.name,
-          originalSize: file.size,
-        },
-        {
-          status: 201,
-        },
-      );
-      // return NextResponse.json("ok");
     }
-
-    // return NextResponse.json("OK");
   } catch (e) {
     console.error("Error handing images api POST request", e);
     return apiErrorResponse();

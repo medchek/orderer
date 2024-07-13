@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 import HomeHeader from "@/components/home/HomeHeader";
-import SelectedProductDetails from "@/components/home/order-form/SelectedProductDetails";
+
 import OrderInfoSegment from "@/features/orders/components/OrderInfoSegment";
 
 import React, { Fragment } from "react";
@@ -12,6 +12,7 @@ import { addPartitive, discountedPrice, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import DashboardOrdersStatusBadge from "@/features/orders/components/DashboardOrdersStatusBadge";
 import Main from "@/components/Main";
+import SelectedProductDetails from "@/features/products/components/SelectedProductDetails";
 
 type StringOrEmpty = string | null | undefined;
 

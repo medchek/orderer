@@ -15,7 +15,7 @@ export default function SettingsThemeSelector() {
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col gap-4 md:flex-row">
       <ThemeSelectorButton
         inputValue="light"
         onChange={switchTheme}

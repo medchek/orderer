@@ -58,7 +58,7 @@ export default function ThemeSelectorButton({
       />
       <label
         className={clsx(
-          "flex h-12 cursor-pointer items-center gap-1  rounded-md px-14 font-semibold",
+          "flex h-12 w-full cursor-pointer items-center gap-1 rounded-md px-14 font-semibold",
           {
             "bg-neutral-200 text-neutral-900": inputValue === "light",
             "bg-neutral-900 text-neutral-200": inputValue === "dark",

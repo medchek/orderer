@@ -32,10 +32,13 @@ export default async function DashboardSettingsLayout({ children }: Props) {
           <BackButton />
           <h1 className="mb-1 text-xl font-semibold">Paramètres</h1>
         </div>
-        <div id="settings" className="flex h-full w-full gap-4 overflow-hidden">
+        <div
+          id="settings"
+          className="flex h-full w-full flex-col gap-4 overflow-hidden lg:flex-row"
+        >
           <section
             id="settings-tabs"
-            className="flex h-full w-60 min-w-[15rem] grow-0 flex-col gap-2 xl:w-72 xl:min-w-[18rem]"
+            className="flex w-full min-w-[15rem] grow-0 flex-row gap-2 lg:h-full lg:w-60 lg:flex-col xl:w-72 xl:min-w-[18rem]"
           >
             <SettingsLink
               href="./account"

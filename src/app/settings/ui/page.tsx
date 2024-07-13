@@ -13,7 +13,7 @@ export default function SettingsUi() {
         </h3>
       </section>
       <section className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2 ">
+        <div className="flex flex-col gap-2">
           <p className="font-semibold text-neutral-900 dark:text-neutral-200">
             Thème
           </p>
@@ -35,6 +35,9 @@ export default function SettingsUi() {
               <option>Anglais</option>
               <option>Arabe</option>
             </FilterSelect>
+            <span className="text-sm text-neutral-500">
+              Seule la langue française est disponible pour le moment
+            </span>
           </div>
         </div>
       </section>

@@ -97,7 +97,7 @@ export default function DashboardProductsFilter({
         </FilterLabel>
         <FilterLabel label="Catégorie" htmlFor="category-select">
           <CategorySelect<{ category: string }>
-            className="h-8 w-40 rounded-md bg-neutral-200 px-2  text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300 lg:w-48"
+            className="h-8 w-40 rounded-md bg-neutral-200 px-2 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-300 lg:w-48"
             noLabel
             disablePrompt
             small

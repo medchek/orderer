@@ -57,7 +57,7 @@ export default function ShoppingCart() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="relative size-7 dark:text-neutral-100 dark:hover:text-white">
+        <button className="relative flex size-8 items-center justify-center rounded-md active:bg-neutral-200 dark:text-neutral-100 dark:hover:text-white active:dark:bg-neutral-900">
           <FiShoppingCart className="size-6" />
 
           <HeaderSelectedProductsCounter className="absolute -bottom-2 -right-2" />
@@ -65,7 +65,7 @@ export default function ShoppingCart() {
       </SheetTrigger>
       <SheetContent
         autoFocus={false}
-        className="flex w-[85%] flex-col rounded-l-lg border-none bg-neutral-950 px-4 py-4"
+        className="flex w-[85%] flex-col rounded-l-lg border-none bg-neutral-200 px-4 py-4 dark:bg-neutral-950"
         side="right"
       >
         <SheetHeader>
@@ -83,7 +83,7 @@ export default function ShoppingCart() {
             <Link
               href="../"
               onClick={() => setOpen(false)}
-              className="flex h-full min-h-12 w-full items-center justify-center gap-2 rounded-md bg-secondary transition-colors hover:bg-blue-400 active:bg-blue-600"
+              className="flex h-full min-h-12 w-full items-center justify-center gap-2 rounded-md bg-secondary text-neutral-50 transition-colors hover:bg-blue-400 active:bg-blue-600"
             >
               <FiShoppingCart className="size-5" />
               {pathname.trim() !== "/" ? "Commander" : "Continuer"}

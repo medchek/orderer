@@ -21,7 +21,12 @@ export default function ProductCardButton({
   return (
     <Button
       className={cn(
-        "flex h-7 w-full items-center justify-center rounded-md bg-neutral-200 text-sm font-semibold transition-colors hover:bg-gray-300 active:bg-secondary active:text-white dark:bg-neutral-800 dark:text-neutral-50 dark:hover:bg-neutral-700/80 dark:active:bg-neutral-900 lg:h-8 lg:text-base",
+        "flex h-7 w-full items-center justify-center rounded-md text-sm font-semibold transition-colors active:text-white dark:text-neutral-50 lg:h-8 lg:text-base",
+        {
+          "bg-gray-500 hover:bg-gray-400 active:bg-gray-600": isSelected,
+          "bg-secondary hover:bg-blue-400 active:bg-blue-600 dark:hover:bg-neutral-700/80 dark:active:bg-neutral-900":
+            !isSelected,
+        },
         className,
       )}
       {...props}

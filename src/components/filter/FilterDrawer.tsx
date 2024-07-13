@@ -56,7 +56,7 @@ export default function FilterDrawer({
         title="Filtrer par"
         disabled={disabledButton}
         className={clsx(
-          "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-100/70 px-4 text-base font-medium shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 lg:px-6",
+          "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-50 px-4 text-base font-medium shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 lg:px-6",
 
           {
             "text-secondary": hasFilters,
@@ -66,8 +66,8 @@ export default function FilterDrawer({
       >
         <BiFilterAlt className="h-6 w-6" /> Filtrer
       </DrawerTrigger>
-      <DrawerContent className="dark:border-neutral-900 dark:bg-neutral-950">
-        <span className="mx-auto h-2 w-24 rounded-full bg-neutral-800"></span>
+      <DrawerContent className="bg-neutral-300 dark:border-neutral-900 dark:bg-neutral-950">
+        <span className="mx-auto h-2 w-24 rounded-full bg-neutral-400 dark:bg-neutral-800"></span>
         <DrawerHeader className="flex items-center justify-between">
           <DrawerTitle className="text-left text-xl font-semibold dark:text-neutral-50">
             Filterer

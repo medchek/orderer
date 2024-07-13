@@ -40,7 +40,7 @@ export default function AppAccountImage({
         />
       )}
       {status === "unauthenticated" && (
-        <div className="flex size-10 items-center justify-center dark:bg-neutral-800">
+        <div className="flex size-10 items-center justify-center bg-neutral-200 dark:bg-neutral-800">
           <BiUser className="h-6 w-6 text-stone-400" />
         </div>
       )}

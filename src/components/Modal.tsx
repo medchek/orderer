@@ -44,13 +44,17 @@ export default function Modal({
       // element to exclude from the clickoutside events
       const excludeOverlay = document.querySelector("div[vaul-overlay]");
       const excludeDrawer = document.querySelector("div[vaul-drawer]");
+      const appVisualizer = document.querySelector(
+        "#app-global-image-visualizer",
+      );
 
       if (
         ref.current !== null &&
         !ref.current.contains(e.target as Node) &&
         // prevent closing when navigating the filter drawer
         !excludeOverlay?.contains(e.target as Node) &&
-        !excludeDrawer?.contains(e.target as Node)
+        !excludeDrawer?.contains(e.target as Node) &&
+        !appVisualizer?.contains(e.target as Node)
       ) {
         closeModal();
       }

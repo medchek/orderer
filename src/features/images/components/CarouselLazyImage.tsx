@@ -1,13 +1,19 @@
 import { useCallback, useState } from "react";
 import Image from "next/image";
 import Loader from "@/components/Loader";
+import { cn } from "@/lib/utils";
 
 interface Props {
   imgSrc: string;
   inView: boolean;
+  className?: string;
 }
 
-export default function CarouselLazyImage({ imgSrc, inView }: Props) {
+export default function CarouselLazyImage({
+  imgSrc,
+  inView,
+  className,
+}: Props) {
   const [hasLoaded, setHasLoaded] = useState(false);
 
   const setLoaded = useCallback(() => {
@@ -16,16 +22,18 @@ export default function CarouselLazyImage({ imgSrc, inView }: Props) {
 
   return (
     <div
-      className={`relative flex h-full items-center justify-center ${
+      className={`relative flex h-full w-full items-center justify-center ${
         hasLoaded ? "opacity-100" : ""
       }`}
     >
       {!hasLoaded && <Loader className="h-7 w-7" />}
       <Image
         unoptimized
-        className={`block object-cover object-center transition-opacity ${
-          !hasLoaded ? "opacity-0" : "opacity-100"
-        }`}
+        className={cn(
+          "block object-cover object-center transition-opacity",
+          !hasLoaded ? "opacity-0" : "opacity-100",
+          className,
+        )}
         onLoad={setLoaded}
         loading="lazy"
         referrerPolicy="no-referrer"

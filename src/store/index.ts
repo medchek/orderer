@@ -1,4 +1,3 @@
-import { ThemeSlice, themeSlice } from "./themeSlice";
 import { snackbarSlice, SnackbarSlice } from "./snackbarSlice";
 import { OrderFormSlice, orderFormSlice } from "./orderFormSlice";
 import { create } from "zustand";
@@ -6,7 +5,11 @@ import { ProductSlice, productSlice } from "./productSlice";
 import { WilayaSlice, wilayaSlice } from "./wilayaSlice";
 import { DashboardSlice, dashboardSlice } from "./dashboardSlice";
 
-import { devtools, persist, createJSONStorage } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import {
+  ImageVisualizerSlice,
+  imageVisualizerSlice,
+} from "./imageVisualizerSlice";
 
 export const useStore = create<
   ProductSlice &
@@ -14,7 +17,7 @@ export const useStore = create<
     OrderFormSlice &
     SnackbarSlice &
     DashboardSlice &
-    ThemeSlice
+    ImageVisualizerSlice
 >()(
   devtools(
     (...args) => ({
@@ -23,15 +26,12 @@ export const useStore = create<
       ...orderFormSlice(...args),
       ...snackbarSlice(...args),
       ...dashboardSlice(...args),
-      ...persist(themeSlice, {
-        name: "theme",
-        storage: createJSONStorage(() => localStorage),
-        partialize: (state) => state.theme,
-      })(...args),
+      ...imageVisualizerSlice(...args),
     }),
     {
       // enabled: process.env.NODE_ENV === "development",
       name: "zustandStore",
+      serialize: { options: true },
     },
   ),
 );

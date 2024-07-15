@@ -3,16 +3,15 @@ import HomeHeader from "@/components/home/HomeHeader";
 
 import OrderInfoSegment from "@/features/orders/components/OrderInfoSegment";
 
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { prisma } from "../../../../prisma/db";
 
 import { BsCartX } from "react-icons/bs";
-import { IoMdArrowBack } from "react-icons/io";
 import { addPartitive, discountedPrice, formatDate } from "@/lib/utils";
-import Link from "next/link";
 import DashboardOrdersStatusBadge from "@/features/orders/components/DashboardOrdersStatusBadge";
 import Main from "@/components/Main";
 import SelectedProductDetails from "@/features/products/components/SelectedProductDetails";
+import BackButton from "@/components/BackButton";
 
 type StringOrEmpty = string | null | undefined;
 
@@ -84,25 +83,6 @@ export default async function Orders({ params }: Props) {
       },
     },
   });
-
-  // const shippingPrice = () => {
-  //   const price =
-  //     (data?.isHome ? data.wilaya.homePrice : data?.wilaya.officePrice) ?? 0;
-
-  //   return price + (data?.location?.additionalCosts ?? 0);
-  // };
-
-  // const totalPrice = () => {
-  //   if (!data || !shippingPrice) return;
-  //   const allProductsPrice = data?.orderProducts.reduce(
-  //     (prevPrice, { product: currentProduct }) => {
-  //       return (
-  //         discountedPrice(currentProduct.price, currentProduct.discount) +
-  //         prevPrice
-  //       );
-  //     },
-  //     0,
-  //   );
 
   const productsPrice = () => {
     if (!data || !data.shippingPrice) return 0;
@@ -188,17 +168,11 @@ export default async function Orders({ params }: Props) {
       ) : (
         <Fragment>
           <div className="flex h-11 items-center gap-2">
-            <Link href="/." title="Acceuil">
-              <IoMdArrowBack className="h-8 w-8" />
-            </Link>
+            <BackButton />
             <h1 className="text-lg font-semibold lg:text-xl">Votre commande</h1>
           </div>
           <div className="flex w-full grow flex-col gap-2 lg:flex-row lg:gap-4">
             <section className="flex w-auto grow flex-col gap-10 rounded-xl bg-neutral-200 p-4 dark:bg-neutral-950 lg:p-6">
-              {/* {data.map(({ title, data }) => {
-            return <OrderInfoSegment title={title} data={data} />;
-          })} */}
-
               <OrderInfoSegment
                 title="Informations personnelles"
                 data={[

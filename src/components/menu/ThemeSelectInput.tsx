@@ -1,4 +1,5 @@
 import { ThemeType } from "@/features/settings/types";
+import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import React from "react";
 
@@ -14,7 +15,7 @@ const themeOptions: Record<ThemeType, string> = {
   system: "Système",
 };
 
-export default function ThemeSelectInput(props: Props) {
+export default function ThemeSelectInput({ className, ...props }: Props) {
   const { theme, setTheme } = useTheme();
 
   const switchTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -26,7 +27,10 @@ export default function ThemeSelectInput(props: Props) {
 
   return (
     <select
-      className="h-10 w-32 rounded-md bg-neutral-300 px-2 outline-none ring-secondary focus:ring-2 dark:bg-neutral-900"
+      className={cn(
+        "h-10 w-32 rounded-md bg-neutral-300 px-2 outline-none ring-secondary focus:ring-2 dark:bg-neutral-900",
+        className,
+      )}
       onChange={switchTheme}
       value={theme}
       {...props}

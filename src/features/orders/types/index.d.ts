@@ -29,6 +29,7 @@ export interface AdminOrderData {
     name: string;
   };
   orderProducts: {
+    quantity: number;
     price: number;
     discount: number;
     product: {
@@ -65,6 +66,7 @@ export interface PublicOrderData {
     name: string;
   };
   orderProducts: {
+    quantity: number;
     product: {
       name: string;
       price: number;

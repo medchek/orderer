@@ -70,6 +70,7 @@ export default async function Page({
       },
       orderProducts: {
         select: {
+          quantity: true,
           product: {
             select: {
               name: true,

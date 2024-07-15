@@ -44,7 +44,7 @@ export default function OrdersCard({
   };
 
   return (
-    <div className="w-full rounded-lg bg-neutral-200 px-5 py-4 dark:bg-neutral-950">
+    <div className="w-full rounded-lg bg-neutral-200 px-3 py-4 dark:bg-neutral-950 lg:px-5">
       <section className="flex items-center justify-between text-neutral-500">
         <div className="flex items-center gap-2">
           <Link
@@ -52,18 +52,26 @@ export default function OrdersCard({
               pathname: `/orders/${code}`,
             }}
             className="hover:underline"
-            target="_blank"
           >
-            #{code}
+            <span className="flex items-center gap-1 md:hidden">
+              <TbExternalLink className="size-5" />
+              Détails
+            </span>
+
+            <span className="hidden md:inline">#{code}</span>
           </Link>
           <p>-</p>
           <div className="flex items-center gap-1 font-semibold text-neutral-950 dark:text-neutral-50">
             <span>{phone.phone}</span>
           </div>
-          {/* <p>-</p> */}
+
           <DashboardOrderStatusBadge status={status} />
         </div>
-        <Link href={`./orders/${code}`} title="Détails" target="_blank">
+        <Link
+          href={`./orders/${code}`}
+          title="Détails"
+          className="hidden sm:inline"
+        >
           <TbExternalLink className="h-6 w-6 text-neutral-500" />
         </Link>
       </section>
@@ -74,7 +82,7 @@ export default function OrdersCard({
         <p className="flex gap-1 capitalize">
           <MdOutlineLocationOn className="h-5 w-5" /> {town.name}
         </p>
-        <p className="flex gap-1 first-letter:capitalize">
+        <p className="hidden gap-1 first-letter:capitalize sm:flex">
           <MdOutlineMapsHomeWork className="h-5 w-5" />{" "}
           {isHome
             ? // display the home address for home shipping
@@ -86,23 +94,28 @@ export default function OrdersCard({
               : // otherwise display a generic stopdesk shipping message
                 `Bureau de livraison de la wilaya ${addPartitive(wilaya.name)}`}
         </p>
-        <p className="flex gap-1">
+        <p className="hidden gap-1 sm:flex">
           <MdOutlineDateRange className="h-5 w-5" /> {formatDate(createdAt)}
         </p>
       </section>
       <hr className="dark:border-neutral-800" />
-      <section className="flex justify-between pt-4">
+      <section className="flex flex-col gap-2 pt-4 md:flex-row md:justify-between md:gap-0">
         <div className="flex flex-col gap-2">
-          {orderProducts.map(({ product }, i) => (
+          {orderProducts.map(({ product, quantity }, i) => (
             <div
               key={i}
-              className="flex h-10 w-96 items-center justify-between gap-4 rounded-md bg-neutral-300 px-4 dark:bg-neutral-800"
+              className="flex h-10 w-full items-center justify-between gap-4 rounded-md bg-neutral-300 px-4 dark:bg-neutral-800 md:w-96"
             >
               <p
-                className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-800 dark:text-neutral-200"
+                className="flex w-56 gap-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-800 dark:text-neutral-200"
                 title={product.name}
               >
-                {product.name}
+                <span>{product.name}</span>
+                {quantity > 1 ? (
+                  <span className="font-medium text-neutral-500">
+                    x{quantity}
+                  </span>
+                ) : null}
               </p>
 
               <p className="flex items-center gap-1 text-neutral-600 dark:text-neutral-400">
@@ -118,7 +131,7 @@ export default function OrdersCard({
             </div>
           ))}
         </div>
-        <div className="flex items-end">
+        <div className="flex justify-end md:items-end md:justify-center">
           <div className="flex flex-col text-neutral-800 dark:text-neutral-200">
             <div className="flex justify-between gap-10">
               <span>Prix livraion:</span>

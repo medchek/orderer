@@ -67,15 +67,12 @@ export default function FilterDrawer({
         <BiFilterAlt className="h-6 w-6" /> Filtrer
       </DrawerTrigger>
       <DrawerContent className="bg-neutral-300 dark:border-neutral-900 dark:bg-neutral-950">
-        <span className="mx-auto h-2 w-24 rounded-full bg-neutral-400 dark:bg-neutral-800"></span>
+        <span className="mx-auto h-1.5 w-20 rounded-full bg-neutral-400 dark:bg-neutral-800"></span>
         <DrawerHeader className="flex items-center justify-between">
           <DrawerTitle className="text-left text-xl font-semibold dark:text-neutral-50">
             Filterer
           </DrawerTitle>
           {hasFilters && <p className="text-blue-600">Filtres appliqués</p>}
-
-          {/* 
-          <DrawerDescription>This action cannot be undone.</DrawerDescription> */}
         </DrawerHeader>
 
         <div className="flex flex-col gap-3 px-4 lg:gap-2">

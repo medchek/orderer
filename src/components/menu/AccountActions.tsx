@@ -9,10 +9,12 @@ import { DropdownMenu } from "../ui/Dropdown";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import AppAccountImage from "../AppAccountImage";
+import ThemeSelectInput from "./ThemeSelectInput";
 
 interface Props {
   isAdmin?: boolean;
@@ -26,7 +28,13 @@ export default function AccountActions({ isAdmin }: Props) {
         className="hidden h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-900 dark:hover:bg-neutral-800 lg:flex"
         disabled={session.status !== "authenticated"}
       >
-        <AppAccountImage session={session} />
+        {session.status === "unauthenticated" ? (
+          <Link href="/login" title="Se connecter">
+            <AppAccountImage session={session} />
+          </Link>
+        ) : (
+          <AppAccountImage session={session} />
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent
         avoidCollisions
@@ -63,6 +71,15 @@ export default function AccountActions({ isAdmin }: Props) {
         >
           <IoLogOutOutline className="h-6 w-6" /> <span>Se déconncter</span>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <hr className="mx-2 border-neutral-200 dark:border-neutral-800" />
+        <div className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:outline-none">
+          <label htmlFor="theme-selector-dropdown-menu">Thème</label>
+          <ThemeSelectInput
+            id="theme-selector-dropdown-menu"
+            className="h-8 w-28 dark:bg-neutral-800"
+          />
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

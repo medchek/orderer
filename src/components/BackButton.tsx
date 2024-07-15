@@ -9,8 +9,16 @@ interface Props {
 
 export default function BackButton({ className }: Props) {
   const router = useRouter();
+
+  const goBack = () => {
+    if (window.history.length <= 1) {
+      router.push("/");
+    } else {
+      router.back();
+    }
+  };
   return (
-    <button title="Retour" onClick={() => router.back()}>
+    <button title="Retour" onClick={goBack}>
       <IoMdArrowBack className={cn("h-7 w-7", className)} />
     </button>
   );

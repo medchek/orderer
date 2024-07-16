@@ -25,9 +25,11 @@ import {
 } from "@/features/products/api/postProduct";
 import { Prisma } from "@prisma/client";
 import { imageIdRegex } from "@/lib/patterns";
+import { AllowedProductsFilterParams } from "@/features/products/types";
 
 export async function GET(req: NextRequest) {
   try {
+    const isAdminReq = await isAdmin();
     /**
      * FILTERS HANDLING
      */
@@ -39,28 +41,36 @@ export async function GET(req: NextRequest) {
         ? nameParam
         : undefined;
     // price
-    const minPriceParam = req.nextUrl.searchParams.get("minPrice");
+    const minPriceParam = req.nextUrl.searchParams.get(
+      "minPrice" as AllowedProductsFilterParams,
+    );
     const minPrice = minPriceParam
       ? toPositiveNumber(minPriceParam)
       : undefined;
 
-    const maxPriceParam = req.nextUrl.searchParams.get("maxPrice");
+    const maxPriceParam = req.nextUrl.searchParams.get(
+      "maxPrice" as AllowedProductsFilterParams,
+    );
     const maxPrice = maxPriceParam
       ? toPositiveNumber(maxPriceParam)
       : undefined;
     // stock
-    const minStockParam = req.nextUrl.searchParams.get("minStock");
-    const minStock = minStockParam
-      ? toPositiveNumber(minStockParam)
-      : undefined;
+    const minStockParam = req.nextUrl.searchParams.get(
+      "minStock" as AllowedProductsFilterParams,
+    );
+    const minStock =
+      minStockParam && isAdminReq ? toPositiveNumber(minStockParam) : undefined;
 
-    const maxStockParam = req.nextUrl.searchParams.get("maxStock");
-    const maxStock = maxStockParam
-      ? toPositiveNumber(maxStockParam)
-      : undefined;
+    const maxStockParam = req.nextUrl.searchParams.get(
+      "maxStock" as AllowedProductsFilterParams,
+    );
+    const maxStock =
+      maxStockParam && isAdminReq ? toPositiveNumber(maxStockParam) : undefined;
 
     // discount
-    const discountParam = req.nextUrl.searchParams.get("isDiscount");
+    const discountParam = req.nextUrl.searchParams.get(
+      "isDiscount" as AllowedProductsFilterParams,
+    );
 
     const discount =
       discountParam === "1" || discountParam === "0"
@@ -68,17 +78,31 @@ export async function GET(req: NextRequest) {
         : undefined;
 
     // category
-    const categoryParam = req.nextUrl.searchParams.get("category")?.trim();
+    const categoryParam = req.nextUrl.searchParams
+      .get("category" as AllowedProductsFilterParams)
+      ?.trim();
     const category =
       categoryParam && categoryParam.length === CATEGORY_CODE_LENGTH
         ? categoryParam
         : undefined;
     const subcategoryParam = req.nextUrl.searchParams
-      .get("subcategory")
+      .get("subcategory" as AllowedProductsFilterParams)
       ?.trim();
     const subcategory =
       subcategoryParam && subcategoryParam.length === CATEGORY_CODE_LENGTH
         ? subcategoryParam
+        : undefined;
+
+    // inStock is only allowed for non admin users
+
+    const inStockParam = req.nextUrl.searchParams
+      .get("category" as AllowedProductsFilterParams)
+      ?.trim();
+
+    const inStock =
+      inStockParam && (inStockParam === "0" || inStockParam === "1")
+        ? // inStock = greater than 1
+          1
         : undefined;
 
     /**
@@ -107,8 +131,10 @@ export async function GET(req: NextRequest) {
           lte: maxPrice,
         },
         stock: {
-          gte: minStock,
-          lte: maxStock,
+          // if inStock is provided, disable the minStock
+          gte: inStock ?? minStock,
+          // if the inStock param is provided, disable the maxStock
+          lte: !inStock ? maxStock : undefined,
         },
         discount: {
           // returns only the product are not on discount

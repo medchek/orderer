@@ -59,3 +59,5 @@ interface ProductsFiltersParams {
 }
 
 export type ProductsFilters = ProductsFiltersParams;
+
+export type AllowedProductsFilterParams = keyof ProductsFiltersParams;

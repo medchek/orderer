@@ -60,7 +60,7 @@ export default function DashboardProductFormModal({
   ]);
   // Handles image presetting when the user is updating the product
   useEffect(() => {
-    if (productData && uploadState.every((f) => f !== null)) {
+    if (productData /* && uploadState.every((f) => f !== null) */) {
       const { images } = productData;
       if (images.length) {
         // to work immutably
@@ -79,7 +79,7 @@ export default function DashboardProductFormModal({
         setUploadState(newState);
       }
     }
-  }, [productData, uploadState]);
+  }, []);
 
   const notNullImages = useMemo(() => {
     return uploadState.filter((v) => v !== null) as FileMetaData[]; // negate the null values

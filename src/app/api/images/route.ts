@@ -11,6 +11,7 @@ import {
   STATUS_CONTENT_TOO_LARGE,
   STATUS_UNAUTHORIZED,
   STATUS_UNSUPPORTED_MEDIA_TYPE,
+  UPLOAD_IMAGE_MAX_WIDTH,
 } from "@/lib/constants";
 import { PostImageSuccessResponse } from "@/features/images/api/postImage";
 import { cloudinary } from "@/lib/cloudinary";
@@ -55,12 +56,19 @@ export async function POST(req: NextRequest) {
         );
       }
       // await sleep(2400);
-      const processedImage = await sharp(await file.arrayBuffer())
+
+      const sharpImage = sharp(await file.arrayBuffer());
+      const metadata = await sharpImage.metadata();
+      const imgWidth = metadata.width;
+      const processedImage = await sharpImage
         .resize({
           fit: sharp.fit.contain,
-          width: 1024,
+          width:
+            imgWidth && imgWidth > UPLOAD_IMAGE_MAX_WIDTH
+              ? UPLOAD_IMAGE_MAX_WIDTH
+              : metadata.width,
         })
-        .webp({ quality: 60 })
+        .webp({ quality: 85 })
         .toBuffer();
 
       const imageUrl =

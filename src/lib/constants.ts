@@ -12,6 +12,7 @@ export const PHONE_ENTRY_ID_LENGTH = 25;
 export const SHIPPING_LOCATION_ID_LENGTH = 25;
 
 export const MAX_UPLOAD_FILE_SIZE = 8388608;
+export const UPLOAD_IMAGE_MAX_WIDTH = 1536;
 
 export const STATUS_CREATED = 201;
 export const STATUS_OK = 200;

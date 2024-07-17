@@ -114,7 +114,7 @@ export default function AppImageVisualizer() {
           {imageVisualizerIds?.map(({ id }, index) => (
             <div
               className={
-                "embla__slide flex h-full max-h-full w-full min-w-full flex-shrink-0 flex-grow-0 basis-full items-center justify-center backdrop-blur-2xl"
+                "embla__slide flex h-full max-h-full min-w-0 flex-shrink-0 flex-grow-0 basis-full items-center justify-center"
               }
               key={id}
             >

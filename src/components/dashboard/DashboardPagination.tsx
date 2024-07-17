@@ -7,24 +7,33 @@ import ReactPaginate, { type ReactPaginateProps } from "react-paginate";
 interface Props extends ReactPaginateProps {
   /** href link used to render link tags which preceedes the page number */
   href?: string;
-  perPageCount?: {
+
+  /** Allows for selecting the number of items to display per-page */
+  perPageDisplay?: {
+    /** The function to run when a the user selects a options in the per-page select input */
     setPerPageCount: (n: number) => void;
+    /** The current per-page count */
     count: number;
+    /** The text to display after the per-page select element  */
     text: string;
+    /** An array containing the count options the user can select from */
+    perPageOptions?: number[];
   };
 }
 
 export default function DashboardPagination({
   href,
-  perPageCount,
+  perPageDisplay,
   className,
   ...props
 }: Props) {
-  const perPageOptions = [5, 7, 9, 10, 15, 20, 25];
-  const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!perPageCount) return;
+  const perPageOptions = perPageDisplay?.perPageOptions ?? [
+    5, 7, 9, 10, 15, 20, 25,
+  ];
+  const handlePerPageOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!perPageDisplay) return;
     const value = toNumber(e.target.value);
-    perPageCount.setPerPageCount(value);
+    perPageDisplay.setPerPageCount(value);
   };
 
   return (
@@ -39,16 +48,16 @@ export default function DashboardPagination({
         <ReactPaginate
           {...props}
           hrefBuilder={href ? (page) => href + page : undefined}
-          className="flex w-full gap-2 text-stone-50"
+          className="flex w-full gap-2 text-neutral-800 dark:text-stone-50"
           breakLabel="..."
-          nextLabel={<MdChevronRight className="h-7 w-7" />}
-          previousLabel={<MdChevronRight className="h-7 w-7 rotate-180 " />}
-          nextLinkClassName="flex h-8 w-8 items-center justify-center rounded-md bg-stone-950  hover:bg-stone-800"
-          previousLinkClassName="flex h-8 w-8 items-center justify-center rounded-md bg-stone-950  hover:bg-stone-800"
-          breakLinkClassName="flex h-8 w-8 items-center justify-center rounded-md bg-stone-950 font-bold  hover:bg-stone-800"
-          pageLinkClassName="flex h-8 w-8 items-center  justify-center rounded-md bg-stone-950 font-semibold hover:bg-stone-800"
-          disabledLinkClassName="cursor-not-allowed opacity-40 hover:!bg-stone-950"
-          activeLinkClassName="!bg-secondary"
+          nextLabel={<MdChevronRight className="size-7" />}
+          previousLabel={<MdChevronRight className="size-7 rotate-180" />}
+          nextLinkClassName="flex size-8 items-center justify-center rounded-md bg-neutral-300 hover:bg-neutral-400/70 dark:bg-stone-950 dark:hover:bg-stone-800"
+          previousLinkClassName="flex size-8 items-center justify-center rounded-md bg-neutral-300 hover:bg-neutral-400/70 dark:bg-stone-950 dark:hover:bg-stone-800"
+          breakLinkClassName="flex size-8 items-center justify-center rounded-md bg-stone-950 font-bold hover:bg-stone-800"
+          pageLinkClassName="flex size-8 items-center justify-center rounded-md bg-neutral-300 font-semibold hover:bg-neutral-400/70 dark:bg-stone-950 dark:hover:bg-stone-800"
+          disabledLinkClassName="cursor-not-allowed opacity-40 hover:!bg-[#D4D4D4] dark:hover:!bg-stone-950"
+          activeLinkClassName="!bg-secondary text-neutral-50"
           pageRangeDisplayed={3}
           // marginPagesDisplayed={2}
           renderOnZeroPageCount={null}
@@ -57,13 +66,13 @@ export default function DashboardPagination({
           // }}
         />
       </div>
-      {perPageCount && (
-        <div className="absolute right-0 flex h-10 items-center gap-2 text-sm text-stone-400">
+      {perPageDisplay && (
+        <div className="absolute right-0 flex h-10 select-none items-center gap-2 text-sm text-stone-400 lg:text-base">
           <span>Afficher</span>
           <select
-            className="flex h-10 items-center justify-center rounded-md bg-neutral-900 px-1 text-base text-stone-200"
-            value={perPageCount.count}
-            onChange={handleOnChange}
+            className="flex h-10 items-center justify-center rounded-md px-1 text-base text-neutral-800 dark:bg-neutral-900 dark:text-stone-200"
+            value={perPageDisplay.count}
+            onChange={handlePerPageOnChange}
           >
             {perPageOptions.map((v) => (
               <option key={v} value={v}>
@@ -71,7 +80,7 @@ export default function DashboardPagination({
               </option>
             ))}
           </select>
-          <span>{perPageCount.text}</span>
+          <span>{perPageDisplay.text}</span>
         </div>
       )}
     </div>

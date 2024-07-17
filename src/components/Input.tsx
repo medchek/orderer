@@ -13,7 +13,7 @@ interface Props<T extends FieldValues>
   label?: string | null;
   name: Path<T>;
   register?: UseFormRegister<T>;
-  registerRules?: RegisterOptions;
+  registerRules?: RegisterOptions<T, Path<T>>;
   error?: string;
   id?: string;
   /** Displays information underneath the input */
@@ -38,7 +38,7 @@ export default function Input<T extends FieldValues>({
   const inputId = id ? id : `${name}-input`;
   return (
     <div
-      className={clsx(" flex w-full flex-col", {
+      className={clsx("flex w-full flex-col", {
         hidden: hidden,
         "mb-1": !removeErrorHeight,
       })}

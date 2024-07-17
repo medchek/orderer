@@ -16,7 +16,7 @@ interface Props<T extends FieldValues>
   label?: string;
   name: Path<T>;
   register?: UseFormRegister<T>;
-  registerRules?: RegisterOptions;
+  registerRules?: RegisterOptions<T, Path<T>>;
   children: React.ReactNode;
   error?: string;
   textRight?: string;
@@ -81,7 +81,7 @@ export default function SelectInput<T extends FieldValues>({
         {isLoading ? (
           <Loader
             className={clsx(
-              "absolute  dark:border-neutral-500 dark:border-b-transparent",
+              "absolute dark:border-neutral-500 dark:border-b-transparent",
               {
                 "right-1 h-4 w-4": small,
                 "right-4 h-6 w-6": !small,
@@ -92,7 +92,7 @@ export default function SelectInput<T extends FieldValues>({
           !hideArrow && (
             <MdChevronRight
               className={clsx(
-                "pointer-events-none absolute  rotate-90 text-neutral-800 dark:text-neutral-500",
+                "pointer-events-none absolute rotate-90 text-neutral-800 dark:text-neutral-500",
                 {
                   "right-1 h-5 w-5": small,
                   "right-4 h-7 w-7": !small,

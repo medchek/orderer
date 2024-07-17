@@ -73,7 +73,7 @@ export default function CategorySelect<T extends { category: string }>({
           : undefined
       }
       onChange={onChange ? handleOnChange : undefined}
-      placeholder="Categorie du produit"
+      // placeholder="Categorie du produit"
       value={categoryCode}
       isLoading={isFetching}
       small={small}

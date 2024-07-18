@@ -30,39 +30,27 @@ import { emailRegex, phoneRegex, productCodeRegex } from "@/lib/patterns";
 // import { headers } from "next/headers";
 // import { verifyCaptcha } from "@/features/recaptcha/api/verifyCaptcha";
 import { notifyOrderCreated } from "@/features/notifications/api/notifyOrderCreated";
+import { verifyCaptcha } from "@/features/recaptcha/api/verifyCaptcha";
+import { headers } from "next/headers";
 
 export async function POST(req: NextRequest) {
   try {
     // verify captcha
-    // TODO: REENABLE RECHAPTCHA START
-    // const headersList = headers();
 
-    // const recaptchaToken = headersList.get("X-Recaptcha-Token");
+    const headersList = headers();
 
-    // const isValidRecaptchaToken = await verifyCaptcha(recaptchaToken);
+    const recaptchaToken = headersList.get("X-Recaptcha-Token");
 
-    // if (!isValidRecaptchaToken.success) {
-    //   return apiErrorResponse(
-    //     "Authorization error: Invalid captcha token",
-    //     STATUS_UNAUTHORIZED,
-    //   );
-    // }
-    // TODO: REENABLE RECHAPTCHA END
+    const isValidRecaptchaToken = await verifyCaptcha(recaptchaToken);
+
+    if (!isValidRecaptchaToken.success) {
+      return apiErrorResponse(
+        "Authorization error: Invalid captcha token",
+        STATUS_UNAUTHORIZED,
+      );
+    }
 
     const body: PostOrderRequestPayload = await req.json();
-
-    // const productsSchema = Joi.object<
-    //   PostOrderRequestPayload["products"][number]
-    // >({
-    //   code: Joi.string().regex(productCodeRegex),
-    //   quantity: Joi.number()
-    //     .strict()
-    //     .positive()
-    //     .precision(0)
-    //     .min(1)
-    //     .max(MAX_PRODUCT_QUANTITY)
-    //     .required(),
-    // });
 
     const productsSchema = Joi.object<
       PostOrderRequestPayload["products"]
@@ -130,20 +118,6 @@ export async function POST(req: NextRequest) {
     } = data;
 
     const productsCode = Object.keys(products);
-
-    /*
-
-    // check if the products exist
-    // remove potential array duplicates
-    const productsCodeNoDup = Array.from(
-      new Set(products.map(({ code }) => code)),
-    );
-
-    // immediately return if there are products duplicates
-    if (productsCodeNoDup.length !== products.length) {
-      return apiErrorResponse("Products code duplicates", STATUS_FORBIDDEN);
-    }
-    */
 
     /**
      * Products data from Db, required to calculate prices
@@ -470,11 +444,10 @@ export async function GET(req: NextRequest) {
             select: {
               price: true,
               discount: true,
+              quantity: true,
               product: {
                 select: {
                   name: true,
-                  price: true,
-                  discount: true,
                 },
               },
             },

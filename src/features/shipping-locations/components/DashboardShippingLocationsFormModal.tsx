@@ -180,7 +180,7 @@ export default function DashboardShippingLocationsFormModal({
           onCancel={handleCloseModal}
           confirmButtonType="submit"
           disableCancel={isLoading}
-          disabledSubmit={isLoading || disableSubmit}
+          disableSubmit={isLoading || disableSubmit}
           isLoading={isLoading}
         />
       </form>

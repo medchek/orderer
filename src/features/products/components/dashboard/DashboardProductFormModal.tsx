@@ -242,7 +242,7 @@ export default function DashboardProductFormModal({
             onCancel={closeModal}
             confirmButtonType="submit"
             disableCancel={isUploadingImage || isLoading}
-            disabledSubmit={
+            disableSubmit={
               isUploadingImage || isLoading || isCategoriesFetching
             }
             isLoading={isLoading}

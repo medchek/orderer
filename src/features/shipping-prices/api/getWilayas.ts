@@ -1,7 +1,8 @@
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
 import { Wilaya } from "@/store/wilayaSlice";
 import ky from "ky";
+import { QueryOptions } from "@/types/api";
 
 export type GetWilayasSuccessResponse = Wilaya[];
 
@@ -14,7 +15,7 @@ export const getWilayas = async (): Promise<GetWilayasSuccessResponse> => {
   return data;
 };
 
-type UseGetWilayasOptions = UseQueryOptions<GetWilayasSuccessResponse>;
+type UseGetWilayasOptions = QueryOptions<GetWilayasSuccessResponse>;
 
 export const useGetWilayas = (opt?: UseGetWilayasOptions) => {
   return useQuery({

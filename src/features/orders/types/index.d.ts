@@ -34,8 +34,6 @@ export interface AdminOrderData {
     discount: number;
     product: {
       name: string;
-      price: number;
-      discount: number;
     };
   }[];
 }
@@ -67,10 +65,10 @@ export interface PublicOrderData {
   };
   orderProducts: {
     quantity: number;
+    price: number;
+    discount: number;
     product: {
       name: string;
-      price: number;
-      discount: number;
     };
   }[];
 }

@@ -71,11 +71,11 @@ export default async function Page({
       orderProducts: {
         select: {
           quantity: true,
+          price: true,
+          discount: true,
           product: {
             select: {
               name: true,
-              price: true,
-              discount: true,
             },
           },
         },

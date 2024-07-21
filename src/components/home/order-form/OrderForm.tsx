@@ -121,7 +121,6 @@ export default function OrderForm({ accountDetail }: Props) {
 
   const onFormSubmit: SubmitHandler<OrderFormValues> = async (data, e) => {
     e?.preventDefault();
-    console.log("submitting");
     if (!isConfirming) {
       // confirmation step
       // mark the address as empty is the the shipping type is to the office

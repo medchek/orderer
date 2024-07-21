@@ -8,6 +8,7 @@ interface Props {
   Icon: React.ReactNode;
   text: string;
   subContent?: React.ReactNode | string;
+  /** adds an action button that triggers the `subContentAction` function on click */
   subContentAction?: () => void;
   /** Display a plus icon before the action button text */
   actionButtonIcon?: boolean;
@@ -31,7 +32,7 @@ export default function DashboardEmptyState({
         <DashboardEmptyStateButton
           onClick={subContentAction}
           text={subContent}
-          plusIcon={actionButtonIcon}
+          noIcon={!actionButtonIcon}
         />
       );
     }
@@ -56,7 +57,7 @@ export default function DashboardEmptyState({
     >
       <div
         className={cn(
-          "flex w-96 flex-col items-center gap-1 text-center  text-neutral-900 dark:text-neutral-100",
+          "flex w-96 flex-col items-center gap-1 text-center text-neutral-900 dark:text-neutral-100",
           contentClassName,
         )}
       >

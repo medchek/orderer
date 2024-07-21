@@ -16,8 +16,8 @@ import {
 } from "../api/patchWilaya";
 import Modal from "@/components/Modal";
 import Input from "@/components/Input";
-import Loader from "@/components/Loader";
 import { WilayasSelection } from "../types";
+import ModalActionButtons from "@/components/ModalActionButtons";
 
 export interface SelectedWilaya extends Wilaya {
   index: number;
@@ -99,7 +99,7 @@ Props) {
       );
     },
     onError: () => {
-      showSnackbar("Une érreur est survenu, veuillez réessayer", "error");
+      showSnackbar("Une erreur est survenu, veuillez réessayer", "error");
     },
   });
 
@@ -107,18 +107,6 @@ Props) {
     if (selectedWilaya) {
       setIsAvailableHome(selectedWilaya.availableHome);
       setIsAvailableOffice(selectedWilaya.availableOffice);
-    } else {
-      // const allAvailable = selectedMultiple.every((w) => w.available === true);
-      // const allNotAvailable = selectedMultiple.every(
-      //   (w) => w.available === false
-      // );
-      // if (allAvailable) {
-      //   setIsAvailable(true);
-      // } else if (allNotAvailable) {
-      //   setIsAvailable(false);
-      // } else {
-      //   setIsAvailable(true);
-      // }
     }
   }, [selectedWilaya]);
   const displayWilayaName = () => {
@@ -212,7 +200,7 @@ Props) {
         })}
       >
         <p className="mb-3 text-sm text-stone-400">
-          Modifier les prix de livraison et la disponibilité{" "}
+          Modifier les prix de livraison et la disponibilité
           {displayWilayaName()}.
         </p>
 
@@ -246,11 +234,9 @@ Props) {
             error={errors["officePrice"]?.message}
           />
         </section>
-        <section className="flex w-full gap-4">
-          <div className="flex w-full flex-col text-white">
-            <p className="text-lg font-semibold dark:text-stone-100">
-              Disponibilité
-            </p>
+        <section className="flex w-full gap-4 text-neutral-900 dark:text-stone-100">
+          <div className="flex w-full flex-col">
+            <p className="font-semibold">Disponibilité</p>
             <div className="flex h-12 items-center justify-between pr-2">
               <p className="text-sm text-stone-400">
                 Render la wilaya disponible ou non disponible pour livraison à
@@ -264,10 +250,8 @@ Props) {
             </div>
           </div>
 
-          <div className="flex w-full flex-col text-white">
-            <p className="text-lg font-semibold dark:text-stone-100">
-              Disponibilité
-            </p>
+          <div className="flex w-full flex-col">
+            <p className="font-semibold">Disponibilité</p>
             <div className="flex h-12 items-center justify-between pr-2">
               <p className="text-sm text-stone-400">
                 Render la wilaya disponible ou non disponible pour livraison au
@@ -281,27 +265,12 @@ Props) {
           </div>
         </section>
 
-        <section
-          id="form-buttons"
-          className="flex items-center justify-end gap-4 py-4"
-        >
-          <button
-            type="button"
-            className="h-10 w-36 rounded-md font-semibold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
-            onClick={closeModal}
-          >
-            Annuler
-          </button>
-          <button
-            type="submit"
-            className="h-10 w-36 rounded-md bg-blue-600 font-semibold text-white transition-colors hover:bg-secondary focus:bg-blue-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
-            // onClick={handleDeleteProduct}
-            // disabled
-            disabled={isPending}
-          >
-            {isPending ? <Loader className="h-6 w-6" /> : <span>Modifier</span>}
-          </button>
-        </section>
+        <ModalActionButtons
+          onCancel={closeModal}
+          confirmButtonType="submit"
+          isLoading={isPending}
+          confirmText="Modifier"
+        />
       </form>
     </Modal>
   );

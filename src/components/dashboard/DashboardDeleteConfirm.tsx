@@ -1,6 +1,5 @@
-import Loader from "../Loader";
 import Modal from "../Modal";
-
+import ModalActionButtons from "../ModalActionButtons";
 
 interface Props {
   label: string;
@@ -33,36 +32,21 @@ export default function DashboardDeleteConfirm({
       centerModalContent
     >
       <div className="px-2">
-        <p className="py-2 text-stone-400">
+        <p className="py-2 text-neutral-600 dark:text-neutral-400">
           {/* Êtes-vous sûr de vouloir supprimer ce produit? */}
           {text}
         </p>
-        <section
-          id="form-buttons"
-          className="flex items-center justify-end gap-4 py-4"
-        >
-          <button
-            type="button"
-            className="h-10 w-36 rounded-md font-bold transition-colors dark:bg-white/10 dark:text-stone-400 dark:hover:bg-white/[0.15] dark:focus:bg-white/5"
-            onClick={closeModal}
-            disabled={isLoading}
-          >
-            Annuler
-          </button>
-          <button
-            type="submit"
-            className="h-10 w-36 rounded-md bg-red-600 font-bold text-white transition-colors hover:bg-red-500 focus:bg-red-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
-            onClick={onConfirm}
-            // disabled
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader className="h-6 w-6" />
-            ) : (
-              <span>{confirmButtonText ? confirmButtonText : "Supprimer"}</span>
-            )}
-          </button>
-        </section>
+
+        <ModalActionButtons
+          confirmText={confirmButtonText ? confirmButtonText : "Supprimer"}
+          isLoading={isLoading}
+          confirmButtonType="submit"
+          disableSubmit={isLoading}
+          disableCancel={isLoading}
+          onConfirm={onConfirm}
+          onCancel={closeModal}
+          confirmClassName="bg-red-600 hover:bg-red-500 active:bg-red-700"
+        />
       </div>
     </Modal>
   );

@@ -24,6 +24,7 @@ import {
 } from "@radix-ui/react-tooltip";
 import clsx from "clsx";
 import { AdminOrderData } from "../types";
+import OrdersCardProductDisplay from "./OrdersCardProductDisplay";
 
 // GetAllOrdersSuccessResponsePayload represents a single order data schema
 interface Props extends AdminOrderData {
@@ -60,8 +61,8 @@ export default function DashboardOrdersCard({
 }: Props) {
   const shippingPrice = isHome ? wilaya.homePrice : wilaya.officePrice;
   const totalPrice = () => {
-    const productsPrice = orderProducts.reduce((prev, { product }) => {
-      return prev + discountedPrice(product.price, product.discount);
+    const productsPrice = orderProducts.reduce((prev, { price, discount }) => {
+      return prev + discountedPrice(price, discount);
     }, 0);
 
     return calculateTotalPrice({
@@ -72,7 +73,7 @@ export default function DashboardOrdersCard({
   };
 
   return (
-    <div className="w-full rounded-lg px-5 py-4 dark:bg-neutral-950">
+    <div className="w-full rounded-lg bg-neutral-200 px-5 py-4 dark:bg-neutral-950">
       <section className="flex items-center justify-between text-neutral-500">
         <div className="flex items-center gap-2">
           <p>#{code}</p>
@@ -83,7 +84,9 @@ export default function DashboardOrdersCard({
               "text-neutral-50": !phone.isBlacklisted,
             })}
           >
-            <span>{phone.phone}</span>
+            <span className="text-neutral-950 dark:text-neutral-50">
+              {phone.phone}
+            </span>
             {phone.isBlacklisted && (
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
@@ -126,7 +129,7 @@ export default function DashboardOrdersCard({
           isLoading={isPatching}
         />
       </section>
-      <section className="flex h-12 items-center gap-4 text-sm text-neutral-400">
+      <section className="flex h-12 items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
         <p className="flex gap-1">
           <MdLocationPin className="h-5 w-5" /> {wilaya.name}
         </p>
@@ -152,33 +155,18 @@ export default function DashboardOrdersCard({
       <hr className="dark:border-neutral-800" />
       <section className="flex justify-between pt-4">
         <div className="flex flex-col gap-2">
-          {orderProducts.map(({ product }, i) => (
-            <div
+          {orderProducts.map(({ product, quantity, discount, price }, i) => (
+            <OrdersCardProductDisplay
               key={i}
-              className="flex h-10 w-96 items-center justify-between gap-4 rounded-md bg-neutral-800 px-4"
-            >
-              <p
-                className="w-56 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-200"
-                title={product.name}
-              >
-                {product.name}
-              </p>
-
-              <p className="flex items-center gap-1 text-neutral-400">
-                {product.discount > 0 && (
-                  <span title="Réduction" className="text-xs text-neutral-500">
-                    -{product.discount}%
-                  </span>
-                )}
-                <span>
-                  {discountedPrice(product.price, product.discount)}DA
-                </span>
-              </p>
-            </div>
+              product={product}
+              quantity={quantity}
+              discount={discount}
+              price={price}
+            />
           ))}
         </div>
         <div className="flex items-end">
-          <div className="flex flex-col text-neutral-200">
+          <div className="flex flex-col text-neutral-800 dark:text-neutral-200">
             <div className="flex justify-between gap-10">
               <span>Prix livraion:</span>{" "}
               <span>{shippingPrice + (location?.additionalCosts ?? 0)}DA</span>

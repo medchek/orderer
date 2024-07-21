@@ -14,6 +14,7 @@ import DashboardOrderStatusBadge from "./DashboardOrdersStatusBadge";
 import { PublicOrderData } from "../types";
 import { TbExternalLink } from "react-icons/tb";
 import Link from "next/link";
+import OrdersCardProductDisplay from "./OrdersCardProductDisplay";
 
 // GetAllOrdersSuccessResponsePayload represents a single order data schema
 interface Props extends PublicOrderData {}
@@ -32,8 +33,8 @@ export default function OrdersCard({
 }: Props) {
   const shippingPrice = isHome ? wilaya.homePrice : wilaya.officePrice;
   const totalPrice = () => {
-    const productsPrice = orderProducts.reduce((prev, { product }) => {
-      return prev + discountedPrice(product.price, product.discount);
+    const productsPrice = orderProducts.reduce((prev, { discount, price }) => {
+      return prev + discountedPrice(price, discount);
     }, 0);
 
     return calculateTotalPrice({
@@ -101,34 +102,14 @@ export default function OrdersCard({
       <hr className="dark:border-neutral-800" />
       <section className="flex flex-col gap-2 pt-4 md:flex-row md:justify-between md:gap-0">
         <div className="flex flex-col gap-2">
-          {orderProducts.map(({ product, quantity }, i) => (
-            <div
+          {orderProducts.map(({ product, quantity, discount, price }, i) => (
+            <OrdersCardProductDisplay
               key={i}
-              className="flex h-10 w-full items-center justify-between gap-4 rounded-md bg-neutral-300 px-4 dark:bg-neutral-800 md:w-96"
-            >
-              <p
-                className="flex w-56 gap-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-800 dark:text-neutral-200"
-                title={product.name}
-              >
-                <span>{product.name}</span>
-                {quantity > 1 ? (
-                  <span className="font-medium text-neutral-500">
-                    x{quantity}
-                  </span>
-                ) : null}
-              </p>
-
-              <p className="flex items-center gap-1 text-neutral-600 dark:text-neutral-400">
-                {product.discount > 0 && (
-                  <span title="Réduction" className="text-xs text-neutral-500">
-                    -{product.discount}%
-                  </span>
-                )}
-                <span>
-                  {discountedPrice(product.price, product.discount)}DA
-                </span>
-              </p>
-            </div>
+              product={product}
+              quantity={quantity}
+              discount={discount}
+              price={price}
+            />
           ))}
         </div>
         <div className="flex justify-end md:items-end md:justify-center">

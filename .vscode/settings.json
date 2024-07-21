@@ -6,6 +6,7 @@
     "overlayClassName",
     "loaderClassName",
     "contentClassName",
+    "confirmClassName",
     // react-paginate related
     "nextClassName",
     "nextLinkClassName",
@@ -19,5 +20,6 @@
     "disabledClassName",
     "breakClassName",
     "breakLinkClassName"
-  ]
+  ],
+  "cSpell.language": "en,fr"
 }

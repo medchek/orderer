@@ -101,7 +101,7 @@ export default function Orders() {
       return Array.from({ length: 8 }, (_, i) => (
         <div
           key={`tr-${i}`}
-          className="h-auto animate-pulse space-y-2 rounded-md bg-neutral-900/80 px-4 py-3 [&>section>div]:rounded-md [&>section>div]:bg-neutral-800"
+          className="h-auto animate-pulse space-y-2 rounded-md bg-neutral-300 px-4 py-3 dark:bg-neutral-900/80 [&>section>div]:rounded-md [&>section>div]:bg-neutral-400 dark:[&>section>div]:bg-neutral-800"
         >
           <section className="flex gap-2 [&>div]:h-6">
             <div className="w-1/6"></div>
@@ -117,9 +117,9 @@ export default function Orders() {
           <hr className="border-neutral-800" />
           <section className="flex justify-between">
             <div className="h-6 w-72"></div>
-            <section className="flex flex-col items-end gap-2">
-              <div className="h-4 w-40 rounded-md bg-neutral-800"></div>
-              <div className="h-6 w-44 rounded-md bg-neutral-800"></div>
+            <section className="flex flex-col items-end gap-2 [&>div]:bg-neutral-400 dark:[&>div]:bg-neutral-800">
+              <div className="h-4 w-40 rounded-md"></div>
+              <div className="h-6 w-44 rounded-md"></div>
             </section>
           </section>
         </div>

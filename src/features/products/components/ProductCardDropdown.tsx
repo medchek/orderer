@@ -21,17 +21,17 @@ export default function ProductCardDropdown({ productCode }: Props) {
   };
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className="h-7 w-6  rounded-md text-stone-50 shadow-md outline-none transition-colors dark:hover:bg-stone-800/70 dark:focus:bg-stone-900">
+      <DropdownMenuTrigger className="h-7 w-6 rounded-md outline-none transition-colors hover:bg-neutral-300 dark:text-stone-50 dark:shadow-md dark:hover:bg-stone-800/70 dark:active:bg-neutral-900">
         <MdMoreVert className="h-6 w-6" />
       </DropdownMenuTrigger>
       <DropdownMenuContent
         avoidCollisions
         sideOffset={4}
         align="end"
-        className=" flex flex-col gap-1 rounded-md  bg-stone-900 p-1 text-sm font-semibold outline-none"
+        className="flex flex-col gap-1 rounded-md bg-neutral-100 p-1 text-sm font-semibold outline-none dark:bg-neutral-900"
       >
         <DropdownMenuItem
-          className="flex h-7 cursor-pointer items-center gap-1.5 rounded-md px-1 font-normal hover:bg-stone-800 hover:outline-none"
+          className="flex h-7 cursor-pointer items-center gap-1.5 rounded-md px-1 font-normal hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
           onClick={openCopyCode}
         >
           {/* <AiOutlineLink className="h-5 w-5" /> <span>Partager</span> */}

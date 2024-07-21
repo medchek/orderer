@@ -47,6 +47,7 @@ export default function Modal({
       const appVisualizer = document.querySelector(
         "#app-global-image-visualizer",
       );
+      const closeSnackButton = document.querySelector("#snack");
 
       if (
         ref.current !== null &&
@@ -54,7 +55,8 @@ export default function Modal({
         // prevent closing when navigating the filter drawer
         !excludeOverlay?.contains(e.target as Node) &&
         !excludeDrawer?.contains(e.target as Node) &&
-        !appVisualizer?.contains(e.target as Node)
+        !appVisualizer?.contains(e.target as Node) &&
+        !closeSnackButton?.contains(e.target as Node)
       ) {
         closeModal();
       }
@@ -82,7 +84,7 @@ export default function Modal({
     <div
       id="app-dialog"
       className={cn(
-        "fixed left-0 top-0 z-10 h-screen w-screen overflow-hidden bg-gray-950 bg-opacity-50 px-2 py-10 dark:bg-stone-950 dark:bg-opacity-80 lg:px-10 2xl:px-60",
+        "fixed left-0 top-0 z-10 h-screen w-screen overflow-hidden bg-gray-950 bg-opacity-50 px-2 py-10 dark:bg-stone-950 dark:bg-opacity-80 lg:px-6 2xl:px-60",
         centerModalContent ? "flex items-center justify-center" : "",
         overlayClassName,
       )}
@@ -91,7 +93,7 @@ export default function Modal({
         className={cn(
           "flex flex-col dark:[color-scheme:dark]",
           {
-            "rounded-lg bg-neutral-200 px-2 py-2 shadow-md dark:bg-[#040404] lg:px-8 lg:py-5":
+            "rounded-lg bg-neutral-200 px-2 py-2 shadow-md dark:bg-[#040404] lg:px-4 lg:py-5":
               !transparent,
           },
           className,
@@ -109,7 +111,7 @@ export default function Modal({
             </h1>
             <button
               onClick={closeModal}
-              className="flex h-7 w-7 items-center justify-center rounded-md focus:bg-neutral-300 disabled:cursor-not-allowed dark:focus:bg-neutral-950"
+              className="flex size-7 items-center justify-center rounded-md text-neutral-600 active:bg-neutral-300 disabled:cursor-not-allowed dark:active:bg-neutral-950"
               disabled={preventClose}
             >
               <MdClear className="h-6 w-6 dark:text-neutral-500" />

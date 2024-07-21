@@ -28,7 +28,7 @@ export default async function DashboardSettingsLayout({ children }: Props) {
         className="flex h-full grow flex-col px-4 xl:px-10 2xl:px-56"
       >
         <HomeHeader />
-        <div className="flex h-10 items-center gap-1 text-neutral-100">
+        <div className="flex h-10 items-center gap-1 text-neutral-900 dark:text-neutral-100">
           <BackButton />
           <h1 className="mb-1 text-xl font-semibold">Paramètres</h1>
         </div>

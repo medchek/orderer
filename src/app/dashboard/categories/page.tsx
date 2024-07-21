@@ -86,12 +86,12 @@ export default function Categories() {
   const loadingSkeleton = Array.from({ length: 12 }, (_, i) => {
     return (
       <div
-        className="flex h-14 animate-pulse items-center justify-between rounded-lg bg-stone-950 px-4"
+        className="flex h-14 animate-pulse items-center justify-between rounded-lg bg-neutral-200 px-4 dark:bg-stone-950"
         key={i}
       >
-        <div className="h-6 w-1/6 rounded-md bg-stone-700"></div>
-        <div className="h-8 w-8 rounded-lg text-stone-700 transition-colors">
-          <MdMoreVert className="h-7 w-7" />
+        <div className="h-6 w-1/6 rounded-md bg-neutral-300 dark:bg-stone-700"></div>
+        <div className="size-8 rounded-lg text-neutral-500 transition-colors dark:text-stone-700">
+          <MdMoreVert className="size-7" />
         </div>
       </div>
     );
@@ -135,7 +135,7 @@ export default function Categories() {
       if (data.length === 0) {
         return (
           <DashboardEmptyState
-            Icon={<TbCategory2 className="h-20 w-20" />}
+            Icon={<TbCategory2 className="size-20" />}
             text={
               filterTerm
                 ? `Aucune ${
@@ -146,10 +146,10 @@ export default function Categories() {
             subContent={
               <button
                 type="button"
-                className="h-10 rounded-lg  px-2 font-semibold text-stone-50 transition-colors dark:hover:bg-stone-900 dark:focus:bg-stone-900/70"
+                className="h-10 rounded-lg px-2 font-semibold text-neutral-700 transition-colors hover:bg-neutral-200 active:bg-neutral-300 dark:text-neutral-50 dark:hover:bg-neutral-900 dark:active:bg-neutral-900/70"
                 onClick={() => setIsAddCategoryOpen(true)}
               >
-                <MdAdd className="h-7 w-7" /> Ajouter une catégorie
+                <MdAdd className="size-7" /> Ajouter une catégorie
               </button>
             }
           />
@@ -201,7 +201,7 @@ export default function Categories() {
         <DashboardCategoryToolbar
           openAddCategory={() => setIsAddCategoryOpen(true)}
         />
-        <section className="relative flex w-full grow flex-col gap-4 overflow-y-auto text-stone-50">
+        <section className="relative flex w-full grow flex-col gap-4 overflow-y-auto text-neutral-900 dark:text-stone-50">
           {displayData()}
         </section>
       </div>

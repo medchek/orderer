@@ -23,17 +23,17 @@ export default function DashboardCategoryCard({
   const { setDeleteCategoryData, setEditCategoryData } = useStore();
 
   return (
-    <div className="flex flex-col rounded-lg bg-neutral-950 px-4 py-1 ">
+    <div className="flex flex-col rounded-lg bg-neutral-200 px-4 py-1 dark:bg-neutral-950">
       <section className="flex h-12 w-full items-center justify-between first-letter:capitalize">
         <p className="font-semibold first-letter:capitalize">{categoryName}</p>
         <div className="flex gap-2">
           <button
             type="button"
-            className="h-8 w-8 rounded-lg transition-colors dark:hover:bg-neutral-800/70 dark:focus:bg-neutral-900"
+            className="size-8 rounded-lg transition-colors hover:bg-neutral-300 dark:hover:bg-neutral-800/70 dark:active:bg-neutral-900"
             title="Ajouter une sous-catégorie"
             onClick={openAddSubCategory}
           >
-            <MdAdd className="h-7 w-7" />
+            <MdAdd className="size-7" />
           </button>
 
           <DashboardCategoryDropdown

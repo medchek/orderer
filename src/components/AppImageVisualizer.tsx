@@ -94,7 +94,7 @@ export default function AppImageVisualizer() {
       )}
       <div
         className={clsx(
-          "embla h-3/5 w-full dark:bg-neutral-900/80 lg:h-full lg:w-4/5 lg:max-w-[80%]",
+          "embla h-3/5 w-full bg-neutral-600/50 dark:bg-neutral-900/50 lg:h-full lg:w-4/5 lg:max-w-[80%]",
           {
             // "bg-neutral-900": !currentlySelectedImageUrl,
             "overflow-hidden bg-cover bg-center bg-no-repeat":

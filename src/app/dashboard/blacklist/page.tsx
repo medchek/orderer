@@ -80,6 +80,7 @@ export default function Blacklist() {
                 <MdAdd className="h-7 w-7" /> Ajouter un numéro
               </button>
             }
+            subContentAction={openAddNumberToBlock}
             Icon={<BsPersonSlash className="h-12 w-12" />}
           />
         );
@@ -145,14 +146,14 @@ export default function Blacklist() {
             Array.from({ length: 20 }).map((_, i) => (
               <div
                 key={i}
-                className="flex h-28 animate-pulse grid-flow-row-dense justify-between rounded-lg bg-neutral-950 p-4"
+                className="flex h-32 animate-pulse grid-flow-row-dense justify-between rounded-lg bg-neutral-200 p-4 dark:bg-neutral-950"
               >
-                <div className="flex w-10/12 flex-col gap-2 [&>div]:rounded-md [&>div]:bg-neutral-800">
+                <div className="flex w-10/12 flex-col gap-2 [&>div]:rounded-md [&>div]:bg-neutral-400 dark:[&>div]:bg-neutral-800">
                   <div className="h-6 w-full"></div>
                   <div className="h-5 w-1/4"></div>
                   <div className="h-5 w-3/5"></div>
                 </div>
-                <div className="h-8 w-8 rounded-md bg-neutral-800"></div>
+                <div className="h-8 w-8 rounded-md bg-neutral-400 dark:bg-neutral-800"></div>
               </div>
             ))}
 
@@ -162,6 +163,7 @@ export default function Blacklist() {
 
       {isAddingNumberToBlock && (
         <DashboardOrdersBlockUser
+          indefinite
           closeModal={() => setIsAddingNumberToBlock(false)}
         />
       )}

@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import ProductCardDropdown from "./ProductCardDropdown";
 import ImageCarousel from "@/features/images/components/ImageCarousel";
+import { cn } from "@/lib/utils";
 
 interface Props {
   name: string;
@@ -17,6 +18,7 @@ interface Props {
   code: string;
   /** Whethere the product is selected for order */
   isSelected?: boolean;
+  className?: string;
 }
 
 export default function ProductCard({
@@ -32,6 +34,7 @@ export default function ProductCard({
   isDashboard,
   children,
   isSelected,
+  className,
 }: Props) {
   const priceWidthDiscount =
     discount === 0 ? price : price - (price * discount) / 100;
@@ -41,7 +44,12 @@ export default function ProductCard({
   // });
 
   return (
-    <div className="relative flex h-[380px] w-auto flex-col overflow-hidden rounded-lg bg-neutral-50 transition-all hover:shadow-xl dark:bg-neutral-950 lg:h-[460px]">
+    <div
+      className={cn(
+        "relative flex h-[380px] w-auto flex-col overflow-hidden rounded-lg bg-neutral-50 transition-all hover:shadow-xl dark:bg-neutral-950 lg:h-[460px]",
+        className,
+      )}
+    >
       <ImageCarousel
         imageIds={images}
         discount={discount}

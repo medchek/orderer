@@ -100,13 +100,13 @@ export default function DashboardOrdersCardDropdown({
 
     return statusListKeys.map((statusKey) => (
       <DropdownMenuItem
-        className="hover:outline-none flex justify-between items-center gap-2 px-2 h-7 transition-colors hover:bg-neutral-800 rounded-md cursor-pointer disabled:cursor-not-allowed"
+        className="flex h-7 cursor-pointer items-center justify-between gap-2 rounded-md px-2 transition-colors hover:bg-neutral-200 hover:outline-none disabled:cursor-not-allowed dark:hover:bg-neutral-800"
         key={statusKey}
         disabled={isLoading}
         onClick={() => handleOnStatusClick(statusKey)}
       >
         <span
-          className={clsx("h-full flex items-center", {
+          className={clsx("flex h-full items-center", {
             "text-neutral-400": statusKey === Status.UNCONFIRMED,
             "text-blue-500": statusKey === Status.CONFIRMED,
             "text-teal-400": statusKey === Status.SHIPPING,
@@ -118,9 +118,9 @@ export default function DashboardOrdersCardDropdown({
           {statusList[statusKey].displayText}
         </span>
         <span className="w-5 max-w-[1.25rem]">
-          {statusList[statusKey].selected && <MdCheck className="w-5 h-5" />}
+          {statusList[statusKey].selected && <MdCheck className="h-5 w-5" />}
           {statusList[statusKey].isLoading && (
-            <Loader className="w-4 h-4 border-neutral-600" />
+            <Loader className="h-4 w-4 border-neutral-600" />
           )}
         </span>
       </DropdownMenuItem>
@@ -169,7 +169,7 @@ export default function DashboardOrdersCardDropdown({
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         title="Options"
-        className="dark:focus:bg-stone-900 dark:hover:bg-stone-800/70  transition-colors h-8 w-8 rounded-lg outline-none shadow-md text-stone-50"
+        className="h-8 w-8 rounded-lg outline-none transition-colors hover:bg-neutral-300 dark:text-stone-50 dark:shadow-md dark:hover:bg-stone-800/70 dark:active:bg-stone-900"
       >
         {<MdMoreVert className="h-7 w-7" />}
       </DropdownMenuTrigger>
@@ -177,37 +177,37 @@ export default function DashboardOrdersCardDropdown({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="flex flex-col gap-1 px-2 py-1 z-10 border border-neutral-800 rounded-lg outline-none text-sm bg-neutral-900"
+        className="z-10 flex flex-col gap-1 rounded-lg border bg-neutral-100 px-2 py-1 text-sm outline-none dark:border-neutral-800 dark:bg-neutral-900"
       >
-        <DropdownMenuLabel className="flex gap-1 pl-2 h-7 items-center">
-          <FiHexagon className="w-5 h-5" />
+        <DropdownMenuLabel className="flex h-7 items-center gap-1 pl-2">
+          <FiHexagon className="h-5 w-5" />
           <span>Statut</span>
         </DropdownMenuLabel>
         {displayStatusButtons()}
 
-        <hr className="border-neutral-800" />
+        <hr className="border-neutral-300 dark:border-neutral-800" />
         {!orderData.isPhoneBlocked && (
           <DropdownMenuItem
-            className="h-7 flex items-center gap-1 px-2 hover:bg-neutral-800 rounded-md hover:outline-none cursor-pointer"
+            className="flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
             onClick={() => {
               // close the code to delete component if it's open
               setOrderCodeToDelete(null);
               setOrderPhoneToBlock(orderData.userPhone);
             }}
           >
-            <BsPersonSlash className="w-5 h-5" />
+            <BsPersonSlash className="h-5 w-5" />
             <span>Bloquer ce numéro</span>
           </DropdownMenuItem>
         )}
         <DropdownMenuItem
-          className="h-7 flex items-center gap-1 px-2 hover:bg-neutral-800 rounded-md hover:outline-none cursor-pointer"
+          className="flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
           onClick={() => {
             // close the block phone component if it's open
             setOrderPhoneToBlock(null);
             setOrderCodeToDelete(orderData.code);
           }}
         >
-          <MdDeleteOutline className="w-5 h-5" />
+          <MdDeleteOutline className="h-5 w-5" />
           <span>Supprimer</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

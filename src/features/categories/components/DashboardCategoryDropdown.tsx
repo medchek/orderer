@@ -16,6 +16,23 @@ interface Props {
   onDeleteClick: () => void;
 }
 
+const CategoryCardDropDownMenuItem = ({
+  onClick,
+  children,
+}: {
+  onClick: () => void;
+  children: React.ReactNode;
+}) => {
+  return (
+    <DropdownMenuItem
+      className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
+      onClick={onClick}
+    >
+      {children}
+    </DropdownMenuItem>
+  );
+};
+
 export default function DashboardCategoryDropdown({
   className,
   title,
@@ -28,8 +45,8 @@ export default function DashboardCategoryDropdown({
       <DropdownMenuTrigger
         title={title ?? "éditer ou supprimer"}
         className={cn(
-          "dark:focus:bg-stone-900 dark:hover:bg-stone-800/70  transition-colors h-8 w-8 rounded-lg outline-none shadow-md text-stone-200",
-          className
+          "h-8 w-8 rounded-lg text-neutral-950 outline-none transition-colors hover:bg-neutral-300 dark:text-stone-200 dark:shadow-md dark:hover:bg-neutral-800/70 dark:focus:bg-stone-900",
+          className,
         )}
       >
         {children ?? <MdMoreVert className="h-7 w-7" />}
@@ -38,21 +55,15 @@ export default function DashboardCategoryDropdown({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm  text-neutral-400"
+        className="z-10 flex flex-col gap-1 rounded-lg border bg-neutral-100 p-2 px-2 text-sm text-neutral-600 outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
       >
-        <DropdownMenuItem
-          className="h-8 hover:bg-neutral-800 flex items-center gap-1.5 px-2 rounded-md hover:outline-none cursor-pointer"
-          onClick={onEditClick}
-        >
-          <MdEdit className="w-5 h-5" /> <span>Modifer</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="h-8 hover:bg-neutral-800 flex items-center gap-1.5 px-2 rounded-md hover:outline-none cursor-pointer"
-          onClick={onDeleteClick}
-        >
-          <MdDeleteOutline className="w-5 h-5" />
+        <CategoryCardDropDownMenuItem onClick={onEditClick}>
+          <MdEdit className="h-5 w-5" /> <span>Modifer</span>
+        </CategoryCardDropDownMenuItem>
+        <CategoryCardDropDownMenuItem onClick={onDeleteClick}>
+          <MdDeleteOutline className="h-5 w-5" />
           <span>Supprimer</span>
-        </DropdownMenuItem>
+        </CategoryCardDropDownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

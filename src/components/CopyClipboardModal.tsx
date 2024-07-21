@@ -77,21 +77,21 @@ export default function CopyClipboardModal({ closeModal, text, label }: Props) {
           </label>
         )}
 
-        <section className="flex items-center justify-between gap-2 ">
+        <section className="flex items-center justify-between gap-2">
           <Input
             name="copy-to-clipboard"
             id="copy-to-clipboard-input"
             value={clipboard}
             readOnly
             autoFocus
-            className="h-10"
+            className="h-10 bg-neutral-300"
             removeErrorHeight
             onFocus={handleOnFucus}
           />
           <button
             type="button"
             title="Copier"
-            className="h-10 w-10 min-w-[2.5rem] rounded-md text-stone-400 ring-secondary hover:ring-2 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950"
+            className="h-10 w-10 min-w-[2.5rem] rounded-md bg-neutral-300 text-neutral-500 ring-secondary hover:ring-2 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950"
             onClick={handleButtonClick}
           >
             {showCopied ? (

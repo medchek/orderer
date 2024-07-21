@@ -12,6 +12,7 @@ import DashboardEmptyState from "@/components/dashboard/DashboardEmptyState";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import DashboardWilayaCard from "@/features/shipping-prices/components/DashboardWilayaCard";
 import { WilayasSelection } from "@/features/shipping-prices/types";
+import Button from "@/components/Button";
 
 export default function ShippingPrices() {
   // filtered wilayas list
@@ -152,7 +153,7 @@ export default function ShippingPrices() {
       {/* ----------------------------------------------------------- */}
       <section
         id="shipping-prices-toolbar"
-        className="mr-6 flex h-16 min-h-[4rem] items-center justify-between pl-2 "
+        className="mr-6 flex h-16 min-h-[4rem] items-center justify-between pl-2"
       >
         <div className="flex gap-2">
           <label
@@ -168,9 +169,9 @@ export default function ShippingPrices() {
               onChange={handleSelectAll}
             />
           </label>
-          <button
+          <Button
             type="button"
-            className="flex h-10 items-center justify-center gap-1 rounded-md bg-primary px-4 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-400 dark:bg-blue-600 dark:hover:bg-secondary dark:focus:bg-blue-700 dark:disabled:bg-neutral-900 dark:disabled:text-neutral-600"
+            className="flex h-10 w-auto items-center justify-center gap-1 px-4 font-semibold outline-none"
             onClick={() => {
               // reset the selected wilaya to tell the update component that multiple wilayas should be modified
               setSelectedSingleWilaya(null);
@@ -178,8 +179,8 @@ export default function ShippingPrices() {
             }}
             disabled={multipleSelected.length <= 0}
           >
-            <MdEdit className="h-6 w-6" /> Modifier la sélection
-          </button>
+            <MdEdit className="size-6" /> Modifier la sélection
+          </Button>
         </div>
 
         <DashboardSearchInput
@@ -196,7 +197,7 @@ export default function ShippingPrices() {
             Array.from({ length: 18 }, (_, i) => (
               <div
                 key={i}
-                className="flex h-48 w-full animate-pulse flex-col justify-between bg-neutral-950 p-4 [&>div]:bg-neutral-800"
+                className="flex h-48 w-full animate-pulse flex-col justify-between bg-neutral-300 p-4 dark:bg-neutral-950 [&>div]:bg-neutral-400 dark:[&>div]:bg-neutral-800"
               >
                 <div className="h-5 rounded-md"></div>
                 <div className="h-4 w-1/2 rounded-md"></div>

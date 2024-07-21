@@ -18,7 +18,7 @@ export default function Snackbar() {
     <div
       id="snack"
       className={clsx(
-        "absolute bottom-6 left-0 right-0 z-50 mx-auto flex min-h-[3.5rem] w-96 items-center justify-between gap-2 rounded-xl px-4 py-2 text-sm  shadow-lg ",
+        "absolute bottom-6 left-0 right-0 z-50 mx-auto flex min-h-[3.5rem] w-96 items-center justify-between gap-2 rounded-xl px-4 py-2 text-sm shadow-lg",
         {
           "text-red-50 dark:bg-red-700": snackType === "error",
           "bg-neutral-200 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-100":
@@ -28,13 +28,14 @@ export default function Snackbar() {
     >
       <p>{snackText}</p>
       <button
+        id="close-snack-button"
         type="button"
         className={clsx(
           "h-8 min-h-[2rem] w-8 min-w-[2rem] rounded-md transition-colors",
           {
-            "dark:hover:bg-red-100/25 dark:focus:bg-white/[.15]":
+            "dark:hover:bg-red-100/25 dark:active:bg-white/[.15]":
               snackType === "error",
-            "dark:hover:bg-stone-800 dark:focus:bg-stone-950":
+            "dark:hover:bg-stone-800 dark:active:bg-stone-950":
               snackType !== "error",
           },
         )}

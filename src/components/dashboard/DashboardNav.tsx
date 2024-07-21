@@ -46,7 +46,7 @@ export default function DashboardNav() {
     { name: "Liste noire", href: "blacklist", Icon: <BsPersonSlash /> },
     {
       name: "Paramètres",
-      href: "../settings/account",
+      href: "../settings/ui",
       Icon: <IoSettingsOutline />,
       selfEnd: true,
     },
@@ -59,7 +59,7 @@ export default function DashboardNav() {
       className={clsx(
         "flex h-12 items-center gap-4 rounded-lg text-sm font-semibold text-neutral-50 transition-colors first-letter:capitalize dark:text-neutral-200 [&>svg]:h-6 [&>svg]:w-6",
         pathName === `/dashboard/${href}`
-          ? "bg-[#8b1e1e] dark:bg-black/50"
+          ? "bg-red-800 dark:bg-black/50"
           : "bg-[#EC2A2A] hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-neutral-900 dark:hover:bg-neutral-800 focus:dark:bg-neutral-900/50",
         {
           "mb-2 mt-auto": !!selfEnd,
@@ -110,13 +110,17 @@ export default function DashboardNav() {
           </Link>
           <button
             type="button"
+            id="minimize-dashboard-nav"
             onClick={toggleIsMinimized}
-            className="rounded-md p-1 hover:bg-neutral-900"
+            className="rounded-md p-1 hover:bg-red-500 dark:hover:bg-neutral-900"
           >
             <BiArrowFromRight
-              className={clsx("h-6 w-6 dark:text-neutral-400", {
-                "rotate-180": isMinimized,
-              })}
+              className={clsx(
+                "h-6 w-6 text-neutral-100 dark:text-neutral-400",
+                {
+                  "rotate-180": isMinimized,
+                },
+              )}
             />
           </button>
         </div>

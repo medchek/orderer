@@ -34,16 +34,16 @@ export default function DashboardOrdersStatusBadge({
   return (
     <div
       className={clsx(
-        "line-clamp-1 flex h-7 items-center justify-center gap-2 whitespace-nowrap rounded-md  px-2 text-xs 2xl:text-sm",
+        "line-clamp-1 flex h-7 items-center justify-center gap-2 whitespace-nowrap rounded-md px-2 text-sm font-medium",
         isOnSameBgColor
           ? "bg-neutral-200/70 dark:bg-neutral-800"
-          : "bg-neutral-300 dark:bg-neutral-900",
+          : "bg-neutral-100 dark:bg-neutral-900",
         {
           "text-neutral-600 dark:text-neutral-400":
             status === Status.UNCONFIRMED,
           "text-blue-500": status === Status.CONFIRMED,
-          "text-teal-400": status === Status.SHIPPING,
-          "text-emerald-500": status === Status.SUCCESS,
+          "text-teal-500 dark:text-teal-400": status === Status.SHIPPING,
+          "text-emerald-600 dark:text-emerald-500": status === Status.SUCCESS,
           "text-red-500": status === Status.CANCELED,
           "text-rose-700": status === Status.RETURNED,
         },

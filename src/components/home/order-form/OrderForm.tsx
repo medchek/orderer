@@ -102,7 +102,7 @@ export default function OrderForm({ accountDetail }: Props) {
           "error",
         );
       }
-      showSnackbar("Une érreur est survenu, veuillez reéssayer", "error");
+      showSnackbar("Une erreur est survenu, veuillez réessayer", "error");
     },
   });
 
@@ -146,7 +146,7 @@ export default function OrderForm({ accountDetail }: Props) {
       } = data;
 
       if (selectedProductsCount <= 0) {
-        return showSnackbar("Aucune produit n'a été sélectioné", "error");
+        return showSnackbar("Aucune produit n'a été sélectionné", "error");
       }
 
       const recaptchaToken = await recaptchaRef.current?.executeAsync();
@@ -241,7 +241,7 @@ export default function OrderForm({ accountDetail }: Props) {
                 defaultValue={
                   confirmData
                     ? confirmData.wilaya
-                    : accountDetail?.wilaya ?? undefined
+                    : (accountDetail?.wilaya ?? undefined)
                 }
                 setFormHookValue={setValue}
               />
@@ -252,7 +252,7 @@ export default function OrderForm({ accountDetail }: Props) {
                 defaultValue={
                   confirmData
                     ? confirmData.town
-                    : accountDetail?.town ?? undefined
+                    : (accountDetail?.town ?? undefined)
                 }
                 setFormHookValue={setValue}
               />
@@ -313,13 +313,13 @@ export default function OrderForm({ accountDetail }: Props) {
         onError={() => {
           resetCaptcha();
           showSnackbar(
-            "Une érreur s'est produite lors de la validation du captcha, veuillez vefifier cotre connexion",
+            "Une erreur s'est produite lors de la validation du captcha, veuillez verifier cotre connexion",
             "error",
           );
         }}
         onExpired={() => {
           resetCaptcha();
-          showSnackbar("Captcha expiré, veuillez reéssayer", "error");
+          showSnackbar("Captcha expiré, veuillez réessayer", "error");
         }}
         theme="dark"
         badge="bottomleft"

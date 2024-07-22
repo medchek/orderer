@@ -67,13 +67,13 @@ export default function ShippingLocationsSelect() {
       }
     }
 
-    // in anyother case, return nothing
+    // in any other case, return nothing
     return null;
   };
 
   const validateRequired = () => {
     if (data && data.length > 0) {
-      return "Selectionnez un point de livraison";
+      return "Sélectionnez un point de livraison";
     }
   };
 

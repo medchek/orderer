@@ -1,6 +1,6 @@
 import { emailRegex, phoneRegex } from "./patterns";
 
-type validationFunction = (value: string) => string | undefined;
+type validationFunction = (value: string | boolean) => string | undefined;
 
 // export const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 
@@ -17,12 +17,12 @@ interface DashboardAddProductFormValidator {
   name: validationFunction;
   price: validationFunction;
   stock: validationFunction;
-  images: validationFunction;
   discount: validationFunction;
 }
 
 export const orderFormValidators: OrderFormValidator = {
   name: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
     const value = val.trim();
     if (value) {
       if (value.length < 3 || value.length > 40)
@@ -32,6 +32,8 @@ export const orderFormValidators: OrderFormValidator = {
     }
   },
   surname: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
+
     const value = val.trim();
 
     if (value) {
@@ -42,6 +44,7 @@ export const orderFormValidators: OrderFormValidator = {
   },
   phone: (val) => {
     if (!val) return;
+    if (typeof val === "boolean") return "boolean not allowed";
 
     const value = val.trim();
     if (!phoneRegex.test(value)) {
@@ -49,6 +52,8 @@ export const orderFormValidators: OrderFormValidator = {
     }
   },
   email: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
+
     const value = val.trim();
     if (!value) return;
     const isValidEmail = emailRegex.test(value);
@@ -58,6 +63,7 @@ export const orderFormValidators: OrderFormValidator = {
   },
   address: (val) => {
     if (!val) return;
+    if (typeof val === "boolean") return "boolean not allowed";
 
     const value = val.trim();
 
@@ -66,55 +72,55 @@ export const orderFormValidators: OrderFormValidator = {
   },
   wilaya: (val) => {
     if (!val) return;
+    if (typeof val === "boolean") return "boolean not allowed";
 
     const value = val.trim();
 
     if (value == "0" || value == "") {
-      return "Aucune wilaya n'a été selectionnée";
+      return "Aucune wilaya n'a été sélectionnée";
     }
   },
   town: (val) => {
     if (!val) return;
+    if (typeof val === "boolean") return "boolean not allowed";
 
     const value = val.trim();
 
     if (value == "0" || value == "") {
-      return "Aucune commune n'a été selectionnée";
+      return "Aucune commune n'a été sélectionnée";
     }
   },
 };
 
 export const addProductValidators: DashboardAddProductFormValidator = {
-  name: (val: string) => {
+  name: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
+
     const value = val.trim();
 
     if (value.length < 2 && value.length > 150)
       return "Le nom du produit doit être entre 2 et 150 caracères";
   },
-  price: (val: string) => {
+  price: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
+
     const value = parseInt(val.trim());
 
     if (Number.isFinite(val) || value < 0)
       return "Le prix doit être un nombre valide";
   },
-  discount: (val: string) => {
+  discount: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
+
     const value = parseInt(val.trim());
     if (value < 0 || value > 100) return "Pourcentage de réduction invalide";
   },
-  stock: (val: string) => {
+  stock: (val) => {
+    if (typeof val === "boolean") return "boolean not allowed";
+
     const value = parseInt(val.trim());
 
     if (Number.isFinite(val) || value < 0 || value > 1000000000000)
       return "Le stock doit être un nombre valide";
-  },
-  images: (val: string) => {
-    const url = val.trim();
-
-    if (url.length) {
-      const fbUrlImageRegex =
-        /https:\/\/scontent\.[a-z0-9.-]*\.fna\.fbcdn\.net\/v\/[a-z0-9.-]*\/[0-9a-z_]*\.jpg\?[A-Za-z0-9=_&.-]*/gi;
-      if (!fbUrlImageRegex.test(url))
-        return "Le lien de l'image doit pointé à une image facebook";
-    }
   },
 };

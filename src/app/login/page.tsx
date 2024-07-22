@@ -1,9 +1,6 @@
-import React from "react";
-
 import LoginForm from "@/components/login/LoginForm";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { getSession } from "../api/auth/[...nextauth]/route";
 import { RedirectType } from "next/dist/client/components/redirect";
 
 export const metadata = {
@@ -12,7 +9,7 @@ export const metadata = {
 };
 
 export default async function Login() {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
   return !session ? (
     <main className="flex h-screen w-screen items-center justify-center">

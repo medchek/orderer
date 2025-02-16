@@ -1,7 +1,6 @@
 import LoginForm from "@/components/login/LoginForm";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import { getSession } from "../api/auth/[...nextauth]/route";
-import { RedirectType } from "next/dist/client/components/redirect";
 
 export const metadata = {
   title: "Connexion - TRB Eshop",

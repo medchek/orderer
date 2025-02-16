@@ -6,23 +6,24 @@ import { FiLink2 } from "react-icons/fi";
 
 import { headers } from "next/headers";
 import { IoMdArrowBack } from "react-icons/io";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import { ORDER_CODE_LENGTH } from "@/lib/constants";
-import { RedirectType } from "next/dist/client/components/redirect";
 import Main from "@/components/Main";
 import ResetOrderProducts from "@/components/home/ResetOrderProducts";
 
 // search param
 interface Props {
-  searchParams: { code: string };
+  searchParams: Promise<{ code: string }>;
 }
 
-export default async function ThankYouPage({ searchParams }: Props) {
-  const headersMap = headers();
+export default async function ThankYouPage(props: Props) {
+  const searchParams = await props.searchParams;
+  const headersMap = await headers();
   const orderCode = searchParams.code;
   const host = headersMap.get("host");
   const protocol =
-    headersMap.get("x-forwarded-proto") ?? (host === "localhost" || "127.0.0.1")
+    (headersMap.get("x-forwarded-proto") ??
+    (host === "localhost" || "127.0.0.1"))
       ? "http"
       : "https";
 

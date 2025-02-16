@@ -3,7 +3,7 @@
 import React, { ReactElement } from "react";
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  icon: ReactElement;
+  icon: ReactElement<SVGElement>;
   text: string;
 }
 

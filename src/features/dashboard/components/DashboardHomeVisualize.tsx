@@ -6,8 +6,7 @@ import { Status } from "@prisma/client";
 import { ChartData } from "../types";
 import { addPartitive, getMonthName } from "@/lib/utils";
 const DashboardHomeChart = dynamic(() => import("./DashboardHomeChart"), {
-  loading: () => <RouteLoader loaderClassName="h-7 w-7" />,
-  ssr: false,
+  loading: () => <RouteLoader loaderClassName="size-7" />,
 });
 
 export default async function DashboardHomeVisualize() {
@@ -15,42 +14,20 @@ export default async function DashboardHomeVisualize() {
 
   const monthlyOrders = await prisma.order.findMany({
     where: {
-      createdAt: {
-        gte: monthStartDate,
-      },
+      createdAt: { gte: monthStartDate },
       OR: [
-        {
-          NOT: {
-            status: {
-              equals: Status.CANCELED,
-            },
-          },
-        },
-        {
-          NOT: {
-            status: {
-              equals: Status.RETURNED,
-            },
-          },
-        },
+        { NOT: { status: { equals: Status.CANCELED } } },
+        { NOT: { status: { equals: Status.RETURNED } } },
       ],
     },
     select: {
       status: true,
       createdAt: true,
-      orderProducts: {
-        select: {
-          product: {
-            select: {
-              code: true,
-            },
-          },
-        },
-      },
+      orderProducts: { select: { product: { select: { code: true } } } },
     },
   });
 
-  // TODO: improve perf by using an object for each week and iterating through all the records once, checking the date for every record
+  // TODO: improve perf by using an object for each week and iterating through all the records once, checking the date for every records
   const generateChartData = (): ChartData => {
     const data: ChartData = [];
     for (let week = 0; week < 4; week++) {

@@ -3,7 +3,8 @@ import { prisma } from "../../../../../prisma/db"
 import { STATUS_BAD_REQUEST, STATUS_NOT_FOUND, STATUS_OK } from "@/lib/constants"
 import { apiErrorResponse, isNotFoundPrismaError, toNumber } from "@/lib/utils"
 
-export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   try {
 
 
@@ -29,6 +30,5 @@ export async function GET(req: NextRequest, { params }: { params: { code: string
     console.error("Error getting tows of wilaya:", error)
     return apiErrorResponse("Couln't get towns")
   }
-
 }
 

@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   try {
     // verify captcha
 
-    const headersList = headers();
+    const headersList = await headers();
 
     const recaptchaToken = headersList.get("X-Recaptcha-Token");
 

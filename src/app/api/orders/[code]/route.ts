@@ -12,10 +12,8 @@ import { prisma } from "../../../../../prisma/db";
 import { Status } from "@prisma/client";
 import { PatchOrderRequestPayload } from "@/features/orders/api/patchOrder";
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { code: string } },
-) {
+export async function DELETE(_: NextRequest, props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   if (!params.code || params.code.length !== ORDER_CODE_LENGTH) {
     return apiErrorResponse("invalid param", STATUS_BAD_REQUEST);
   }
@@ -38,10 +36,8 @@ export async function DELETE(
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { code: string } },
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   if (!params.code || params.code.length !== ORDER_CODE_LENGTH) {
     return apiErrorResponse("invalid param", STATUS_BAD_REQUEST);
   }

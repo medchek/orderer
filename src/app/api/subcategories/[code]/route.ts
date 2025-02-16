@@ -13,10 +13,8 @@ import Joi from "joi";
 import { PatchSubcategorySuccessResponse } from "@/features/categories/api/patchSubcategory";
 import { PatchCategoryRequestPayload } from "@/features/categories/api/patchCategory";
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { code?: string } },
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ code?: string }> }) {
+  const params = await props.params;
   try {
     // if (!await isAdmin()) {
     //   return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
@@ -70,10 +68,8 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { code?: string } },
-) {
+export async function DELETE(_: NextRequest, props: { params: Promise<{ code?: string }> }) {
+  const params = await props.params;
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);

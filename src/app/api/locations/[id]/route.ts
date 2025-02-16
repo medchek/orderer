@@ -16,10 +16,8 @@ import {
   PatchProductSuccessResponse,
 } from "@/features/shipping-locations/api/patchLocation";
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { id?: string } },
-) {
+export async function DELETE(_: NextRequest, props: { params: Promise<{ id?: string }> }) {
+  const params = await props.params;
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);
@@ -45,10 +43,8 @@ export async function DELETE(
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id?: string } },
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id?: string }> }) {
+  const params = await props.params;
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);

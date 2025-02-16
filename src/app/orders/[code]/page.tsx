@@ -16,7 +16,7 @@ import BackButton from "@/components/BackButton";
 type StringOrEmpty = string | null | undefined;
 
 interface Props {
-  params: { code: string };
+  params: Promise<{ code: string }>;
 }
 
 export const metadata = {
@@ -24,7 +24,8 @@ export const metadata = {
   description: "Consulter votre commande",
 };
 
-export default async function Orders({ params }: Props) {
+export default async function Orders(props: Props) {
+  const params = await props.params;
   const { code } = params;
 
   //TGDGAUZFJRD7L6

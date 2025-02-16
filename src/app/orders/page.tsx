@@ -11,11 +11,12 @@ import OrdersCard from "@/features/orders/components/OrdersCard";
 import { toPositiveNumber } from "@/lib/utils";
 import OrdersPagination from "@/features/orders/components/OrdersPagination";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { page: string | undefined };
-}) {
+export default async function Page(
+  props: {
+    searchParams: Promise<{ page: string | undefined }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const session = await getSession();
 
   if (!session || !session.user) {

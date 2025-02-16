@@ -10,10 +10,8 @@ import {
 } from "@/lib/constants";
 import { prisma } from "../../../../../prisma/db";
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { id: string } },
-) {
+export async function DELETE(_: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     if (!(await isAdmin())) {
       return apiErrorResponse("unauthorized", STATUS_UNAUTHORIZED);

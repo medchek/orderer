@@ -12,10 +12,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../../prisma/db";
 import { GetWilayaShippingLocationsSuccessResponse } from "@/features/shipping-locations/api/getWilayaLocations";
 
-export async function GET(
-  _: NextRequest,
-  { params }: { params: { wilaya?: string } },
-) {
+export async function GET(_: NextRequest, props: { params: Promise<{ wilaya?: string }> }) {
+  const params = await props.params;
   try {
     if (
       !params.wilaya ||

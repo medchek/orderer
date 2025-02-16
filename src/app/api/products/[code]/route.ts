@@ -17,10 +17,8 @@ import {
 } from "@/features/products/api/patchProduct";
 import { imageIdRegex } from "@/lib/patterns";
 
-export async function GET(
-  _: NextRequest,
-  { params }: { params: { code: string } },
-) {
+export async function GET(_: NextRequest, props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   try {
     if (!params.code || params.code.length !== PRODUCT_CODE_LENGTH) {
       return NextResponse.json("invalid param", { status: STATUS_BAD_REQUEST });
@@ -56,10 +54,8 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { code: string } },
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   if (!params.code || params.code.length !== PRODUCT_CODE_LENGTH) {
     return NextResponse.json("invalid param", { status: STATUS_BAD_REQUEST });
   }
@@ -226,10 +222,8 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  _: NextRequest,
-  { params }: { params: { code: string } },
-) {
+export async function DELETE(_: NextRequest, props: { params: Promise<{ code: string }> }) {
+  const params = await props.params;
   if (!params.code || params.code.length !== PRODUCT_CODE_LENGTH) {
     return apiErrorResponse("Invalid param", STATUS_BAD_REQUEST);
   }

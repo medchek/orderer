@@ -33,7 +33,6 @@
     "eslint": "^8.53.0",
     "eslint-config-next": "15.1.7",
     "fast-array-diff": "^1.1.0",
-    "googleapis": "^126.0.1",
     "joi": "^17.9.2",
     "jsx-email": "^2.7.0",
     "klona": "^2.0.6",

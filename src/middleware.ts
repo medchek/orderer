@@ -7,16 +7,24 @@ import { apiErrorResponse } from "./lib/utils";
 // This function can be marked `async` if using `await` inside
 export function middleware(req: NextRequest) {
   const ip =
-    process.env.NODE_ENV === "production" ? req.ip : req.headers.get("host");
+    process.env.NODE_ENV === "production"
+      ? req.headers.get("x-forwarded-for")
+      : req.headers.get("host");
   if (!ip)
-    return NextResponse.json("no ip detected", {
-      status: STATUS_FORBIDDEN,
-    });
+    return NextResponse.json("no ip detected", { status: STATUS_FORBIDDEN });
 
   const isOrderApiUrl = /api\/orders\/?$/i.test(req.url);
   const method = req.method;
 
   const token = `rl-${ip}`;
+  // prevent rate limiting for dev
+  if (
+    process.env.NODE_ENV === "development" &&
+    token === process.env.DEVONLY_BYPASS_TOKEN
+  ) {
+    console.warn("Bypassed Rate limit du to match with bypassToken");
+    return NextResponse.next();
+  }
 
   const limitOrders = method === "POST" && isOrderApiUrl;
 

@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import SnackProvider from "./SnackProvider";
 import AppThemeProvider from "./AppThemeProvider";
 import AppImageVisualizerProvider from "./AppImageVisualizerProvider";
-import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import NextTopLoader from "nextjs-toploader";
 interface Props {
   children: ReactNode;
 }
@@ -18,7 +18,7 @@ export default function AppProviders({ children }: Props) {
       <QueryClientProvider client={queryClient}>
         <AppThemeProvider>
           {children}
-          <ProgressBar color="#397DFF" height="6px" />
+          <NextTopLoader color="#397DFF" height={5} showSpinner={false} />
           <SnackProvider />
           <AppImageVisualizerProvider />
           <ReactQueryDevtools initialIsOpen={false} />

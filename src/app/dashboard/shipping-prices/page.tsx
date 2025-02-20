@@ -171,7 +171,7 @@ export default function ShippingPrices() {
           </label>
           <Button
             type="button"
-            className="flex h-10 w-auto items-center justify-center gap-1 px-4 font-semibold outline-none"
+            className="flex h-10 w-auto items-center justify-center gap-1 px-4 font-semibold outline-hidden"
             onClick={() => {
               // reset the selected wilaya to tell the update component that multiple wilayas should be modified
               setSelectedSingleWilaya(null);

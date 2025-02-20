@@ -89,7 +89,7 @@ export default function OrderConfirm({
   };
 
   return (
-    <section className="flex w-full grow flex-col gap-2 text-sm lg:text-base [&>div]:flex [&>div]:h-12 [&>div]:w-full [&>div]:items-center [&>div]:rounded-lg [&>div]:bg-neutral-200 [&>div]:px-4 [&>div]:text-neutral-900 [&>div]:dark:bg-neutral-900 [&>div]:dark:text-neutral-50">
+    <section className="flex w-full grow flex-col gap-2 text-sm lg:text-base [&>div]:flex [&>div]:h-12 [&>div]:w-full [&>div]:items-center [&>div]:rounded-lg [&>div]:bg-neutral-200 [&>div]:px-4 [&>div]:text-neutral-900 dark:[&>div]:bg-neutral-900 dark:[&>div]:text-neutral-50">
       <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-50 lg:text-lg">
         Résumé
       </h2>

@@ -29,7 +29,7 @@ interface SubComponentProps
 const AccountDropdownMenuItem = ({ children, ...props }: SubComponentProps) => {
   return (
     <DropdownMenuItem
-      className="flex h-8 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-none hover:dark:bg-neutral-800"
+      className="flex h-8 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-hidden dark:hover:bg-neutral-800"
       {...props}
     >
       {children}
@@ -103,14 +103,14 @@ export default function AccountActions({ isAdmin }: Props) {
         avoidCollisions
         sideOffset={4}
         align="end"
-        className="z-10 flex flex-col gap-1 rounded-md border border-neutral-200 bg-neutral-100 p-1 text-sm text-neutral-800 shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
+        className="z-10 flex flex-col gap-1 rounded-md border border-neutral-200 bg-neutral-100 p-1 text-sm text-neutral-800 shadow-lg outline-hidden dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
       >
         {menuItems()}
         {/*  */}
         <DropdownMenuSeparator />
         {/*  */}
         <hr className="mx-2 border-neutral-200 dark:border-neutral-800" />
-        <div className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:outline-none">
+        <div className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1 hover:outline-hidden">
           <label htmlFor="theme-selector-dropdown-menu">Thème</label>
           <ThemeSelectInput
             id="theme-selector-dropdown-menu"

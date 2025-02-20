@@ -130,7 +130,7 @@ export default function WilayaSelect<T extends { wilaya: string }>({
         onChange: handleOnChange,
       }}
       id={id}
-      // className="h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed dark:bg-input-dark dark:text-white dark:[color-scheme:dark] 2xl:text-base text-sm"
+      // className="h-12 w-full appearance-none rounded-lg bg-[#ECECEC] px-4 placeholder-[#979797] outline-hidden ring-secondary focus:ring-2 disabled:cursor-not-allowed dark:bg-input-dark dark:text-white dark:[color-scheme:dark] 2xl:text-base text-sm"
       value={selectedValue}
     >
       {selectOptions()}

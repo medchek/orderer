@@ -15,7 +15,7 @@ export default function DashboardSearchInput({ className, ...props }: Props) {
       <MdSearch className="pointer-events-none absolute left-2 h-6 w-6 text-stone-400" />
       <input
         type="search"
-        className="h-full w-full rounded-lg bg-neutral-200 pl-10 pr-2 text-sm placeholder-neutral-400 outline-none ring-secondary focus:ring-2 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark]"
+        className="h-full w-full rounded-lg bg-neutral-200 pl-10 pr-2 text-sm placeholder-neutral-400 outline-hidden ring-secondary focus:ring-2 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark]"
         {...props}
       />
     </div>

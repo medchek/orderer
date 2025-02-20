@@ -285,7 +285,7 @@ export default function OrderForm({ accountDetail }: Props) {
             {isConfirming && !isSuccess && !isPending && (
               <button
                 disabled={isPending}
-                className="h-12 w-auto gap-2 rounded-lg bg-neutral-200 px-6 text-sm active:bg-neutral-300 disabled:cursor-not-allowed dark:bg-neutral-950 active:dark:bg-neutral-950/70 lg:text-base"
+                className="h-12 w-auto gap-2 rounded-lg bg-neutral-200 px-6 text-sm active:bg-neutral-300 disabled:cursor-not-allowed dark:bg-neutral-950 dark:active:bg-neutral-950/70 lg:text-base"
                 onClick={cancelConfirm}
               >
                 <MdArrowBack className="h-6 w-6" /> Retour
@@ -294,7 +294,7 @@ export default function OrderForm({ accountDetail }: Props) {
 
             <Button
               // hover:bg-[#fd4949] focus:bg-primary-darker bg-primary
-              className="text flex h-12 w-full items-center justify-center self-end rounded-lg bg-blue-600 px-4 font-semibold text-white transition-colors hover:bg-secondary active:bg-blue-700 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400 disabled:dark:bg-neutral-900 disabled:dark:text-neutral-700 lg:w-44"
+              className="text flex h-12 w-full items-center justify-center self-end rounded-lg bg-blue-600 px-4 font-semibold text-white transition-colors hover:bg-secondary active:bg-blue-700 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400 dark:disabled:bg-neutral-900 dark:disabled:text-neutral-700 lg:w-44"
               disabled={isDisabledSubmit || isPending || isSuccess}
               isLoading={isPending || isSuccess}
             >

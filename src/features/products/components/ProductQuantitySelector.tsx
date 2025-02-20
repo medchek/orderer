@@ -23,7 +23,7 @@ const QuantityButton = ({
 }) => {
   return (
     <button
-      className="size-8 rounded-md bg-neutral-200 active:scale-95 active:bg-neutral-300 active:text-white dark:bg-neutral-900 active:dark:bg-neutral-700 dark:active:bg-neutral-800"
+      className="size-8 rounded-md bg-neutral-200 active:scale-95 active:bg-neutral-300 active:text-white dark:bg-neutral-900 dark:active:bg-neutral-700 dark:active:bg-neutral-800"
       type="button"
       onClick={onClick}
     >
@@ -121,7 +121,7 @@ export default function ProductQuantitySelector({ code }: Props) {
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value.trim())}
           onBlur={handleBlurSetQuantityValue}
-          className="size-8 rounded-md border bg-neutral-200 text-center font-semibold outline-none ring-blue-500 [appearance:textfield] focus:ring-2 dark:border-neutral-700 dark:bg-neutral-900 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          className="size-8 rounded-md border bg-neutral-200 text-center font-semibold outline-hidden ring-blue-500 [appearance:textfield] focus:ring-2 dark:border-neutral-700 dark:bg-neutral-900 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           placeholder="Qt"
           // autoFocus
           min={1}

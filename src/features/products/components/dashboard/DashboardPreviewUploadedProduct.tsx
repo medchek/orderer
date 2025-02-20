@@ -26,7 +26,7 @@ export default function DashboardPreviewUploadedProduct({
         src={url}
         alt="Image produit"
         className={`h-full w-full object-cover ${
-          uploadStatus !== "success" && "blur-sm "
+          uploadStatus !== "success" && "blur-xs "
         }`}
         loading="lazy"
         referrerPolicy="no-referrer"

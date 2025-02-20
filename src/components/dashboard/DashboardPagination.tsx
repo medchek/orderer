@@ -56,8 +56,8 @@ export default function DashboardPagination({
           previousLinkClassName="flex size-8 items-center justify-center rounded-md bg-neutral-300 hover:bg-neutral-400/70 dark:bg-stone-950 dark:hover:bg-stone-800"
           breakLinkClassName="flex size-8 items-center justify-center rounded-md bg-stone-950 font-bold hover:bg-stone-800"
           pageLinkClassName="flex size-8 items-center justify-center rounded-md bg-neutral-300 font-semibold hover:bg-neutral-400/70 dark:bg-stone-950 dark:hover:bg-stone-800"
-          disabledLinkClassName="cursor-not-allowed opacity-40 hover:!bg-[#D4D4D4] dark:hover:!bg-stone-950"
-          activeLinkClassName="!bg-secondary text-neutral-50"
+          disabledLinkClassName="cursor-not-allowed opacity-40 hover:bg-[#D4D4D4]! dark:hover:bg-stone-950!"
+          activeLinkClassName="bg-secondary! text-neutral-50"
           pageRangeDisplayed={3}
           // marginPagesDisplayed={2}
           renderOnZeroPageCount={null}

@@ -57,7 +57,7 @@ export default function ShoppingCart() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="relative flex size-8 items-center justify-center rounded-md active:bg-neutral-200 dark:text-neutral-100 dark:hover:text-white active:dark:bg-neutral-900">
+        <button className="relative flex size-8 items-center justify-center rounded-md active:bg-neutral-200 dark:text-neutral-100 dark:hover:text-white dark:active:bg-neutral-900">
           <FiShoppingCart className="size-6" />
 
           <HeaderSelectedProductsCounter className="absolute -bottom-2 -right-2" />

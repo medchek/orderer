@@ -28,7 +28,7 @@ export default function ThemeSelectInput({ className, ...props }: Props) {
   return (
     <select
       className={cn(
-        "h-10 w-32 rounded-md bg-neutral-200 px-2 outline-none ring-secondary focus:ring-2 dark:bg-neutral-900",
+        "h-10 w-32 rounded-md bg-neutral-200 px-2 outline-hidden ring-secondary focus:ring-2 dark:bg-neutral-900",
         className,
       )}
       onChange={switchTheme}

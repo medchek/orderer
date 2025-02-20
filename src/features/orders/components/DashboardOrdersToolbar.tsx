@@ -48,7 +48,7 @@ export default function DashboardOrdersToolbar() {
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             title="Chercher une commande par"
-            className="dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950  transition-colors h-10 w-10 rounded-lg outline-none shadow-md text-stone-400 flex items-center justify-center"
+            className="dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950  transition-colors h-10 w-10 rounded-lg outline-hidden shadow-md text-stone-400 flex items-center justify-center"
           >
             <MdOutlineManageSearch className="h-7 w-7" />
           </DropdownMenuTrigger>
@@ -56,7 +56,7 @@ export default function DashboardOrdersToolbar() {
             avoidCollisions
             sideOffset={10}
             align="end"
-            className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-none text-sm text-stone-50"
+            className="flex flex-col gap-1 px-2 z-10 p-2 bg-neutral-900 border border-neutral-800 rounded-lg outline-hidden text-sm text-stone-50"
           >
             <DropdownMenuLabel className="px-2 text-stone-500">
               Chercher par
@@ -65,7 +65,7 @@ export default function DashboardOrdersToolbar() {
             {searchBy.map((v, i) => (
               <DropdownMenuItem
                 key={v.text}
-                className="h-8 hover:bg-neutral-800 text-neutral-200 flex items-center gap-1.5 px-2 rounded-md hover:outline-none cursor-pointer"
+                className="h-8 hover:bg-neutral-800 text-neutral-200 flex items-center gap-1.5 px-2 rounded-md hover:outline-hidden cursor-pointer"
                 onClick={() => handleSearchByClick(i)}
               >
                 <span className="w-28 first-letter:capitalize">{v.text}</span>

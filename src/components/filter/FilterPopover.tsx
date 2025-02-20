@@ -28,7 +28,7 @@ export default function FilterPopover({
         title="Filtrer par"
         disabled={disabled}
         className={clsx(
-          "text-s hover:bg-neutral-/50 flex h-9 items-center justify-center gap-1 rounded-lg bg-neutral-200 px-4 outline-none transition-colors hover:bg-neutral-300/70 active:bg-neutral-300 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400 disabled:shadow-none dark:bg-neutral-900 dark:shadow-md dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 lg:h-10 lg:px-6 lg:text-base",
+          "text-s hover:bg-neutral-/50 flex h-9 items-center justify-center gap-1 rounded-lg bg-neutral-200 px-4 outline-hidden transition-colors hover:bg-neutral-300/70 active:bg-neutral-300 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400 disabled:shadow-none dark:bg-neutral-900 dark:shadow-md dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 dark:disabled:bg-neutral-950 dark:disabled:text-neutral-600 lg:h-10 lg:px-6 lg:text-base",
 
           {
             "text-secondary": hasFilters,
@@ -43,7 +43,7 @@ export default function FilterPopover({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="z-10 flex w-full flex-col gap-1 rounded-lg border border-neutral-200/70 bg-neutral-100 px-4 py-2 text-sm text-neutral-500 shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none lg:w-96"
+        className="z-10 flex w-full flex-col gap-1 rounded-lg border border-neutral-200/70 bg-neutral-100 px-4 py-2 text-sm text-neutral-500 shadow-lg outline-hidden dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none lg:w-96"
       >
         <div className="flex h-8 items-center justify-between">
           <p className="text-base text-neutral-800 dark:text-neutral-300">
@@ -56,7 +56,7 @@ export default function FilterPopover({
         <section className="mt-2 flex h-11 items-center justify-end gap-2 border-t border-t-neutral-300 dark:border-t-neutral-800">
           <button
             type="button"
-            className="mt-1 h-8 rounded-md px-2 text-neutral-600 transition-colors hover:text-neutral-700 active:bg-neutral-200 dark:text-neutral-400 hover:dark:text-neutral-200 active:dark:bg-neutral-800"
+            className="mt-1 h-8 rounded-md px-2 text-neutral-600 transition-colors hover:text-neutral-700 active:bg-neutral-200 dark:text-neutral-400 dark:hover:text-neutral-200 dark:active:bg-neutral-800"
             onClick={onResetFiltersClick}
           >
             Réinitialiser

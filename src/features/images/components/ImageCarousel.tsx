@@ -48,7 +48,7 @@ export default function ImageCarousel({
       <div className="embla__container flex h-full">
         {imageIds.map(({ id }, index) => (
           <div
-            className="embla__slide min-w-0 flex-shrink-0 flex-grow-0 basis-full"
+            className="embla__slide min-w-0 shrink-0 grow-0 basis-full"
             key={id}
           >
             <CarouselLazyImage
@@ -80,7 +80,7 @@ export default function ImageCarousel({
       )}
 
       {discount > 0 && (
-        <span className="pointer-events-none absolute bottom-2 right-3 flex h-6 w-16 items-center justify-center rounded-sm bg-secondary font-semibold text-white">
+        <span className="pointer-events-none absolute bottom-2 right-3 flex h-6 w-16 items-center justify-center rounded-xs bg-secondary font-semibold text-white">
           -{discount}%
         </span>
       )}

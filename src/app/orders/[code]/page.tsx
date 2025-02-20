@@ -116,7 +116,7 @@ export default async function Orders(props: Props) {
       if (data.location) {
         const { name, town, coordinates } = data.location;
         return (
-          <div className="flex gap-1 [&>span]:dark:text-neutral-600">
+          <div className="flex gap-1 dark:[&>span]:text-neutral-600">
             <p>{name}</p>
             <span>&bull;</span>
             <span className="capitalize">{town.name}</span>

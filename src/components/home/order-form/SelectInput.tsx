@@ -64,7 +64,7 @@ export default function SelectInput<T extends FieldValues>({
           {...props}
           {...inputRegister}
           className={cn(
-            "h-12 w-full appearance-none rounded-lg bg-neutral-200 px-4 text-neutral-900 placeholder-[#979797] outline-none ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-900 dark:text-neutral-300 dark:[color-scheme:dark]",
+            "h-12 w-full appearance-none rounded-lg bg-neutral-200 px-4 text-neutral-900 placeholder-[#979797] outline-hidden ring-secondary focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-900 dark:text-neutral-300 dark:[color-scheme:dark]",
             small ? "text-sm" : "text-sm 2xl:text-base",
             className,
           )}

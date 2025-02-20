@@ -80,7 +80,7 @@ export default function DashboardWilayaCard({
       </section>
       <button
         type="button"
-        className="h-8 gap-1 rounded-md bg-neutral-300 text-sm font-medium outline-none hover:bg-neutral-400/70 active:bg-neutral-400 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-900/50"
+        className="h-8 gap-1 rounded-md bg-neutral-300 text-sm font-medium outline-hidden hover:bg-neutral-400/70 active:bg-neutral-400 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-900/50"
         onClick={handleEditClick}
       >
         <MdEdit className="size-5" />

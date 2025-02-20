@@ -39,7 +39,7 @@ export default function DashboardHomeLatestOrdersCard({
       <div className="flex grow items-end justify-between text-sm text-neutral-900 dark:text-neutral-100">
         <div
           className={clsx(
-            "line-clamp-1 flex h-full w-1/2 flex-col items-start justify-start overflow-hidden overflow-ellipsis whitespace-nowrap",
+            "line-clamp-1 flex h-full w-1/2 flex-col items-start justify-start overflow-hidden text-ellipsis whitespace-nowrap",
             products.length > 2 ? "text-xs" : "text-sm",
           )}
         >

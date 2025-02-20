@@ -42,8 +42,8 @@ export default function Modal({
     };
     const handleClickOutside = (e: MouseEvent) => {
       // element to exclude from the clickoutside events
-      const excludeOverlay = document.querySelector("div[vaul-overlay]");
-      const excludeDrawer = document.querySelector("div[vaul-drawer]");
+      const excludeOverlay = document.querySelector("div[data-vaul-overlay]");
+      const excludeDrawer = document.querySelector("div[data-vaul-drawer]");
       const appVisualizer = document.querySelector(
         "#app-global-image-visualizer",
       );
@@ -84,7 +84,7 @@ export default function Modal({
     <div
       id="app-dialog"
       className={cn(
-        "fixed left-0 top-0 z-10 h-screen w-screen overflow-hidden bg-gray-950 bg-opacity-50 px-2 py-10 dark:bg-stone-950 dark:bg-opacity-80 lg:px-6 2xl:px-60",
+        "fixed top-0 left-0 z-10 h-screen w-screen overflow-hidden bg-gray-950/50 px-2 py-10 lg:px-6 2xl:px-60 dark:bg-stone-950/80",
         centerModalContent ? "flex items-center justify-center" : "",
         overlayClassName,
       )}
@@ -93,7 +93,7 @@ export default function Modal({
         className={cn(
           "flex flex-col dark:[color-scheme:dark]",
           {
-            "rounded-lg bg-neutral-200 px-2 py-2 shadow-md dark:bg-[#040404] lg:px-4 lg:py-5":
+            "rounded-lg bg-neutral-200 px-2 py-2 shadow-md lg:px-4 lg:py-5 dark:bg-[#040404]":
               !transparent,
           },
           className,
@@ -106,7 +106,7 @@ export default function Modal({
             id="dialog-header"
             className="flex grow-0 items-center justify-between lg:px-2"
           >
-            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 lg:text-xl">
+            <h1 className="text-lg font-semibold text-neutral-900 lg:text-xl dark:text-neutral-100">
               {label}
             </h1>
             <button

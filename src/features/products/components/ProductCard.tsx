@@ -61,7 +61,7 @@ export default function ProductCard({
             {/* previous height h-12 and gap-1*/}
             <div className="flex justify-between">
               <p
-                className="h-7 max-h-7 overflow-hidden overflow-ellipsis text-nowrap text-sm font-semibold lg:text-base"
+                className="h-7 max-h-7 overflow-hidden text-ellipsis text-nowrap text-sm font-semibold lg:text-base"
                 title={name}
               >
                 {name}
@@ -70,7 +70,7 @@ export default function ProductCard({
             </div>
 
             <div
-              className="line-clamp-1 flex w-fit items-center overflow-ellipsis whitespace-nowrap rounded-md bg-neutral-200 text-xs text-neutral-500 dark:bg-neutral-900 lg:text-sm"
+              className="line-clamp-1 flex w-fit items-center text-ellipsis whitespace-nowrap rounded-md bg-neutral-200 text-xs text-neutral-500 dark:bg-neutral-900 lg:text-sm"
               title="Catégorie"
             >
               <p className="px-1 py-0.5 first-letter:capitalize">

@@ -56,7 +56,7 @@ export default function FilterDrawer({
         title="Filtrer par"
         disabled={disabledButton}
         className={clsx(
-          "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-50 px-4 text-base font-medium shadow-md outline-none transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 disabled:dark:bg-neutral-950 dark:disabled:text-neutral-600 lg:px-6",
+          "flex h-10 items-center justify-center gap-1 rounded-lg bg-neutral-50 px-4 text-base font-medium shadow-md outline-hidden transition-colors disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:shadow-none dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-950 dark:disabled:bg-neutral-950 dark:disabled:text-neutral-600 lg:px-6",
 
           {
             "text-secondary": hasFilters,
@@ -183,13 +183,13 @@ export default function FilterDrawer({
         <DrawerFooter className="flex flex-row justify-end">
           <button
             type="button"
-            className="h-10 w-36 rounded-md bg-blue-600 bg-transparent px-2 text-neutral-600 hover:text-neutral-700 active:bg-neutral-200 dark:text-neutral-400 hover:dark:text-neutral-200 focus:dark:bg-transparent active:dark:bg-neutral-800"
+            className="h-10 w-36 rounded-md bg-blue-600 bg-transparent px-2 text-neutral-600 hover:text-neutral-700 active:bg-neutral-200 dark:text-neutral-400 dark:hover:text-neutral-200 dark:focus:bg-transparent dark:active:bg-neutral-800"
             onClick={resetFilters}
           >
             Réinitialiser
           </button>
           <DrawerClose
-            className="h-10 w-36 rounded-md bg-blue-600 px-2 text-neutral-100 transition-colors hover:bg-blue-500 focus:bg-blue-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 disabled:dark:bg-stone-600"
+            className="h-10 w-36 rounded-md bg-blue-600 px-2 text-neutral-100 transition-colors hover:bg-blue-500 focus:bg-blue-700 disabled:cursor-not-allowed disabled:bg-stone-600 disabled:text-stone-400 dark:disabled:bg-stone-600"
             onClick={applyFilters}
             type="button"
           >

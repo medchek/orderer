@@ -14,7 +14,7 @@ export default function OrdersCardProductDisplay({
   return (
     <div className="flex h-10 w-full items-center justify-between gap-4 rounded-md bg-neutral-300 px-4 dark:bg-neutral-800 md:w-96">
       <p
-        className="flex w-56 gap-1 overflow-hidden overflow-ellipsis whitespace-nowrap text-neutral-800 dark:text-neutral-200"
+        className="flex w-56 gap-1 overflow-hidden text-ellipsis whitespace-nowrap text-neutral-800 dark:text-neutral-200"
         title={product.name}
       >
         <span>{product.name}</span>

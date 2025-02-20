@@ -41,7 +41,7 @@ export default function Textarea<T extends FieldValues>({
         {...props}
         {...(register && register(name, registerRules))}
         className={cn(
-          "h-12 min-h-[48px] rounded-lg bg-neutral-200 px-4 pt-3 text-sm placeholder-[#979797] outline-none ring-secondary focus:ring-2 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base",
+          "h-12 min-h-[48px] rounded-lg bg-neutral-200 px-4 pt-3 text-sm placeholder-[#979797] outline-hidden ring-secondary focus:ring-2 dark:bg-neutral-900 dark:text-white dark:[color-scheme:dark] 2xl:text-base",
           className,
         )}
       ></textarea>

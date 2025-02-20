@@ -100,7 +100,7 @@ export default function DashboardOrdersCardDropdown({
 
     return statusListKeys.map((statusKey) => (
       <DropdownMenuItem
-        className="flex h-7 cursor-pointer items-center justify-between gap-2 rounded-md px-2 transition-colors hover:bg-neutral-200 hover:outline-none disabled:cursor-not-allowed dark:hover:bg-neutral-800"
+        className="flex h-7 cursor-pointer items-center justify-between gap-2 rounded-md px-2 transition-colors hover:bg-neutral-200 hover:outline-hidden disabled:cursor-not-allowed dark:hover:bg-neutral-800"
         key={statusKey}
         disabled={isLoading}
         onClick={() => handleOnStatusClick(statusKey)}
@@ -169,7 +169,7 @@ export default function DashboardOrdersCardDropdown({
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         title="Options"
-        className="h-8 w-8 rounded-lg outline-none transition-colors hover:bg-neutral-300 dark:text-stone-50 dark:shadow-md dark:hover:bg-stone-800/70 dark:active:bg-stone-900"
+        className="h-8 w-8 rounded-lg outline-hidden transition-colors hover:bg-neutral-300 dark:text-stone-50 dark:shadow-md dark:hover:bg-stone-800/70 dark:active:bg-stone-900"
       >
         {<MdMoreVert className="h-7 w-7" />}
       </DropdownMenuTrigger>
@@ -177,7 +177,7 @@ export default function DashboardOrdersCardDropdown({
         avoidCollisions
         sideOffset={10}
         align="end"
-        className="z-10 flex flex-col gap-1 rounded-lg border bg-neutral-100 px-2 py-1 text-sm outline-none dark:border-neutral-800 dark:bg-neutral-900"
+        className="z-10 flex flex-col gap-1 rounded-lg border bg-neutral-100 px-2 py-1 text-sm outline-hidden dark:border-neutral-800 dark:bg-neutral-900"
       >
         <DropdownMenuLabel className="flex h-7 items-center gap-1 pl-2">
           <FiHexagon className="h-5 w-5" />
@@ -188,7 +188,7 @@ export default function DashboardOrdersCardDropdown({
         <hr className="border-neutral-300 dark:border-neutral-800" />
         {!orderData.isPhoneBlocked && (
           <DropdownMenuItem
-            className="flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
+            className="flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-hidden dark:hover:bg-neutral-800"
             onClick={() => {
               // close the code to delete component if it's open
               setOrderCodeToDelete(null);
@@ -200,7 +200,7 @@ export default function DashboardOrdersCardDropdown({
           </DropdownMenuItem>
         )}
         <DropdownMenuItem
-          className="flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
+          className="flex h-7 cursor-pointer items-center gap-1 rounded-md px-2 hover:bg-neutral-200 hover:outline-hidden dark:hover:bg-neutral-800"
           onClick={() => {
             // close the block phone component if it's open
             setOrderPhoneToBlock(null);

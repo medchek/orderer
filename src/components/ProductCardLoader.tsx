@@ -5,15 +5,15 @@ export default function ProductCardLoader() {
       {/* text */}
       <section className="flex grow flex-col justify-between p-2">
         <section className="flex flex-col gap-4">
-          <div className="h-6 w-11/12 rounded bg-neutral-300 dark:bg-neutral-800"></div>
+          <div className="h-6 w-11/12 rounded-sm bg-neutral-300 dark:bg-neutral-800"></div>
 
-          <div className="h-5 w-8/12 rounded bg-neutral-300 dark:bg-neutral-800"></div>
+          <div className="h-5 w-8/12 rounded-sm bg-neutral-300 dark:bg-neutral-800"></div>
           <section className="flex flex-col gap-1">
-            <div className="h-4 w-5/6 rounded bg-neutral-300 dark:bg-neutral-800"></div>
-            <div className="h-4 w-2/12 rounded bg-neutral-300 dark:bg-neutral-800"></div>
+            <div className="h-4 w-5/6 rounded-sm bg-neutral-300 dark:bg-neutral-800"></div>
+            <div className="h-4 w-2/12 rounded-sm bg-neutral-300 dark:bg-neutral-800"></div>
             <div className="h-4rounded w-11/12 bg-neutral-300 dark:bg-neutral-800"></div>
-            <div className="h-4 w-1/3 rounded bg-neutral-300 dark:bg-neutral-800"></div>
-            <div className="h-4 w-2/3 rounded bg-neutral-300 dark:bg-neutral-800"></div>
+            <div className="h-4 w-1/3 rounded-sm bg-neutral-300 dark:bg-neutral-800"></div>
+            <div className="h-4 w-2/3 rounded-sm bg-neutral-300 dark:bg-neutral-800"></div>
           </section>
         </section>
         {/* Buttons */}

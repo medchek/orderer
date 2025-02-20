@@ -75,7 +75,7 @@ export default function AddProduct({ closeModal }: Props) {
 
   return (
     <Modal
-      className="flex h-full flex-col rounded-lg pb-0 shadow-md lg:pb-0 lg:pt-4"
+      className="flex h-full flex-col rounded-lg pb-0 shadow-md lg:pt-4 lg:pb-0"
       closeModal={closeModal}
       label="Ajouter un Produit"
       closeOnClickOutside
@@ -94,7 +94,7 @@ export default function AddProduct({ closeModal }: Props) {
       <section className="h-full grow flex-col overflow-y-auto">
         <div
           id="product-search-result"
-          className="relative grid grow grid-cols-1 justify-end gap-2 dark:[color-scheme:dark] sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+          className="relative grid grow grid-cols-1 justify-end gap-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 dark:[color-scheme:dark]"
         >
           {isError && !isFetching && <DashboardFetchError refetch={refetch} />}
           {isFetching &&
@@ -105,10 +105,7 @@ export default function AddProduct({ closeModal }: Props) {
       </section>
       <div className="relative flex flex-row-reverse items-center">
         <Pagination pageCount={pageCount} onPageChange={handlePageChange} />
-        <Button
-          className="absolute h-9 w-auto px-4 md:h-10"
-          onClick={closeModal}
-        >
+        <Button className="absolute h-9 w-auto px-4" onClick={closeModal}>
           Continuer
         </Button>
       </div>

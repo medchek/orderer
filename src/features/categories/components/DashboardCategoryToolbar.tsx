@@ -44,7 +44,7 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger
             title="Filtrer par"
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-200 text-stone-400 outline-none transition-colors hover:bg-neutral-300 dark:bg-neutral-900 dark:shadow-md dark:hover:bg-neutral-800 dark:focus:bg-neutral-950"
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-200 text-stone-400 outline-hidden transition-colors hover:bg-neutral-300 dark:bg-neutral-900 dark:shadow-md dark:hover:bg-neutral-800 dark:focus:bg-neutral-950"
           >
             {/* <MdOutlineFilterList className="h-7 w-7" /> */}
             <MdOutlineManageSearch className="size-7" />
@@ -53,14 +53,14 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
             avoidCollisions
             sideOffset={10}
             align="end"
-            className="bg- z-10 flex flex-col gap-1 rounded-lg border bg-neutral-100 p-2 px-2 text-sm text-neutral-600 outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
+            className="bg- z-10 flex flex-col gap-1 rounded-lg border bg-neutral-100 p-2 px-2 text-sm text-neutral-600 outline-hidden dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
           >
             <DropdownMenuLabel className="px-2 text-stone-400">
               Chercher par
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
+              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-200 hover:outline-hidden dark:hover:bg-neutral-800"
               onClick={() => setCategoryFilterType("category")}
             >
               <span className="w-28">Catégorie</span>{" "}
@@ -69,7 +69,7 @@ export default function DashboardCategoryToolbar({ openAddCategory }: Props) {
               )}
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-200 hover:outline-none dark:hover:bg-neutral-800"
+              className="flex h-8 cursor-pointer items-center gap-1.5 rounded-md px-2 hover:bg-neutral-200 hover:outline-hidden dark:hover:bg-neutral-800"
               onClick={() => setCategoryFilterType("subcategory")}
             >
               <span className="w-28">Sous-catégorie</span>

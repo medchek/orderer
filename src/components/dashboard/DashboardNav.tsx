@@ -60,7 +60,7 @@ export default function DashboardNav() {
         "flex h-12 items-center gap-4 rounded-lg text-sm font-semibold text-neutral-50 transition-colors first-letter:capitalize dark:text-neutral-200 [&>svg]:h-6 [&>svg]:w-6",
         pathName === `/dashboard/${href}`
           ? "bg-red-800 dark:bg-black/50"
-          : "bg-[#EC2A2A] hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-neutral-900 dark:hover:bg-neutral-800 focus:dark:bg-neutral-900/50",
+          : "bg-[#EC2A2A] hover:bg-[#ff4545] focus:bg-[#da2020] dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus:bg-neutral-900/50",
         {
           "mb-2 mt-auto": !!selfEnd,
           "w-12 justify-center": isMinimized,

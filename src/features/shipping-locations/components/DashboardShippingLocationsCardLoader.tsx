@@ -7,7 +7,7 @@ export default function DashboardShippingLocationsCardLoader() {
         <p className="h-5 w-10/12 rounded-md bg-neutral-400 dark:bg-neutral-800"></p>
       </section>
       <hr className="border-neutral-400 dark:border-neutral-900" />
-      <section className="flex w-full flex-col gap-1.5 py-2 [&>div>p]:h-4 [&>div>p]:rounded-sm [&>div>p]:bg-neutral-400 dark:[&>div>p]:bg-neutral-800 [&>div]:flex [&>div]:w-full [&>div]:items-center [&>div]:justify-between">
+      <section className="flex w-full flex-col gap-1.5 py-2 [&>div>p]:h-4 [&>div>p]:rounded-xs [&>div>p]:bg-neutral-400 dark:[&>div>p]:bg-neutral-800 [&>div]:flex [&>div]:w-full [&>div]:items-center [&>div]:justify-between">
         <div>
           <p className="w-24"></p>
           <p className="w-36"></p>

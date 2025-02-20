@@ -76,7 +76,7 @@ export default function HomeSideMenu() {
       <Link
         key={text}
         className={clsx(
-          "flex h-12 w-full items-center justify-between rounded-md px-2 active:bg-neutral-300 focus:dark:text-neutral-50 active:dark:bg-neutral-800",
+          "flex h-12 w-full items-center justify-between rounded-md px-2 active:bg-neutral-300 dark:focus:text-neutral-50 dark:active:bg-neutral-800",
           {
             "bg-neutral-300/40 dark:bg-[#050505] dark:text-neutral-50":
               pathname === href || (pathname === "/" && href === ".."),
@@ -104,7 +104,7 @@ export default function HomeSideMenu() {
 
   return (
     <Sheet>
-      <SheetTrigger asChild className="lg:hidden">
+      <SheetTrigger asChild className="flex lg:hidden">
         <button>
           <TbMenuDeep className="size-8" />
         </button>
@@ -151,14 +151,14 @@ export default function HomeSideMenu() {
               {sessionData.status === "authenticated" ? (
                 <button
                   type="button"
-                  className="size-9 rounded-md active:dark:bg-neutral-950"
+                  className="size-9 rounded-md dark:active:bg-neutral-950"
                   title="Se déconnecter"
                 >
                   <LuLogOut className="size-6" />
                 </button>
               ) : (
                 <Link
-                  className="flex size-9 items-center justify-center rounded-md active:dark:bg-neutral-950"
+                  className="flex size-9 items-center justify-center rounded-md dark:active:bg-neutral-950"
                   title="Se connecter"
                   href="/login"
                 >
